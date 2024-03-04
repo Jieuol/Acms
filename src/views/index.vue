@@ -1,58 +1,136 @@
+/*
+ * @Author: jack.Lou 
+ * @Date: 2024-03-04 11:38:25 
+ * @Last Modified by: jack.Lou
+ * @Last Modified time: 2024-03-04 18:54:14
+ */
+
 <template>
-	<div>
-		<AppHeader />
-		<el-carousel height="200px">
-		      <el-carousel-item v-for="item in banners" :key="item">
-		        <el-image :src="item" />
-		      </el-carousel-item>
-		    </el-carousel>
-			<el-tabs value="first" id="mianban">
-			    <el-tab-pane label="快递服务" name="first" id="ch1">
-					<bt />
-				</el-tab-pane>
-			    <el-tab-pane label="快运服务" name="second" id="ch1">快运服务</el-tab-pane>
-			    <el-tab-pane label="冷运服务" name="third" id="ch1">冷运服务</el-tab-pane>
-			    <el-tab-pane label="医药服务" name="fourth" id="ch1">医药服务</el-tab-pane>
-				<el-tab-pane label="国际服务" name="five" id="ch1">国际服务</el-tab-pane>
-			</el-tabs>
-		<AppFooter />
+	<div class="nav">
+		<el-container class="home-container">
+        <el-header>
+            <div>
+                <img src="../assets/logo.png" alt="" height="50px"/>
+                <span>高校学科竞赛管理系统</span>
+            </div>
+			<div class="userName">
+				<span >欢迎您：{{userName}}</span>
+			</div>
+            <el-button type="info" @click="logout()">退出</el-button>
+        </el-header>
+        <!-- 页面主体区域 -->
+        <el-container>
+            <!-- 侧边栏 -->
+            <el-aside width="200px">
+				<el-menu
+					background-color="#b0d9ee"
+					text-color="black"
+					active-text-color="red"
+					router
+					:default-active="$route.path">
+					<el-submenu index="1">
+						<template slot="title">
+						<i class="el-icon-location"></i>
+						<span>个人信息管理</span>
+						</template>
+						<el-menu-item-group>
+							<el-menu-item index="/userInfo">修改个人信息</el-menu-item>
+							<el-menu-item index="/changePsw">修改密码</el-menu-item>
+						</el-menu-item-group>
+					</el-submenu>
+
+					<el-menu-item index="2">
+						<i class="el-icon-menu"></i>
+						<span slot="title">公告栏</span>
+					</el-menu-item>
+					
+					<el-menu-item index="3">
+						<i class="el-icon-menu"></i>
+						<span slot="title">竞赛项目报名</span>
+					</el-menu-item>
+
+
+					<el-menu-item index="4">
+						<i class="el-icon-setting"></i>
+						<span slot="title">个人成绩查询</span>
+					</el-menu-item>
+
+				</el-menu>	
+
+			</el-aside>
+            <!-- 右侧内容主体 -->
+            <el-main> 
+				<!-- 路由页面 -->
+				<transition name="fade" mode="out-in">
+					<router-view></router-view>
+				</transition>
+
+			 
+			</el-main>
+        </el-container>
+    </el-container>
 	</div>
 </template>
 
 
 <style scoped>
-	body{
-	  margin: 0;
-	  background-color: #FFFFFF;
-	}
-	#mb{
-		background-color: #FFFFFF;
-		height: 500px;
-	}
-	.el-image__inner{
-		background-color: #00ffff;
-		height: 5000px;
-	}
+.nav{
+	height: 100vh;
+		padding: .5rem;
+		width: 100%;
+		background-image: url(../assets/images/bg.jpg);
+        
+		background-size: 100% 100%;
+		color: #758fa7
+}
+
+.home-container{
+	height: 100%;
+}
+ .el-header{
+     background-color: rgba(209, 242, 249, 0.5);
+     display: flex; 
+     justify-content: space-between;
+     padding-left: 0;
+     align-items: center;
+     color: #fff;
+     font-size: 30px;
+     > div {
+         display: flex;
+         align-items: center;
+         span {
+             margin-left: 15px;
+         }
+     }
+ }
+  .userName{
+	margin-left: 280px;
+	font-size: 20px;
+ }
+ 
+  .el-main{
+    background-color: rgba(209, 242, 249, 0.5);
+}
 </style>
 
 <script>
-import AppHeader from "@/components/AppHeader";
-import AppFooter from "@/components/AppFooter";
-import T1 from "@/assets/images/T1.jpg";
-import T2 from "@/assets/images/T2.jpg";
-import T4 from "@/assets/images/T4.jpg";
-import bt from "@/components/bt.vue";
+
 
 export default{
 	data(){
+		
 		return{
-			banners:[T1,T2,T4]
+			userName:sessionStorage.getItem('username'),
 		}
 	},
 	components:{
-	  AppHeader,
-	  AppFooter,
-	  bt,
+
+	},
+	methods:{
+		logout(){
+			sessionStorage.setItem('is_login',0);
+			this.$router.push('/login');
+		},
 	},
 };
 </script>

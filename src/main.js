@@ -12,6 +12,12 @@ import axios from 'axios'
 Vue.prototype.$axios = axios
 
 
+router.beforeEach((to, from, next) => {
+  //路由发生改变时,触发
+  window.document.title = to.meta.title == undefined ? '默认标题' : to.meta.title
+  
+  next();
+})
 
 new Vue({
   router,
