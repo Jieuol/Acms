@@ -1,4 +1,4 @@
-package edu.lgxyj.lbj.asmsspringboot;
+package edu.lgxy.lbj.asms;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
