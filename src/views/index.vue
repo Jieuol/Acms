@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:25 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-04 18:54:14
+ * @Last Modified time: 2024-03-05 16:17:18
  */
 
 <template>
@@ -30,29 +30,68 @@
 					:default-active="$route.path">
 					<el-submenu index="1">
 						<template slot="title">
-						<i class="el-icon-location"></i>
+						<i class="el-icon-setting"></i>
 						<span>个人信息管理</span>
 						</template>
 						<el-menu-item-group>
-							<el-menu-item index="/userInfo">修改个人信息</el-menu-item>
+							<el-menu-item index="/userInfo">查看个人信息</el-menu-item>
 							<el-menu-item index="/changePsw">修改密码</el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
 
-					<el-menu-item index="2">
-						<i class="el-icon-menu"></i>
+					<el-menu-item index="/notice">
+						<i class="el-icon-warning"></i>
 						<span slot="title">公告栏</span>
 					</el-menu-item>
+
 					
-					<el-menu-item index="3">
+					<el-menu-item index="/participate" v-if="userGroup=='学生'">
 						<i class="el-icon-menu"></i>
 						<span slot="title">竞赛项目报名</span>
 					</el-menu-item>
 
+					<el-menu-item index="/contestRegistration" v-if="userGroup=='老师'">
+						<i class="el-icon-menu"></i>
+						<span slot="title">竞赛项目申报</span>
+					</el-menu-item>
 
-					<el-menu-item index="4">
-						<i class="el-icon-setting"></i>
+
+					<el-menu-item index="/enrollmentManagement" v-if="userGroup=='老师'||userGroup=='管理员'">
+						<i class="el-icon-menu"></i>
+						<span slot="title">报名人员管理</span>
+					</el-menu-item>
+
+
+					<el-menu-item index="/contestApproval" v-if="userGroup=='管理员'">
+						<i class="el-icon-menu"></i>
+						<span slot="title">竞赛项目审批</span>
+					</el-menu-item>
+
+					
+					<el-menu-item index="/gradesManagement" v-if="userGroup=='老师'||userGroup=='管理员'">
+						<i class="el-icon-menu"></i>
+						<span slot="title">竞赛成绩管理</span>
+					</el-menu-item>
+					
+
+					<el-menu-item index="/studenrtResultSearch" v-if="userGroup=='学生'">
+						<i class="el-icon-menu"></i>
 						<span slot="title">个人成绩查询</span>
+					</el-menu-item>
+					
+					<el-menu-item index="/awardManagement" v-if="userGroup=='老师'">
+						<i class="el-icon-menu"></i>
+						<span slot="title">获奖信息管理</span>
+					</el-menu-item>
+					
+					<el-menu-item index="/awardManagement" v-if="userGroup=='管理员'">
+						<i class="el-icon-menu"></i>
+						<span slot="title">获奖信息管理</span>
+					</el-menu-item>
+
+					<el-menu-item index="/userManagement" v-if="userGroup=='管理员'">
+						<i class="el-icon-menu"></i>
+						<span slot="title">用户管理</span>
 					</el-menu-item>
 
 				</el-menu>	
@@ -120,6 +159,7 @@ export default{
 	data(){
 		
 		return{
+			userGroup:sessionStorage.getItem('userGroup'),
 			userName:sessionStorage.getItem('username'),
 		}
 	},
@@ -131,6 +171,7 @@ export default{
 			sessionStorage.setItem('is_login',0);
 			this.$router.push('/login');
 		},
+
 	},
 };
 </script>

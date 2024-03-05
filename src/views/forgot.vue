@@ -37,7 +37,7 @@
 				</el-input>
 				</el-form-item>
 			</el-form>
-			<el-button style="margin-top: 12px;" @click="changePsw('form')">确认修改</el-button>
+			<el-button style="margin-top: 12px;" @click="changePsw('verificationForm')">确认修改</el-button>
 		</div>
 	
 
@@ -49,6 +49,21 @@
 <script>
   export default {
 	data(){
+      //自定义的邮箱和手机验证规则
+      var checkEmail = (rule, value, callback) => {
+      const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (regEmail.test(value)) {
+        return callback();
+      }
+      callback(new Error("请输入合法的邮箱"));
+    };
+    var checkMobile = (rule, value, callback) => {
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (regMobile.test(value)) {
+        return callback();
+      }
+      callback(new Error("请输入合法的手机号"));
+    };
     let validateAccount = (rules,value,callback) =>{
       if (/[\u4E00-\u9FA5]/g.test(value)) {
         callback(new Error('账户名称不能输入汉字!'));
@@ -79,12 +94,16 @@
     },
     options: [],
     verificationFormRules:{
+      email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          { validator: checkEmail, trigger: "blur" },
+        ],
 
-		username:[
-        { required: true, message: '请输入用户名', trigger: 'blur' },
-        { min: 1, max: 15, message: '用户名不超过15个字符,请重新输入',trigger: "blur" },
-        { validator: validateAccount, trigger: 'blur' }
-      ],
+      username:[
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 1, max: 15, message: '用户名不超过15个字符,请重新输入',trigger: "blur" },
+          { validator: validateAccount, trigger: 'blur' }
+        ],
     },
     forgotPasswordFormRules: {
       password: [
@@ -110,6 +129,8 @@
 					return;
 				}
 				this.$axios.post("/forgot/checkEmail",this.verificationForm).then(resp=>{
+          console.log("-------------------");
+          console.log(this.verificationForm);
 					let result = resp.data;
 					console.log(resp);
 					if(result.code==='0'){
@@ -135,6 +156,8 @@
 					return;
 				}
 				this.$axios.post("/forgot/changePsw",this.forgotPasswordForm).then(resp=>{
+          console.log("-------------------");
+          console.log(this.forgotPasswordForm);
 					let result = resp.data;
 					console.log(resp);
 					if(result.code==='0'){

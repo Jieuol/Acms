@@ -94,6 +94,9 @@
 						let result = resp.data;
 						console.log(resp);
 						if(result.code==='0'){
+							sessionStorage.setItem('username',result.data.user.username)
+							sessionStorage.setItem('userGroup',result.data.user.userGroup)
+							console.log(sessionStorage.getItem('userGroup'))
 							sessionStorage.setItem('is_login',1); //存储登录状态
 							this.$router.push("/")
 							return this.$message({
