@@ -5,6 +5,7 @@ import edu.lgxy.lbj.asms.entity.User;
 import edu.lgxy.lbj.asms.qo.Receive;
 import edu.lgxy.lbj.asms.qo.ReceiveEmail;
 import edu.lgxy.lbj.asms.qo.ReceivePassword;
+import edu.lgxy.lbj.asms.qo.ReceiveUser;
 import edu.lgxy.lbj.asms.service.UserService;
 import edu.lgxy.lbj.asms.config.JsonResult;
 
@@ -13,11 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -29,11 +36,51 @@ public class UserController {
     @Autowired(required = false)
     private RedisTemplate redisTemplate;
 
+    @RequestMapping("/getUseInfo")
+    public JsonResult<Map> login(@RequestParam String username, HttpSession session) throws ParseException {
+        Map<String, Object> map = new HashMap<>();
+//        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
+//        log.info("redis->"+redisTemplate.opsForValue().get("name"));
+        String msg="服务器正常";
+        String code="";
+        log.info("log---->从前端收到:"+username);
+        if(username == null||" ".equals(username)){
+            return new JsonResult<>(map);
+        }
+        username = username.trim();//去除字符串首尾空白字符
+        if(username.length()<6||username.length()>20){
+            msg= "用户名应为6-20位";
+            code="202";
+            return new JsonResult<>(map,msg,code);
+        }
+
+        User u = new User();
+        u.setUsername(username);
+        log.info("u : "+u);
+        User user = userService.selectByUserName(u);
+        log.info("Mysql中查到user:"+user);
+        if(user == null){
+            msg= "用户名不存在";
+            code="202";
+            return new JsonResult<>(map,msg,code);
+        }
+//        String dateStr = String.valueOf(user.getLoginTime());
+//        DateFormat cst = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        DateFormat gmt = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+//        Date dateTime = gmt.parse(dateStr);
+//        String dateString = cst.format(dateTime);
+
+        map.put("user",user);
+        msg="查询个人信息成功!";
+        log.info("userInfo.getLoginTime->"+user.getLoginTime());
+        return new JsonResult<>(map,msg);
+    }
+
     @RequestMapping("/login")
     public JsonResult<Map> login(@RequestBody Receive receive ,HttpSession session){
         Map<String, Object> map = new HashMap<>();
-        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
-        log.info("redis->"+redisTemplate.opsForValue().get("name"));
+//        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
+//        log.info("redis->"+redisTemplate.opsForValue().get("name"));
         String username = receive.getUsername();
         String password =receive.getPassword();
         String msg="服务器正常";
@@ -71,6 +118,7 @@ public class UserController {
             code="202";
             return new JsonResult<>(map,msg,code);
         }
+        map.put("user",user);
         msg="登陆成功!";
         return new JsonResult<>(map,msg);
     }
@@ -155,4 +203,20 @@ public class UserController {
         msg="已经成功修改密码";
         return new JsonResult<>(map,msg,code);
     }
+
+    @RequestMapping("/updateByUserName")
+    public JsonResult<Map> updateByUserName(@RequestBody ReceiveUser user){
+        Map<String,Object> map = new HashMap<>();
+        String code="";
+        String msg ="服务器正常";
+        int update = userService.updateUser(user);
+        if (update<=0){
+            msg="更新个人信息失败";
+            code="202";
+            return new JsonResult<>(map,msg,code);
+        }
+
+        return new JsonResult<>(map);
+    }
+
 }

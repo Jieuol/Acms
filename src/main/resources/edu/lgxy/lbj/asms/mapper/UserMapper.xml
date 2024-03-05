@@ -6,12 +6,12 @@
     <resultMap type="edu.lgxy.lbj.asms.entity.User" id="UserResult">
         <result property="userId"    column="user_id"    />
         <result property="state"    column="state"    />
+        <result property="gender"    column="gender"    />
         <result property="userGroup"    column="user_group"    />
         <result property="loginTime"    column="login_time"    />
         <result property="phone"    column="phone"    />
         <result property="phoneState"    column="phone_state"    />
         <result property="username"    column="username"    />
-        <result property="nickname"    column="nickname"    />
         <result property="password"    column="password"    />
         <result property="email"    column="email"    />
         <result property="emailState"    column="email_state"    />
@@ -20,7 +20,7 @@
     </resultMap>
 
     <sql id="selectUserVo">
-        select user_id, state, user_group, login_time, phone, phone_state, username, nickname, password, email, email_state, avatar, create_time from user
+        select user_id, state, user_group, login_time, phone, phone_state, username, password, email, email_state, avatar, create_time from user
     </sql>
 
     <select id="selectUserList" parameterType="edu.lgxy.lbj.asms.entity.User" resultMap="UserResult">
@@ -32,7 +32,6 @@
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
             <if test="phoneState != null "> and phone_state = #{phoneState}</if>
             <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
-            <if test="nickname != null  and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
             <if test="password != null  and password != ''"> and password = #{password}</if>
             <if test="email != null  and email != ''"> and email = #{email}</if>
             <if test="emailState != null "> and email_state = #{emailState}</if>
@@ -52,7 +51,7 @@
 <!--    </select>-->
 
     <select id="selectByUserName"  resultType="edu.lgxy.lbj.asms.entity.User">
-        select user_id,username,password,email from user
+        select * from user
         <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
             <if test="username != null and username.length() > 0">
                 and username = #{username}
@@ -60,6 +59,12 @@
             <if test="password != null and password.length() > 0">
                 and password = #{password}
             </if>
+            <if test="username != null and username != ''"> and username = #{username}</if>
+            <if test="phone != null and phone != ''"> and phone = #{phone}</if>
+            <if test="email != null and email != ''"> and phone = #{email}</if>
+            <if test="gender != null and gender != ''"> and phone = #{gender}</if>
+            <if test="loginTime != null and loginTime != ''"> and phone = #{loginTime}</if>
+            <if test="emailState != null and emailState != ''"> and phone = #{emailState}</if>
         </trim>
 
     </select>
@@ -72,6 +77,8 @@
         where username = #{username}
     </update>
 
+
+
     <update id="updateUser" parameterType="edu.lgxy.lbj.asms.entity.User">
         update user
         <trim prefix="SET" suffixOverrides=",">
@@ -81,7 +88,6 @@
             <if test="phone != null  and phone != ''">phone = #{phone},</if>
             <if test="phoneState != null ">phone_state = #{phoneState},</if>
             <if test="username != null  and username != ''">username = #{username},</if>
-            <if test="nickname != null  and nickname != ''">nickname = #{nickname},</if>
             <if test="password != null  and password != ''">password = #{password},</if>
             <if test="email != null  and email != ''">email = #{email},</if>
             <if test="emailState != null ">email_state = #{emailState},</if>
