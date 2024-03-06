@@ -83,6 +83,29 @@ const routes = [
 					title: '竞赛项目申报'
 				},
 			},
+
+			{
+			    path: '/myContest',
+			    name: 'myContest', 
+			    component: () => import("@/views/myContest.vue"),
+				meta: {
+					index: 0,
+					title: '我的已经报名项目'
+				},
+			},
+
+			{
+			    path: '/myApplication',
+			    name: 'myApplication', 
+			    component: () => import("@/views/myApplication.vue"),
+				meta: {
+					index: 0,
+					title: '我的申报项目'
+				},
+			},
+
+			
+
 			{
 			    path: '/enrollmentManagement',
 			    name: 'enrollmentManagement', 

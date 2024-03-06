@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:25 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-05 16:17:18
+ * @Last Modified time: 2024-03-06 16:37:53
  */
 
 <template>
@@ -45,15 +45,30 @@
 					</el-menu-item>
 
 					
-					<el-menu-item index="/participate" v-if="userGroup=='学生'">
-						<i class="el-icon-menu"></i>
-						<span slot="title">竞赛项目报名</span>
-					</el-menu-item>
 
-					<el-menu-item index="/contestRegistration" v-if="userGroup=='老师'">
-						<i class="el-icon-menu"></i>
-						<span slot="title">竞赛项目申报</span>
-					</el-menu-item>
+
+					<el-submenu index="/1" v-if="userGroup=='学生'">
+						<template slot="title">
+						<i class="el-icon-setting"></i>
+						<span>竞赛项目报名</span>
+						</template>
+						<el-menu-item-group>
+							<el-menu-item index="/participate">查看竞赛项目</el-menu-item>
+							<el-menu-item index="/myContest">我的竞赛项目</el-menu-item>
+						</el-menu-item-group>
+					</el-submenu>
+
+					<el-submenu index="/1" v-if="userGroup=='老师'">
+						<template slot="title">
+						<i class="el-icon-setting"></i>
+						<span>竞赛项目申报</span>
+						</template>
+						<el-menu-item-group>
+							<el-menu-item index="/contestRegistration">申报竞赛项目</el-menu-item>
+							<el-menu-item index="/myApplication">我的竞赛项目</el-menu-item>
+						</el-menu-item-group>
+					</el-submenu>
+
 
 
 					<el-menu-item index="/enrollmentManagement" v-if="userGroup=='老师'||userGroup=='管理员'">

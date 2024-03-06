@@ -46,7 +46,7 @@
 <!-- Form -->
 <el-button  @click="dialogFormVisible = true">修改个人资料</el-button>
 
-<el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+<el-dialog title="修改个人资料" :visible.sync="dialogFormVisible">
   <el-form :model="form" :rules="formRule" ref="form" >
     <el-form-item label="用户名" :label-width="formLabelWidth">
       <el-input v-model="form.username" :disabled="true" autocomplete="off"></el-input>
