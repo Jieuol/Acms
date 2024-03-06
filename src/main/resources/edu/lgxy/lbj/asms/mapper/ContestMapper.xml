@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.lgxy.lbj.asms.mapper.ContestMapper">
+    <resultMap type="edu.lgxy.lbj.asms.entity.ContestInformation" id="ContestResult">
+        <result property="contestInformationId"    column="contest_information_id"    />
+        <result property="contestDeclarationId"    column="contest_declarationId"    />
+        <result property="contestName"    column="contest_name"    />
+        <result property="contestType"    column="contest_type"    />
+        <result property="participantsNumber"    column="participants_number"    />
+        <result property="contestDate"    column="contest_date"    />
+        <result property="contestIntroduction"    column="contest_introduction"    />
+        <result property="contestRules"    column="contest_rules"    />
+        <result property="participationConditions"    column="participation_conditions"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectContestVo">
+        select * from contest_information
+    </sql>
+    <select id="getContestList" parameterType="edu.lgxy.lbj.asms.entity.ContestInformation" resultMap="ContestResult">
+        <include refid="selectContestVo"/>
+    </select>
+
+    <select id="selectByPage" resultMap="ContestResult">
+        select * from contest_information limit #{pageIndex},#{pageSize}
+    </select>
+</mapper>

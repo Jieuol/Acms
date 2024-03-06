@@ -29,6 +29,13 @@
         </dependency>
         <!-- mysql -->
 
+        <!--mybatis-pagehelper分页-->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+
         <!-- lombok,自动生成set、get等方法 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
