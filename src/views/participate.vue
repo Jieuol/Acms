@@ -1,27 +1,27 @@
 <!--  -->
 <template>
    <div class="main">
-    <el-form label-position="right" :model="query" class="form p_4" label-width="120">
+    <el-form label-position="right" :model="query" ref="query"  class="form p_4" label-width="120">
       <el-row>
         <el-col :xs="24" :sm="24" :lg="8">
           <el-form-item label="赛项名称">
-            <el-input v-model="query.contest_name"></el-input>
+            <el-input v-model="query.contestName"></el-input>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <el-form-item label="赛项类型">
-            <el-input v-model="query.contest_type"></el-input>
+            <el-input v-model="query.contestType"></el-input>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <el-form-item label="赛项日期">
-            <el-input v-model="query.contest_date"></el-input>
+            <el-input v-model="query.contestDate"></el-input>
           </el-form-item>
         </el-col>
 
         <el-col :xs="24" :sm="10" :lg="8">
           <el-form-item>
-            <el-button type="primary" @click="search()">查询</el-button>
+            <el-button type="primary" @click="getContestListByPage('query')">查询</el-button>
             <el-button @click="reset()" style="margin-right: 74px;">重置</el-button>
           </el-form-item>
         </el-col>
@@ -80,7 +80,7 @@
         @current-change="handleCurrentChange"
         :current-page="currentPage" 
         :page-sizes="[3,4,5]"
-        :page-size = "pageInfo.pageSize" 
+        :page-size = "query.pageSize" 
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalRecords"
       ></el-pagination>
@@ -158,19 +158,16 @@
 
 				// 查询
 				query: {
-					"size": 7,
-					"page": 1,
-					"contest_name": "",
-					"contest_type": "",
-					"contest_date": "",
-					"login_time": "",
-					"create_time": "",
-					"orderby": `create_time desc`
+          pageSize: 3,
+          pageIndex: 0,
+          contestName:"",
+          contestDate:"",
+          contestType:"",
 				},
 				// 数据
         contestInfo: [],
         multipleSelection: [],
-        
+        participantInfo:{},
         }
         
       },
@@ -180,6 +177,36 @@
       watch: {},
       //方法集合
       methods: {
+        reset(){
+          this.query.contestName="";
+          this.query.contestDate="";
+          this.query.contestType="";
+          this. getContestListByPage();
+        },
+        participate(row){
+          this.participantInfo.contestName=row.contestName;
+          this.participantInfo.contestDate=row.contestDate;
+          this.participantInfo.contestType=row.contestType;
+          this.participantInfo.contestInformationId=row.contestInformationId;
+          this.participantInfo.applicantId=sessionStorage.getItem("userId");
+          this.participantInfo.applicantRealname=sessionStorage.getItem("realname");
+          console.log("参与人信息");
+          console.log(this.participantInfo);
+          this.$axios.post("/insertParticipant",this.participantInfo).then(resp=>{
+          let result =resp.data;
+          if(result.code==='0'){
+              this.dialogFormVisible = false;
+							return this.$message({
+								message:result.msg,
+								type:'success'
+							});
+						}
+						this.$message.error(result.msg);
+
+          })
+          
+        },
+        //查看详细信息
         detail(row){
           console.log("row");
           console.log(row);
@@ -188,26 +215,29 @@
           console.log(this.form);
           this.centerDialogVisible=true;
         },
+        //分页器 第X页
         handleCurrentChange(newPage) {
         newPage=newPage-1
         console.log("newPage:")
         console.log(newPage)
-        this.pageInfo.pageIndex = newPage*this.pageInfo.pageSize
+        this.query.pageIndex = newPage*this.query.pageSize
         // this.pageInfo.pageIndex = newPage+this.pageInfo.pageSize
         console.log("after：")
         this.getContestListByPage()
-      },
+       },
+       //选择每页信息个数
       handleSizeChange(val) {
-        this.pageInfo.pageSize = val
+        this.query.pageSize = val
         this.getContestListByPage()
-      },
-      getContestListByPage(){
-        console.log("this.pageInfo");
-        console.log(this.pageInfo);
+        },
+
+      getContestListByPage(form){
+        console.log("this.query");
+        console.log(this.query);
         this.$axios({
           url: "/getContestListByPage",
           method: 'GET',
-          params: this.pageInfo
+          params: this.query
         }).then(resp=>{
 
 					let result = JSON.stringify(resp.data);
