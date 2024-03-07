@@ -1,19 +1,19 @@
-package edu.lgxy.lbj.asms.qo;
+package edu.lgxy.lbj.asms.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
-
 @Data
-public class PageQo implements Serializable {
-    public int pageIndex;
-    public int pageSize;
-    public String contestName;
+public class Participant {
+
+    String applicantId;
+    String  applicantRealname;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public String contestDate;
-    public String contestType;
+    String contestDate;
+    String contestInformationId;
+    String contestName;
+    String contestType;
 
 }

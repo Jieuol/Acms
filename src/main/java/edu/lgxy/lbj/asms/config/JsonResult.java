@@ -19,7 +19,7 @@ public class JsonResult<T> {
      * @param code
      * @param msg
      */
-    public JsonResult(String code, String msg) {
+    public JsonResult(String msg, String code) {
         this.code = code;
         this.msg = msg;
     }
