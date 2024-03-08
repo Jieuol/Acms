@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.lgxy.lbj.asms.mapper.ParticipantMapper">
+
+    <select id="selectByPageAndUserId" resultType="edu.lgxy.lbj.asms.entity.ContestParticipant">
+        select * from contest_participant
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date = #{contestDate}
+            </if>
+
+            <if test=" applicantId!= null and applicantId != ''">
+                and applicant_id = #{applicantId}
+            </if>
+        </trim>
+        limit #{pageIndex},#{pageSize}
+    </select>
+
+    <select id="selectParticipantInfo" parameterType="edu.lgxy.lbj.asms.entity.ContestParticipant"
+            resultType="edu.lgxy.lbj.asms.entity.ContestParticipant">
+        select * from contest_participant
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="applicantId != null and applicantId != ''">
+                and applicant_id = #{applicantId}
+            </if>
+            <if test=" contestInformationId!= null and contestInformationId != ''">
+                and contest_information_id = #{contestInformationId}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getParticipantByUserId" parameterType="edu.lgxy.lbj.asms.entity.ContestParticipant"
+            resultType="edu.lgxy.lbj.asms.entity.ContestParticipant">
+        select * from contest_participant
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="applicantId != null and applicantId != ''">
+                and applicant_id = #{applicantId}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insertContestParticipant" parameterType="edu.lgxy.lbj.asms.entity.Participant">
+        insert into contest_participant
+        (applicant_id,applicant_realname,contest_date,
+        contest_information_id,contest_name,contest_type)
+        values
+        (#{applicantId},#{applicantRealname},#{contestDate},
+        #{contestInformationId},#{contestName},#{contestType})
+    </insert>
+</mapper>

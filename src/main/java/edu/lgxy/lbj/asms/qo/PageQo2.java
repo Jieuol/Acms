@@ -8,13 +8,13 @@ import java.io.Serializable;
 
 @Data
 public class PageQo2 implements Serializable {
-    public int pageIndex;
-    public int pageSize;
-    public int applicantId;
-    public String contestName;
+    private int pageIndex;
+    private int pageSize;
+    private int applicantId;
+    private String contestName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public String contestDate;
-    public String contestType;
+    private String contestDate;
+    private String contestType;
 
 }

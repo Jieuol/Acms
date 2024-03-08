@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class ReceivePassword {
 
-    public String username;
-    public String password;
-    public String confirmPwd;
+    private String username;
+    private String password;
+    private String confirmPwd;
 
 }

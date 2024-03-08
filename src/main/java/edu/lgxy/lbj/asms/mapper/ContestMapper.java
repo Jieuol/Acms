@@ -12,11 +12,11 @@ public interface ContestMapper {
 
     List<ContestInformation> selectByPage(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize, @Param("contestName")String contestName, @Param("contestType")String contestType, @Param("contestDate") String contestDate);
 
-   List<ContestParticipant> selectParticipantInfo(Participant participant);
-
-    int insertContestParticipant(Participant participant);
-
-    List<Participant> getParticipantByUserId(@Param("applicantId")int applicantId);
-
-    List<Participant> selectByPageAndUserId(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize , @Param("contestName")String contestName, @Param("contestType")String contestType, @Param("contestDate") String contestDate, @Param("applicantId") int applicantId);
+//   List<ContestParticipant> selectParticipantInfo(Participant participant);
+//
+//    int insertContestParticipant(Participant participant);
+//
+//    List<Participant> getParticipantByUserId(@Param("applicantId")int applicantId);
+//
+//    List<Participant> selectByPageAndUserId(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize , @Param("contestName")String contestName, @Param("contestType")String contestType, @Param("contestDate") String contestDate, @Param("applicantId") int applicantId);
 }

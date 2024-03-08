@@ -30,21 +30,21 @@ public class ContestService {
         page.setTotalRecords(contestMapper.getContestList().size());
         return page;
     }
-
-    public List<ContestParticipant> selectParticipantInfo(Participant participant) {
-        return contestMapper.selectParticipantInfo(participant);
-    }
-
-    public int insertContestParticipant(Participant participant) {
-        return contestMapper.insertContestParticipant(participant);
-    }
-
-    public PageAndUserId getParticipantListByPageAndUserId(int pageIndex, int pageSize, String contestName, String contestType, String contestDate, int applicantId) {
-        PageAndUserId pageAndUserId =new PageAndUserId();
-        pageAndUserId.setList(contestMapper.selectByPageAndUserId(pageSize,pageIndex,contestName,contestType,contestDate,applicantId));
-        pageAndUserId.setPageIndex(pageIndex);
-        pageAndUserId.setPageSize(pageSize);
-        pageAndUserId.setTotalRecords(contestMapper.getParticipantByUserId(applicantId).size());
-        return pageAndUserId;
-    }
+//
+//    public List<ContestParticipant> selectParticipantInfo(Participant participant) {
+//        return contestMapper.selectParticipantInfo(participant);
+//    }
+//
+//    public int insertContestParticipant(Participant participant) {
+//        return contestMapper.insertContestParticipant(participant);
+//    }
+//
+//    public PageAndUserId getParticipantListByPageAndUserId(int pageIndex, int pageSize, String contestName, String contestType, String contestDate, int applicantId) {
+//        PageAndUserId pageAndUserId =new PageAndUserId();
+//        pageAndUserId.setList(contestMapper.selectByPageAndUserId(pageSize,pageIndex,contestName,contestType,contestDate,applicantId));
+//        pageAndUserId.setPageIndex(pageIndex);
+//        pageAndUserId.setPageSize(pageSize);
+//        pageAndUserId.setTotalRecords(contestMapper.getParticipantByUserId(applicantId).size());
+//        return pageAndUserId;
+//    }
 }
