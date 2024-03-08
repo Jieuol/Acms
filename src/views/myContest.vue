@@ -39,24 +39,10 @@
      </el-table-column>
      <el-table-column prop="examineState" label="审核状态" min-width="200">
      </el-table-column>
-     <el-table-column prop="contestDate" label="赛项日期" min-width="200">
+     <el-table-column sortable prop="contestDate" label="赛项日期" min-width="200">
      </el-table-column>
-     <!-- <el-table-column prop="contestIntroduction" label="赛项介绍" min-width="200">
-     </el-table-column>
-     <el-table-column prop="contestRules" label="赛项规则" min-width="200">
-     </el-table-column>
-     <el-table-column prop="participationConditions" label="参与条件" min-width="200">
-     </el-table-column>
-           <el-table-column sortable prop="createTime" label="创建时间" min-width="200">
-               <!-- <template slot-scope="scope">
-                 {{ $toTime(scope.row["createTime"],"yyyy-MM-dd hh:mm:ss") }}
-               </template> -->
-           <!-- </el-table-column> -->
 
      <el-table-column sortable prop="updateTime" label="更新时间" min-width="200">
-               <!-- <template slot-scope="scope">
-                 {{ $toTime(scope.row["updateTime"],"yyyy-MM-dd hh:mm:ss") }}
-               </template> -->
      </el-table-column> -->
      <el-table-column fixed="right" label="操作" min-width="120">
        <template slot-scope="scope">
