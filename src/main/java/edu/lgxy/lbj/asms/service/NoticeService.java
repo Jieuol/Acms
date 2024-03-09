@@ -1,6 +1,7 @@
 package edu.lgxy.lbj.asms.service;
 
 import edu.lgxy.lbj.asms.config.Page;
+import edu.lgxy.lbj.asms.entity.Notice;
 import edu.lgxy.lbj.asms.mapper.NoticeMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,19 @@ public class NoticeService {
         page.setPageSize(pageSize);
         log.info("Mysql.pageIndex-->"+pageIndex);
         log.info("Mysql.pageSize-->"+pageSize);
-        page.setTotalRecords(noticeMapper.getNoticeList(userGroup).size());
+        page.setTotalRecords(noticeMapper.selectByPageNoLimit(noticeName,updateTime,userGroup).size());
         return page;
+    }
+
+    public int withDrawNoticeByNoticeId(int noticeId) {
+        return noticeMapper.withDrawByNoticeId(noticeId);
+    }
+
+    public int publishNoticeNoticeByNoticeId(int noticeId) {
+        return noticeMapper.publishByNoticeId(noticeId);
+    }
+
+    public int addNotice(Notice notice) {
+        return  noticeMapper.insertNotice(notice);
     }
 }

@@ -24,6 +24,24 @@
         limit #{pageIndex},#{pageSize}
     </select>
 
+    <select id="selectByPageAndUserIdNoList" resultType="edu.lgxy.lbj.asms.entity.ContestParticipant">
+        select * from contest_participant
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date = #{contestDate}
+            </if>
+
+            <if test=" applicantId!= null and applicantId != ''">
+                and applicant_id = #{applicantId}
+            </if>
+        </trim>
+    </select>
     <select id="selectParticipantInfo" parameterType="edu.lgxy.lbj.asms.entity.ContestParticipant"
             resultType="edu.lgxy.lbj.asms.entity.ContestParticipant">
         select * from contest_participant

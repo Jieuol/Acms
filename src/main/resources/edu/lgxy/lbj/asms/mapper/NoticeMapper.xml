@@ -21,6 +21,22 @@
         </trim>
         limit #{pageIndex},#{pageSize}
     </select>
+    <select id="selectByPageNoLimit" resultType="edu.lgxy.lbj.asms.entity.Notice">
+        select * from notice
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+
+            <if test="userGroup != null and userGroup == '老师' or userGroup == '学生'">
+                and user_group = #{userGroup} and state = 1
+            </if>
+            <if test=" noticeName!= null and noticeName != ''">
+                and notice_name = #{noticeName}
+            </if>
+            <if test=" updateTime!= null and updateTime != ''">
+                and update_time like
+                concat('%',#{updateTime},'%')
+            </if>
+        </trim>
+    </select>
 
 
     <select id="getNoticeList" resultType="edu.lgxy.lbj.asms.entity.Notice">
@@ -31,4 +47,30 @@
             </if>
         </trim></select>
 
+
+    <update id="withDrawByNoticeId" >
+        update notice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="noticeId != null ">state = 0,</if>
+        </trim>
+        where notice_id = #{noticeId}
+    </update>
+
+    <update id="publishByNoticeId" >
+        update notice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="noticeId != null ">state = 1,</if>
+        </trim>
+        where notice_id = #{noticeId}
+    </update>
+
+    <insert id="insertNotice" parameterType="edu.lgxy.lbj.asms.entity.Notice">
+            insert into notice
+            (notice_name,notice_information,contest_date,
+             contest_information_id,contest_name,contest_type)
+            values
+                (#{applicantId},#{applicantRealname},#{contestDate},
+                 #{contestInformationId},#{contestName},#{contestType})
+
+    </insert>
 </mapper>

@@ -27,9 +27,11 @@ public class ContestService {
         page.setPageSize(pageSize);
         log.info("Mysql.pageIndex-->"+pageIndex);
         log.info("Mysql.pageSize-->"+pageSize);
-        page.setTotalRecords(contestMapper.getContestList().size());
+        page.setTotalRecords(contestMapper.selectByPageNoList(contestName,contestType,contestDate).size());
         return page;
     }
+
+
 //
 //    public List<ContestParticipant> selectParticipantInfo(Participant participant) {
 //        return contestMapper.selectParticipantInfo(participant);

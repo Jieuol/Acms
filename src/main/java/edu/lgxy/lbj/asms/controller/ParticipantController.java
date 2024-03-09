@@ -32,7 +32,8 @@ public class ParticipantController {
         String contestDate=pageQo.getContestDate();
         String contestName=pageQo.getContestName();
         String contestType= pageQo.getContestType();
-        PageAndUserId pageAndUserId = participantService.getParticipantListByPageAndUserId(pageSize,pageIndex,contestName,contestType,contestDate,applicantId);
+        PageAndUserId pageAndUserId = participantService.getParticipantListByPageAndUserId
+                (pageSize,pageIndex,contestName,contestType,contestDate,applicantId);
         Map<String,Object> map = new HashMap<>();
         String code="";
         String msg ="服务器正常";

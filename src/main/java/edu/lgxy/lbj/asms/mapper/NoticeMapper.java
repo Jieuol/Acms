@@ -10,5 +10,13 @@ public interface NoticeMapper {
                       @Param("noticeName") String noticeName,
                       @Param("updateTime")String updateTime,@Param("userGroup") String userGroup);
 
+    List selectByPageNoLimit(@Param("noticeName") String noticeName,@Param("updateTime")String updateTime,
+                             @Param("userGroup") String userGroup);
     List<Notice> getNoticeList(@Param("userGroup") String userGroup);
+
+    int withDrawByNoticeId(@Param("noticeId") int noticeId);
+
+    int publishByNoticeId(int noticeId);
+
+    int insertNotice(Notice notice);
 }

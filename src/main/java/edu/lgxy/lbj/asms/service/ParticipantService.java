@@ -27,7 +27,7 @@ public class ParticipantService {
         pageAndUserId.setList(participantMapper.selectByPageAndUserId(pageSize,pageIndex,contestName,contestType,contestDate,applicantId));
         pageAndUserId.setPageIndex(pageIndex);
         pageAndUserId.setPageSize(pageSize);
-        pageAndUserId.setTotalRecords(participantMapper.getParticipantByUserId(applicantId).size());
+        pageAndUserId.setTotalRecords(participantMapper.selectByPageAndUserIdNoList(contestName,contestType,contestDate,applicantId).size());
         return pageAndUserId;
     }
 }
