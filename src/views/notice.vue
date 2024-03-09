@@ -23,7 +23,7 @@
        </el-col>
      </el-row>
    </el-form>
-   <el-button type="success" v-if="query.userGroup=='管理员'" @click="add()" style="margin-left: 900px;">添加新公告</el-button>
+   <el-button type="success" v-if="query.userGroup=='管理员'" @click="AddcenterDialogVisible=true" style="margin-left: 900px;">添加新公告</el-button>
    <el-table  ref="multipleTable"
    :data="noticeInfo"
    tooltip-effect="dark"
@@ -32,7 +32,7 @@
      </el-table-column>
      <el-table-column prop="noticeName" label="公告名称" min-width="200">
      </el-table-column>
-     <el-table-column v-if="query.userGroup=='管理员'" prop="userGroup" label="通知对象" min-width="200">
+     <el-table-column v-if="query.userGroup=='管理员'" prop="userGroup" label="公告对象" min-width="200">
      </el-table-column>
      <el-table-column prop="updateTime" sortable label="发布日期" min-width="200">
      </el-table-column>
@@ -45,7 +45,7 @@
          </el-button>
          <el-button type="warning" v-if="query.userGroup=='管理员' && scope.row.state==1 " 
          class="el-button el-button--small is-plain el-button--default" style="margin: 5px !important;" 
-         size="small" @click="withdraw(scope.row)">
+         size="small" @click="withDrawByNoticeId(scope.row)">
            <span>撤回</span>
          </el-button>
 
@@ -62,7 +62,7 @@
          </el-button>
          <el-button type="success" v-if="query.userGroup=='管理员'  && scope.row.state==0" 
          class="el-button el-button--small is-plain el-button--default" style="margin: 5px !important;" 
-         size="small" @click="publish(scope.row)">
+         size="small" @click="publishByNoticeId(scope.row)">
            <span>发布</span>
          </el-button>
        </template>
@@ -83,28 +83,61 @@
    </div>
    <!-- /分页器 -->
    
+    <!-- 创建遮罩 -->
+  <el-dialog title="创建公告" :visible.sync="AddcenterDialogVisible" :close-on-click-modal ="false" width="1000px" 
+  :before-close="handleCloseAdd">
+
+   <div class=" container" style="margin-top:25px;margin-left:30px;">
+      <el-form :model="addForm" ref="addForm">
+        <el-form-item label="公告名称" label-width="auto">
+          <el-input v-model="addForm.noticeName" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="公告对象" label-width="auto">
+          <el-select v-model="addForm.userGroup" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        </el-form-item>
+
+        <el-form-item label="公告内容" label-width="auto">
+          <el-input type="textarea":rows="2" v-model="addForm.noticeInformation" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div slot="footer" class="dialog-footer">
+    <el-button @click="add('addForm')">确认添加</el-button>
+    <el-button @click="resetAddForm()">取 消</el-button>
+    </div>
+  </el-dialog>
+
     <!-- 编辑遮罩 -->
-  <el-dialog title="编辑通知" :visible.sync="centerDialogVisible" :close-on-click-modal ="false" width="1000px">
+  <el-dialog title="编辑公告" :visible.sync="centerDialogVisible" :close-on-click-modal ="false" width="1000px"
+  :before-close="handleCloseEdit">
 
   <div class=" container" style="margin-top:25px;margin-left:30px;">
  <el-form :model="editForm">
-    <el-form-item label="通知名称" :label-width="formLabelWidth">
+    <el-form-item label="公告名称" label-width="auto">
       <el-input v-model="editForm.noticeName" autocomplete="off"></el-input>
     </el-form-item>
 
-    <el-form-item label="通知内容" :label-width="formLabelWidth">
+    <el-form-item label="公告内容" label-width="auto">
       <el-input type="textarea":rows="2" v-model="editForm.noticeInformation" autocomplete="off"></el-input>
     </el-form-item>
   </el-form>
  </div>
  <div slot="footer" class="dialog-footer">
   <el-button @click="editNow('editForm')">确认修改</el-button>
-   <el-button @click="centerDialogVisible = false">取 消</el-button>
+   <el-button @click="resetForm()">取 消</el-button>
  </div>
 </el-dialog>
  
     <!-- 详情遮罩 -->
-  <el-dialog title="通知详情" :visible.sync="deatilcenterDialogVisible" :close-on-click-modal ="false" width="1000px">
+  <el-dialog title="公告详情" :visible.sync="deatilcenterDialogVisible" :close-on-click-modal ="false" width="1000px">
   <div class=" container" style="margin-top:25px;margin-left:30px;">
 
     <el-row :gutter="10">
@@ -134,12 +167,21 @@
      data() {
        //这里存放数据
        return {
-        
+        options: [{
+          value: '学生',
+          label: '学生'
+        }, {
+          value: '老师',
+          label: '老师'
+        },
+        ],
          editForm:{
          },
          detailForm:{
-
          },
+         addForm:{
+         },
+         AddcenterDialogVisible:false,
          centerDialogVisible:false,
          deatilcenterDialogVisible:false,
          currentPage:1,
@@ -174,41 +216,88 @@
        }
        
      },
-     //监听属性 类似于data概念
-     computed: {},
-     //监控data中的数据变化
-     watch: {},
-     //方法集合
      methods: {
+      resetForm(){
+        this.centerDialogVisible=false;
+        this.getNoticeByUserGroup();
+      },
+      handleCloseEdit(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            this.editForm={};
+            done();
+          })
+          .catch(_ => {
+           
+          });
+      },
+      handleCloseAdd(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            this.addForm={};
+            done();
+          })
+          .catch(_ => {
+           
+          });
+      },
+      resetAddForm(){
+        this.addForm={};
+        this.AddcenterDialogVisible=false;
+      },
        reset(){
          this.query.noticeName="";
          this.query.updateTime="";
          this. getNoticeByUserGroup();
        },
-       participate(row){
-         this.participantInfo.contestName=row.contestName;
-         this.participantInfo.contestDate=row.contestDate;
-         this.participantInfo.contestType=row.contestType;
-         this.participantInfo.noticeInformationId=row.noticeInformationId;
-         this.participantInfo.applicantId=sessionStorage.getItem("userId");
-         this.participantInfo.applicantRealname=sessionStorage.getItem("realname");
-         console.log("参与人信息");
-         console.log(this.participantInfo);
-         this.$axios.post("/insertParticipant",this.participantInfo).then(resp=>{
-         let result =resp.data;
-         if(result.code==='0'){
-             this.dialogFormVisible = false;
-             return this.$message({
-               message:result.msg,
-               type:'success'
-             });
-           }
-           this.$message.error(result.msg);
-
-         })
-         
+       add(form){
+        this.axios.post("/addNotice",this.addForm).then(resp=>{
+          let result = resp.data;
+          if(result.code==0){
+            this.AddcenterDialogVisible=false;
+            return this.$message({
+              message:result.msg,
+              type:'success'
+            });
+          }
+          this.$message.error(result.msg);
+        })
        },
-        //通知详情
+
+       //撤回公告
+       withDrawByNoticeId(row){
+        console.log("noticeId");
+        console.log(row.noticeId);
+          this.$axios.get("/withDrawNotice?noticeId="+row.noticeId).then(resp=>{
+            this.getNoticeByUserGroup();
+            let result =resp.data;
+          if(result.code==='0'){
+							return this.$message({
+								message:result.msg,
+								type:'success'
+							});
+						}
+						this.$message.error(result.msg);
+          })
+       },
+
+        //发布公告
+        publishByNoticeId(row){
+        console.log("noticeId");
+        console.log(row.noticeId);
+          this.$axios.get("/publishNotice?noticeId="+row.noticeId).then(resp=>{
+            this.getNoticeByUserGroup();
+            let result =resp.data;
+          if(result.code==='0'){
+							return this.$message({
+								message:result.msg,
+								type:'success'
+							});
+						}
+						this.$message.error(result.msg);
+          })
+       },
+        //公告详情
       detail(row){
          console.log("row");
          console.log(row);
@@ -217,7 +306,7 @@
          console.log(this.detailForm);
          this.deatilcenterDialogVisible=true;
        },
-       //修改通知
+       //修改公告
        edit(row){
          console.log("row");
          console.log(row);
