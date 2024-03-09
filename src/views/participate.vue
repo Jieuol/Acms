@@ -37,7 +37,7 @@
 			</el-table-column>
 			<el-table-column prop="contestType" label="赛项类型" min-width="200">
 			</el-table-column>
-			<el-table-column prop="participantsNumber" label="参与人数" min-width="200">
+			<el-table-column prop="participantsNumber" label="可报名人数剩余" min-width="200">
 			</el-table-column>
 			<el-table-column sortable prop="contestDate" label="赛项日期" min-width="200">
                 <!-- <template slot-scope="scope">
@@ -55,7 +55,7 @@
           <el-button class="el-button el-button--small is-plain el-button--default" style="margin: 5px !important;" size="small" @click="detail(scope.row)">
 						<span>详情</span>
 					</el-button>
-					<el-button class="el-button el-button--small is-plain el-button--default" style="margin: 5px !important;" size="small" @click="participate(scope.row)">
+					<el-button class="el-button el-button--small is-plain el-button--default" v-if="scope.row.participantsNumber>=1" style="margin: 5px !important;" size="small" @click="participate(scope.row)">
 						<span>报名</span>
 					</el-button>
 				</template>
@@ -185,13 +185,14 @@
           let result =resp.data;
           if(result.code==='0'){
               this.dialogFormVisible = false;
+              this.getContestListByPage()
 							return this.$message({
 								message:result.msg,
 								type:'success'
 							});
 						}
 						this.$message.error(result.msg);
-
+            this.getContestListByPage()
           })
           
         },

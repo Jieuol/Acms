@@ -46,11 +46,13 @@
      </el-table-column> -->
      <el-table-column fixed="right" label="操作" min-width="120">
        <template slot-scope="scope">
-         <el-button class="el-button el-button--small is-plain el-button--default" style="margin: 5px !important;" size="small" @click="detail(scope.row)">
-           <span>详情</span>
+         <el-button class="el-button el-button--small is-plain el-button--default" 
+         style="margin: 5px !important;" size="small" @click="detail(scope.row)">
+           <span>报名详情</span>
          </el-button>
-         <el-button class="el-button el-button--small is-plain el-button--default" style="margin: 5px !important;" size="small" @click="participate(scope.row)">
-           <span>报名</span>
+         <el-button v-if="scope.row.examineState=='未审核'" class="el-button el-button--small is-plain el-button--default" 
+         style="margin: 5px !important;" type="danger" size="small" @click="cancleparticipate(scope.row)">
+           <span>取消报名</span>
          </el-button>
        </template>
      </el-table-column>
@@ -70,7 +72,19 @@
    </div>
    <!-- /分页器 -->
    
-    <!-- 遮罩 -->
+   <!-- 遮罩1 -->
+      <el-dialog
+      title="提示"
+      :visible.sync="deletecenterDialogVisible"
+      width="30%"
+      :before-close="handleCloseDelete">
+      <span>确认是否取消报名</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="deletecenterDialogVisible = false">返 回</el-button>
+        <el-button type="primary" @click="deleteparticipate()">取 消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 遮罩2 -->
  <el-dialog title="详细信息" :visible.sync="centerDialogVisible" width="1000px">
  <div class=" container" style="margin-top:25px;margin-left:30px;">
    <el-row :gutter="10">
@@ -111,6 +125,7 @@
        return {
          form:{
          },
+         deletecenterDialogVisible:false,
          centerDialogVisible:false,
          currentPage:1,
          //分页
@@ -151,12 +166,49 @@
      watch: {},
      //方法集合
      methods: {
+      deleteparticipate(){
+        console.log(this.participantInfo);
+        this.$axios.post("/deleteParticipant",this.participantInfo).then(resp=>{
+         let result =resp.data;
+         if(result.code==='0'){
+            this.deletecenterDialogVisible = false;
+            this.getParticipantListByPageAndUserId()
+             return this.$message({
+               message:result.msg,
+               type:'success'
+             });
+           }
+           this.$message.error(result.msg);
+           this.deletecenterDialogVisible = false;
+           this.getParticipantListByPageAndUserId()
+         })
+      },
+      cancleparticipate(row){
+        this.deletecenterDialogVisible = true;
+        this.participantInfo.contestName=row.contestName;
+        this.participantInfo.contestDate=row.contestDate;
+        this.participantInfo.contestType=row.contestType;
+        this.participantInfo.contestInformationId=row.contestInformationId;
+        this.participantInfo.applicantId=sessionStorage.getItem("userId");
+        this.participantInfo.applicantRealname=sessionStorage.getItem("realname");
+
+      },
       reset(){
           this.query.contestName="";
           this.query.contestDate="";
           this.query.contestType="";
           this. getParticipantListByPageAndUserId();
         },
+        handleCloseDelete(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            
+            done();
+          })
+          .catch(_ => {
+
+          });
+      },
        participate(row){
          this.participantInfo.contestName=row.contestName;
          this.participantInfo.contestDate=row.contestDate;
