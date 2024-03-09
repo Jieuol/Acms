@@ -30,4 +30,13 @@ public class ParticipantService {
         pageAndUserId.setTotalRecords(participantMapper.selectByPageAndUserIdNoList(contestName,contestType,contestDate,applicantId).size());
         return pageAndUserId;
     }
+
+    public int updateParticipantsNumbers(String contestInformationId) {
+        return participantMapper.updateParticipantsNumber(contestInformationId);
+    }
+
+    public int deleteContestParticipant(String contestInformationId) {
+        participantMapper.incrParticipantsNumber(contestInformationId);
+        return participantMapper.deleteContestParticipant(contestInformationId);
+    }
 }

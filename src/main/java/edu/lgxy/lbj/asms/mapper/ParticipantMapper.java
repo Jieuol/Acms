@@ -24,4 +24,9 @@ public interface ParticipantMapper {
                                             @Param("contestType")String contestType,
                                             @Param("contestDate") String contestDate,
                                             @Param("applicantId") int applicantId);
+
+    int updateParticipantsNumber(@Param("contestInformationId") String contestInformationId);
+    int incrParticipantsNumber(@Param("contestInformationId") String contestInformationId);
+
+    int deleteContestParticipant(@Param("contestInformationId") String contestInformationId);
 }

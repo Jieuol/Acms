@@ -64,7 +64,10 @@
             </if>
         </trim>
     </select>
-
+    <select id="getParticipantsNumber" parameterType="edu.lgxy.lbj.asms.entity.ContestParticipant"
+            resultType="edu.lgxy.lbj.asms.entity.ContestParticipant">
+        select * from contest_participant where contest_informaiton_id = #{contestInformationId}
+    </select>
     <insert id="insertContestParticipant" parameterType="edu.lgxy.lbj.asms.entity.Participant">
         insert into contest_participant
         (applicant_id,applicant_realname,contest_date,
@@ -73,4 +76,26 @@
         (#{applicantId},#{applicantRealname},#{contestDate},
         #{contestInformationId},#{contestName},#{contestType})
     </insert>
+    <update id="updateParticipantsNumber">
+        update contest_information
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contestInformationId != null ">   participants_number = participants_number -1,</if>
+        </trim>
+       where contest_information_id = #{contestInformationId}
+    </update>
+    <update id="incrParticipantsNumber">
+        update contest_information
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contestInformationId != null ">   participants_number = participants_number +1,</if>
+        </trim>
+        where contest_information_id = #{contestInformationId}
+    </update>
+    <delete id="deleteContestParticipant">
+        delete from contest_participant
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestInformationId != null and contestInformationId != ''">
+                and contest_information_id = #{contestInformationId}
+            </if>
+        </trim>
+    </delete>
 </mapper>

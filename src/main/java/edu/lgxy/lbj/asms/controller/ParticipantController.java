@@ -65,6 +65,7 @@ public class ParticipantController {
             return new JsonResult<>(msg,code);
         }
         int result = participantService.insertContestParticipant(participant);
+        int update = participantService.updateParticipantsNumbers(participant.getContestInformationId());
         if(result<=0){
             msg="报名失败";
             code="202";
@@ -74,4 +75,24 @@ public class ParticipantController {
         code="0";
         return new JsonResult<>(msg,code);
     }
+    @RequestMapping("/deleteParticipant")
+    JsonResult<Map> deleteParticipant(@RequestBody Participant participant){
+        Map<String,Object> map = new HashMap<>();
+        String msg="";
+        String code="";
+//        String contestInformationId = participant.getContestInformationId();
+//        String applicantId = participant.getApplicantId();
+        List<ContestParticipant> contestInformations = participantService.selectParticipantInfo(participant);
+        log.info("Mysql查询的contestInformations:"+contestInformations.size());
+        int result = participantService.deleteContestParticipant(participant.getContestInformationId());
+        if(result<=0){
+            msg="取消报名失败";
+            code="202";
+            return new JsonResult<>(map,msg,code);
+        }
+        msg="取消报名成功";
+        code="0";
+        return new JsonResult<>(msg,code);
+    }
+
 }
