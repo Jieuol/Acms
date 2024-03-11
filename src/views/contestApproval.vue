@@ -10,18 +10,31 @@
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <el-form-item label="赛项类型">
-            <el-input v-model="query.contestType"></el-input>
+            <el-select v-model="query.contestType" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <!-- <el-input v-model="query.contestType"></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <el-form-item label="赛项日期">
-            <el-input v-model="query.contestDate"></el-input>
-          </el-form-item>
+              <el-date-picker
+              v-model="query.contestDate"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
         </el-col>
 
         <el-col :xs="24" :sm="10" :lg="8">
           <el-form-item>
-            <el-button type="primary" @click="getParticipantListByPageAndUserId('query')">查询</el-button>
+            <el-button type="primary" @click="queryInfo('query')">查询</el-button>
             <el-button @click="reset()" style="margin-right: 74px;">重置</el-button>
           </el-form-item>
         </el-col>
@@ -30,7 +43,9 @@
    <el-table  ref="multipleTable"
    :data="contestInfo"
    tooltip-effect="dark"
-   style="width: 100%">
+   :row-class-name="tableRowClassName"
+   style="width: 100%"
+   max-height="450">
      <el-table-column fixed tooltip-effect="dark" width="55">
      </el-table-column>
      <el-table-column prop="contestName" label="赛项名称" min-width="200">
@@ -189,7 +204,18 @@
        
        // 字段ID
        field: "",
-
+       options: [{
+          value: '院级',
+          label: '院级'
+        }, {
+          value: '校级',
+          label: '校级'
+        },
+        {
+          value: '国家级',
+          label: '国家级'
+        },
+        ],
        // 查询
        query: {
         pageSize: 3,
@@ -323,7 +349,7 @@
           this.query.contestName="";
           this.query.contestDate="";
           this.query.contestType="";
-          this. getDeclarationListByPage();
+          this.getDeclarationListByPage();
         },
         handleCloseDelete(done) {
         this.$confirm('确认关闭？')
@@ -382,7 +408,6 @@
       this.query.applicantId=sessionStorage.getItem("userId")
        console.log("this.query");
        console.log(this.query);
-
        this.$axios({
          url: "/getDeclarationListByPageAndUserId",
          method: 'GET',
@@ -398,6 +423,11 @@
          })
      
        },
+       queryInfo(){
+        this.query.pageIndex=0;
+        this.query.pageSize=3;
+        this.getDeclarationListByPage();
+       },
        toggleSelection(rows) {
          if (rows) {
            rows.forEach(row => {
@@ -407,6 +437,7 @@
            this.$refs.multipleTable.clearSelection();
          }
      },
+
    },
      //生命周期 - 创建完成（可以访问当前this实例）
      created() {},
@@ -533,4 +564,11 @@
    border-color: #409EFF;
    margin-left: 15px;
  }
+ .el-table .warning-row {
+    background: oldlace;
+  }
+
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
  </style>

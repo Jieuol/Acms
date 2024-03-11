@@ -30,7 +30,8 @@
 		<el-table  ref="multipleTable"
     :data="contestInfo"
     tooltip-effect="dark"
-    style="width: 100%">
+    style="width: 100%"
+    max-height="450">
 			<el-table-column fixed tooltip-effect="dark" width="55">
 			</el-table-column>
 			<el-table-column prop="contestName" label="赛项名称" min-width="200">

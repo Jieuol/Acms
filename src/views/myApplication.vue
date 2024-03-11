@@ -10,18 +10,34 @@
           </el-col>
           <el-col :xs="24" :sm="24" :lg="8">
             <el-form-item label="赛项类型">
-              <el-input v-model="query.contestType"></el-input>
+              <el-select v-model="query.contestType" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :lg="8">
             <el-form-item label="赛项日期">
-              <el-input v-model="query.contestDate"></el-input>
+              <el-date-picker
+              v-model="query.contestDate"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+              </el-date-picker>
             </el-form-item>
+            <!-- <el-form-item label="赛项日期">
+              
+              <el-input v-model="query.contestDate"></el-input>
+            </el-form-item> -->
           </el-col>
   
           <el-col :xs="24" :sm="10" :lg="8">
             <el-form-item>
-              <el-button type="primary" @click="getParticipantListByPageAndUserId('query')">查询</el-button>
+              <el-button type="primary" @click="queryInfo('query')">查询</el-button>
               <el-button @click="reset()" style="margin-right: 74px;">重置</el-button>
             </el-form-item>
           </el-col>
@@ -155,7 +171,18 @@
          
          // 字段ID
          field: "",
-  
+         options: [{
+          value: '院级',
+          label: '院级'
+        }, {
+          value: '校级',
+          label: '校级'
+        },
+        {
+          value: '国家级',
+          label: '国家级'
+        },
+        ],
          // 查询
          query: {
           pageSize: 3,
@@ -237,12 +264,12 @@
          this.query.pageIndex = newPage*this.query.pageSize
          // this.pageInfo.pageIndex = newPage+this.pageInfo.pageSize
          console.log("after：")
-         this.getParticipantListByPageAndUserId()
+         this.getDeclarationListByPageAndUserId()
         },
         //选择每页信息个数
        handleSizeChange(val) {
          this.query.pageSize = val
-         this.getParticipantListByPageAndUserId()
+         this.getDeclarationListByPageAndUserId()
          },
         getDeclarationListByPageAndUserId(){
         this.query.applicantId=sessionStorage.getItem("userId")
@@ -273,6 +300,11 @@
              this.$refs.multipleTable.clearSelection();
            }
        },
+       queryInfo(){
+        this.query.pageIndex=0;
+        this.query.pageSize=3;
+        this.getDeclarationListByPageAndUserId();
+       }
      },
        //生命周期 - 创建完成（可以访问当前this实例）
        created() {},
