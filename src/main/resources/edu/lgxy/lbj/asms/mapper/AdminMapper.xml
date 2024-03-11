@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.lgxy.lbj.asms.mapper.AdminMapper">
+
+
+    <update id="updateDeclaration" parameterType="edu.lgxy.lbj.asms.entity.ContestDeclaration">
+        update contest_declaration
+        <trim prefix="set"  suffixOverrides=",">
+            <if test="examineReply != null and examineReply != ''">
+                examine_reply = #{examineReply},
+            </if>
+            <if test="examineState != null and examineState != ''">
+                examine_state = #{examineState},
+            </if>
+        </trim>
+        where contest_declaration_id = #{contestDeclarationId}
+    </update>
+
+
+</mapper>
+

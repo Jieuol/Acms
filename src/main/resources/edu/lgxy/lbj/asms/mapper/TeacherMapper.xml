@@ -6,13 +6,63 @@
 
     <insert id="insertContestDeclaration" parameterType="edu.lgxy.lbj.asms.entity.ContestDeclaration">
     insert into contest_declaration
-    (declarant,contest_name,contest_type,contest_date,participants_number,contest_introduction,
+    (applicant_id,contest_name,contest_type,contest_date,participants_number,contest_introduction,
      contest_rules
      )
     values
-    (#{declarant},#{contestName},#{contestType},#{contestDate},#{participantsNumber},#{contestIntroduction},
+    (#{applicantId},#{contestName},#{contestType},#{contestDate},#{participantsNumber},#{contestIntroduction},
      #{contestRules} )
     </insert>
+
+    <select id="selectByPageAndUserId" resultType="edu.lgxy.lbj.asms.entity.ContestDeclaration">
+        select * from contest_declaration
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date = #{contestDate}
+            </if>
+
+            <if test=" applicantId!= null and applicantId != ''">
+                and applicant_id = #{applicantId}
+            </if>
+        </trim>
+        limit #{pageIndex},#{pageSize}
+    </select>
+
+    <select id="selectByPageAndUserIdNoList" resultType="edu.lgxy.lbj.asms.entity.ContestDeclaration">
+        select * from contest_declaration
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date = #{contestDate}
+            </if>
+
+            <if test=" applicantId!= null and applicantId != ''">
+                and applicant_id = #{applicantId}
+            </if>
+        </trim>
+    </select>
+
+    <delete id="deleteContestParticipant">
+        delete from contest_declaration
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestDeclarationId != null and contestDeclarationId != ''">
+                and contest_declaration_id = #{contestDeclarationId}
+            </if>
+        </trim>
+    </delete>
+
+
 
 <!--    <select id="selectBaseCount" resultType="Integer">-->
 

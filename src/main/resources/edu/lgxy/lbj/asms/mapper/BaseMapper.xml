@@ -17,7 +17,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <update id="updateBaseSql">
-        ${sql}
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="state != null ">state = #{state},</if>
+        </trim>
+        where username = #{username}
     </update>
 
     <delete id="deleteBaseSql">

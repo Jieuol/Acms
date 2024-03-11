@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class ContestDeclaration {
 
   private long contestDeclarationId;
-  private long declarant;
+  private long applicantId;
   private String contestName;
   private String contestType;
   private String participantsNumber;

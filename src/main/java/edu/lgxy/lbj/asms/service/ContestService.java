@@ -31,6 +31,14 @@ public class ContestService {
         return page;
     }
 
+    public int deleteContestInfo(ContestInformation contestInformation) {
+        return contestMapper.deleteContestInfo(contestInformation);
+    }
+
+    public int insertContestInfo(ContestInformation contestInformation) {
+        return contestMapper.insertContestInfo(contestInformation);
+    }
+
 
 //
 //    public List<ContestParticipant> selectParticipantInfo(Participant participant) {
