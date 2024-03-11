@@ -24,7 +24,8 @@
                 and contest_type = #{contestType}
             </if>
             <if test=" contestDate!= null and contestDate != ''">
-                and contest_date = #{contestDate}
+                and contest_date like
+                concat('%',#{contestDate},'%')
             </if>
 
             <if test=" applicantId!= null and applicantId != ''">
@@ -44,7 +45,8 @@
                 and contest_type = #{contestType}
             </if>
             <if test=" contestDate!= null and contestDate != ''">
-                and contest_date = #{contestDate}
+                and contest_date like
+                concat('%',#{contestDate},'%')
             </if>
 
             <if test=" applicantId!= null and applicantId != ''">
