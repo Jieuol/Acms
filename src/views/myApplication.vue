@@ -51,8 +51,8 @@
              <span>报名详情</span>
            </el-button>
            <el-button v-if="scope.row.examineState=='未审核'" class="el-button el-button--small is-plain el-button--default" 
-           style="margin: 5px !important;" type="danger" size="small" @click="cancleparticipate(scope.row)">
-             <span>取消报名</span>
+           style="margin: 5px !important;" type="danger" size="small" @click="canclecontestDeclaration(scope.row)">
+             <span>取消申报</span>
            </el-button>
          </template>
        </el-table-column>
@@ -78,7 +78,7 @@
         :visible.sync="deletecenterDialogVisible"
         width="30%"
         :before-close="handleCloseDelete">
-        <span>确认是否取消报名</span>
+        <span>确认是否取消申报</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="deletecenterDialogVisible = false">返 回</el-button>
           <el-button type="primary" @click="deleteparticipate()">确 认</el-button>
@@ -95,7 +95,19 @@
      <el-row :gutter="10">
        <el-col :span="4"><div class="text">竞赛类别: {{ form.contestType }}</div></el-col>
      </el-row>
-  
+     
+     <el-row :gutter="20">
+       <el-col :span="24"><div class="introduce">竞赛日期: {{ form.contestDate }}</div></el-col>
+     </el-row>
+
+     <el-row :gutter="20">
+       <el-col :span="24"><div class="introduce">竞赛介绍: {{ form.contestIntroduction }}</div></el-col>
+     </el-row>
+
+     <el-row :gutter="20">
+       <el-col :span="24"><div class="introduce">参与人数: {{ form.participantsNumber }}</div></el-col>
+     </el-row>
+
      <el-row :gutter="20">
        <el-col :span="24"><div class="introduce">审核状态: {{ form.examineState }}</div></el-col>
      </el-row>
@@ -156,7 +168,7 @@
          // 数据
          contestInfo: [],
          multipleSelection: [],
-         participantInfo:{},
+         contestDeclaration:{},
          }
          
        },
@@ -167,12 +179,12 @@
        //方法集合
        methods: {
         deleteparticipate(){
-          console.log(this.participantInfo);
-          this.$axios.post("/deleteParticipant",this.participantInfo).then(resp=>{
+          console.log(this.contestDeclaration);
+          this.$axios.post("/deleteDeclaration",this.contestDeclaration).then(resp=>{
            let result =resp.data;
            if(result.code==='0'){
               this.deletecenterDialogVisible = false;
-              this.getParticipantListByPageAndUserId()
+              this.getDeclarationListByPageAndUserId()
                return this.$message({
                  message:result.msg,
                  type:'success'
@@ -180,24 +192,23 @@
              }
              this.$message.error(result.msg);
              this.deletecenterDialogVisible = false;
-             this.getParticipantListByPageAndUserId()
+             this.getDeclarationListByPageAndUserId()
            })
         },
-        cancleparticipate(row){
+        canclecontestDeclaration(row){
           this.deletecenterDialogVisible = true;
-          this.participantInfo.contestName=row.contestName;
-          this.participantInfo.contestDate=row.contestDate;
-          this.participantInfo.contestType=row.contestType;
-          this.participantInfo.contestInformationId=row.contestInformationId;
-          this.participantInfo.applicantId=sessionStorage.getItem("userId");
-          this.participantInfo.applicantRealname=sessionStorage.getItem("realname");
+          this.contestDeclaration.contestName=row.contestName;
+          this.contestDeclaration.contestDate=row.contestDate;
+          this.contestDeclaration.contestType=row.contestType;
+          this.contestDeclaration.contestDeclarationId=row.contestDeclarationId
+
   
         },
         reset(){
             this.query.contestName="";
             this.query.contestDate="";
             this.query.contestType="";
-            this. getParticipantListByPageAndUserId();
+            this. getDeclarationListByPageAndUserId();
           },
           handleCloseDelete(done) {
           this.$confirm('确认关闭？')
@@ -209,29 +220,6 @@
   
             });
         },
-         participate(row){
-           this.participantInfo.contestName=row.contestName;
-           this.participantInfo.contestDate=row.contestDate;
-           this.participantInfo.contestType=row.contestType;
-           this.participantInfo.contestInformationId=row.contestInformationId;
-           this.participantInfo.applicantId=sessionStorage.getItem("userId");
-           this.participantInfo.applicantRealname=sessionStorage.getItem("realname");
-           console.log("参与人信息");
-           console.log(this.participantInfo);
-           this.$axios.post("/insertParticipant",this.participantInfo).then(resp=>{
-           let result =resp.data;
-           if(result.code==='0'){
-               this.dialogFormVisible = false;
-               return this.$message({
-                 message:result.msg,
-                 type:'success'
-               });
-             }
-             this.$message.error(result.msg);
-  
-           })
-           
-         },
          //查看详细信息
          detail(row){
            console.log("row");
@@ -256,20 +244,20 @@
          this.query.pageSize = val
          this.getParticipantListByPageAndUserId()
          },
-       getParticipantListByPageAndUserId(){
+        getDeclarationListByPageAndUserId(){
         this.query.applicantId=sessionStorage.getItem("userId")
          console.log("this.query");
          console.log(this.query);
   
          this.$axios({
-           url: "/getParticipantListByPageAndUserId",
+           url: "/getDeclarationListByPageAndUserId",
            method: 'GET',
            params: this.query
          }).then(resp=>{
   
            let result = JSON.stringify(resp.data);
            result = eval("("+result+")");
-           this.contestInfo=result.data.contestInformation
+           this.contestInfo=result.data.contestDeclaration;
            
            this.totalRecords=result.data.totalRecords;
          
@@ -290,7 +278,7 @@
        created() {},
        //生命周期 - 挂载完成（可以访问DOM元素）
        mounted() {
-         this.getParticipantListByPageAndUserId();
+         this.getDeclarationListByPageAndUserId();
        },
        beforeCreate() {}, //生命周期 - 创建之前
        beforeMount() {}, //生命周期 - 挂载之前

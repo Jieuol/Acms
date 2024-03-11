@@ -37,7 +37,7 @@
           <el-input type="textarea":rows="2" style="width: 80%" v-model="addForm.contestRules" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-button type="primary" @click="apply()">立即申报</el-button>
+        <el-button type="primary" class="btn" @click="apply()">立即申报</el-button>
       </el-form>
   </div>
  </template>
@@ -101,7 +101,7 @@
      methods: {
       apply(){
         console.log("addForm");
-        this.addForm.declarant=sessionStorage.getItem("userId");
+        this.addForm.applicantId=sessionStorage.getItem("userId");
         console.log(this.addForm);
         this.$axios.post("/applyContest",this.addForm).then(resp=>{
           let result = resp.data;
@@ -201,6 +201,10 @@
    flex-direction: row;
    justify-content: center;
    margin-top: 42px;
+   }
+   .btn{
+    display:block;
+    margin:0 auto;
    }
      .modal_wrap .modal_box .btn_box span{
        display: inline-block;
