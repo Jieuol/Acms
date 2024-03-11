@@ -64,13 +64,30 @@
         where notice_id = #{noticeId}
     </update>
 
+    <update id="updateByNoticeId" >
+        update notice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="noticeName != null ">notice_name = #{noticeName},</if>
+            <if test="userGroup != null ">user_group = #{userGroup},</if>
+            <if test="noticeInformation != null ">notice_information = #{noticeInformation},</if>
+        </trim>
+        where notice_id = #{noticeId}
+    </update>
     <insert id="insertNotice" parameterType="edu.lgxy.lbj.asms.entity.Notice">
             insert into notice
-            (notice_name,notice_information,contest_date,
-             contest_information_id,contest_name,contest_type)
+            (notice_name,notice_information,
+             user_group)
             values
-                (#{applicantId},#{applicantRealname},#{contestDate},
-                 #{contestInformationId},#{contestName},#{contestType})
+                (#{noticeName},#{noticeInformation},#{userGroup})
 
     </insert>
+
+    <delete id="deleteNotice">
+        delete from notice
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="noticeId != null and noticeId != ''">
+                and notice_id = #{noticeId}
+            </if>
+        </trim>
+    </delete>
 </mapper>

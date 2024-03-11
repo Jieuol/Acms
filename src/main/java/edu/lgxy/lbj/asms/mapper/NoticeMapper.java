@@ -1,6 +1,7 @@
 package edu.lgxy.lbj.asms.mapper;
 
 import edu.lgxy.lbj.asms.entity.Notice;
+import edu.lgxy.lbj.asms.qo.NoticeQo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,5 +19,10 @@ public interface NoticeMapper {
 
     int publishByNoticeId(int noticeId);
 
-    int insertNotice(Notice notice);
+    int insertNotice(NoticeQo notice);
+
+    int deleteNotice(int noticeId);
+
+
+    int updateByNoticeId(Notice notice);
 }

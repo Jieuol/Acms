@@ -4,9 +4,11 @@ import edu.lgxy.lbj.asms.config.JsonResult;
 import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.entity.ContestInformation;
 import edu.lgxy.lbj.asms.entity.Notice;
+import edu.lgxy.lbj.asms.qo.NoticeQo;
 import edu.lgxy.lbj.asms.qo.PageQo3;
 import edu.lgxy.lbj.asms.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,15 +25,27 @@ public class NoticeController {
     private NoticeService noticeService;
 
     @RequestMapping("/addNotice")
-    public JsonResult<Map> addNotice(Notice notice){
+    public JsonResult<Map> addNotice(@RequestBody NoticeQo notice){
+        log.info("notice:"+notice);
         int result = noticeService.addNotice(notice);
         if(result<=0){
-            return new JsonResult<>("创建失败","202");
+            return new JsonResult<>("添加失败","202");
         }
         String msg="添加成功";
         String code="0";
         return new JsonResult<>(msg,code);
     }
+    @RequestMapping("/editNotice")
+    public JsonResult<Map> editNotice(@RequestBody Notice notice){
+        int result = noticeService.editForm(notice);
+        if(result<=0){
+            return new JsonResult<>("修改失败","202");
+        }
+        String msg="修改成功";
+        String code="0";
+        return new JsonResult<>(msg,code);
+    }
+
     @RequestMapping("/withDrawNotice")
     public JsonResult<Map> withDrawNotice(@RequestParam int noticeId){
         int rest = noticeService.withDrawNoticeByNoticeId(noticeId);
@@ -46,6 +60,20 @@ public class NoticeController {
         return new JsonResult<>(msg,code);
     }
 
+
+    @RequestMapping("/deleteNotice")
+    public JsonResult<Map> deleteNotice(@RequestParam int noticeId){
+        int rest = noticeService.deleteNotice(noticeId);
+        String code= "0";
+        String msg="删除成功";
+        if (rest<=0){
+            code="0";
+            msg="删除失败";
+            return new JsonResult<>(msg,code);
+        }
+
+        return new JsonResult<>(msg,code);
+    }
     @RequestMapping("getNoticeByUserGroup")
     public JsonResult<Map> getNoticeByUserGroup(PageQo3 pageQo){
         log.info("pageIndex："+pageQo.getPageIndex());

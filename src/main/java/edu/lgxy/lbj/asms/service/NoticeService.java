@@ -3,6 +3,7 @@ package edu.lgxy.lbj.asms.service;
 import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.entity.Notice;
 import edu.lgxy.lbj.asms.mapper.NoticeMapper;
+import edu.lgxy.lbj.asms.qo.NoticeQo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,15 @@ public class NoticeService {
         return noticeMapper.publishByNoticeId(noticeId);
     }
 
-    public int addNotice(Notice notice) {
+    public int addNotice(NoticeQo notice) {
         return  noticeMapper.insertNotice(notice);
+    }
+
+    public int deleteNotice(int noticeId) {
+        return noticeMapper.deleteNotice(noticeId);
+    }
+
+    public int editForm(Notice notice) {
+        return noticeMapper.updateByNoticeId(notice);
     }
 }
