@@ -81,7 +81,7 @@
       <span>确认是否取消报名</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="deletecenterDialogVisible = false">返 回</el-button>
-        <el-button type="primary" @click="deleteparticipate()">取 消</el-button>
+        <el-button type="primary" @click="deleteparticipate()">确 认</el-button>
       </span>
     </el-dialog>
     <!-- 遮罩2 -->

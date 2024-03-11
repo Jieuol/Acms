@@ -51,7 +51,7 @@
 
          <el-button type="danger" v-if="query.userGroup=='管理员'  && scope.row.state==0 " 
          class="el-button el-button--small is-plain el-button--default" style="margin: 5px !important;" 
-         size="small" @click="deleteBy(scope.row)">
+         size="small" @click="deleteNotice(scope.row)">
            <span>删除</span>
          </el-button>
 
@@ -124,6 +124,17 @@
     <el-form-item label="公告名称" label-width="auto">
       <el-input v-model="editForm.noticeName" autocomplete="off"></el-input>
     </el-form-item>
+
+    <el-form-item label="公告对象" label-width="auto">
+          <el-select v-model="editForm.userGroup" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        </el-form-item>
 
     <el-form-item label="公告内容" label-width="auto">
       <el-input type="textarea":rows="2" v-model="editForm.noticeInformation" autocomplete="off"></el-input>
@@ -251,10 +262,13 @@
          this. getNoticeByUserGroup();
        },
        add(form){
-        this.axios.post("/addNotice",this.addForm).then(resp=>{
+        this.$axios.post("/addNotice",this.addForm).then(resp=>{
+          console.log("addForm")
+          console.log(this.addForm)
           let result = resp.data;
           if(result.code==0){
             this.AddcenterDialogVisible=false;
+            this.addForm={};
             return this.$message({
               message:result.msg,
               type:'success'
@@ -280,7 +294,22 @@
 						this.$message.error(result.msg);
           })
        },
-
+       //删除公告
+       deleteNotice(row){
+        console.log("noticeId");
+        console.log(row.noticeId);
+          this.$axios.get("/deleteNotice?noticeId="+row.noticeId).then(resp=>{
+            this.getNoticeByUserGroup();
+            let result =resp.data;
+          if(result.code==='0'){
+							return this.$message({
+								message:result.msg,
+								type:'success'
+							});
+						}
+						this.$message.error(result.msg);
+          })
+       },
         //发布公告
         publishByNoticeId(row){
         console.log("noticeId");
@@ -311,12 +340,23 @@
          console.log("row");
          console.log(row);
          this.editForm=row;
-         console.log("form");
-         console.log(this.form);
+         console.log("editForm");
+         console.log(this.editForm);
          this.centerDialogVisible=true;
        },
        editNow(form){
-
+        this.$axios.post("/editNotice",this.editForm).then(resp=>{
+          let result = resp.data;
+          if(result.code==='0'){
+            this.centerDialogVisible=false;
+							return this.$message({
+								message:result.msg,
+								type:'success'
+							});
+						}
+						this.$message.error(result.msg);
+        })
+       
        },
        //分页器 第X页
        handleCurrentChange(newPage) {
