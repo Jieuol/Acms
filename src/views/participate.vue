@@ -21,7 +21,7 @@
 
         <el-col :xs="24" :sm="10" :lg="8">
           <el-form-item>
-            <el-button type="primary" @click="getContestListByPage('query')">查询</el-button>
+            <el-button type="primary" @click="queryInfo('query')">查询</el-button>
             <el-button @click="reset()" style="margin-right: 74px;">重置</el-button>
           </el-form-item>
         </el-col>
@@ -69,7 +69,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage" 
-        :page-sizes="[3,4,5]"
+        :page-sizes="[5,10,15]"
         :page-size = "query.pageSize" 
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalRecords"
@@ -134,7 +134,7 @@
           totalRecords: 0,
            //总条数，总共有多少条数据,
            pageInfo:{
-            pageSize: 3,
+            pageSize: 5,
             pageIndex: 0,
            },
         	// 弹框
@@ -148,7 +148,7 @@
 
 				// 查询
 				query: {
-          pageSize: 3,
+          pageSize: 5,
           pageIndex: 0,
           contestName:"",
           contestDate:"",
@@ -167,6 +167,11 @@
       watch: {},
       //方法集合
       methods: {
+        queryInfo(){
+        this.query.pageIndex=0;
+        this.query.pageSize=5;
+        this.getContestListByPage();
+       },
         reset(){
           this.query.contestName="";
           this.query.contestDate="";
