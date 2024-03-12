@@ -1,8 +1,13 @@
 package edu.lgxy.lbj.asms.controller;
 
 import edu.lgxy.lbj.asms.config.JsonResult;
+import edu.lgxy.lbj.asms.config.Page;
+import edu.lgxy.lbj.asms.config.PageAndUserId;
 import edu.lgxy.lbj.asms.entity.ContestDeclaration;
 import edu.lgxy.lbj.asms.entity.ContestInformation;
+import edu.lgxy.lbj.asms.entity.ContestParticipant;
+import edu.lgxy.lbj.asms.qo.PageQo;
+import edu.lgxy.lbj.asms.qo.PageQo2;
 import edu.lgxy.lbj.asms.service.AdminService;
 import edu.lgxy.lbj.asms.service.ContestService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +46,34 @@ public class AdminController {
         return new JsonResult<>("竞赛信息已发布","0");
     }
 
+
+
+    @RequestMapping("/admin/getParticipantListByPage")
+    JsonResult<Map> getParticipantListByPage(PageQo pageQo){
+
+        int pageSize=pageQo.getPageSize();
+        int pageIndex= pageQo.getPageIndex();
+        String contestDate=pageQo.getContestDate();
+        String contestName=pageQo.getContestName();
+        String contestType= pageQo.getContestType();
+        Page page = adminService.getParticipantListByPage
+                (pageSize,pageIndex,contestName,contestType,contestDate);
+        Map<String,Object> map = new HashMap<>();
+        String code="";
+        String msg ="服务器正常";
+        if(page.getList()==null){
+            code="0";
+            msg="暂无记录";
+            return new JsonResult<>(map,msg,code);
+        }
+        log.info("-----------------"+page.getList());
+        page.getList();
+        map.put("contestInfo",page.getList());
+        map.put("totalRecords",page.getTotalRecords());
+        code="0";
+        return new JsonResult<>(map,msg,code);
+
+    }
     @RequestMapping("/updateDeclaration")
     JsonResult<Map> updateDeclaration(@RequestBody ContestDeclaration contestDeclaration){
         Map<String,Object> map = new HashMap<>();
@@ -57,4 +90,21 @@ public class AdminController {
         code="0";
         return new JsonResult<>(msg,code);
     }
+    @RequestMapping("/updateParticipant")
+    JsonResult<Map> updateParticipant(@RequestBody ContestParticipant contestParticipantc){
+        Map<String,Object> map = new HashMap<>();
+        String msg="";
+        String code="";
+
+        int participantresult = adminService.updateParticipant(contestParticipantc);
+        if(participantresult<=0){
+            msg="审核失败";
+            code="202";
+            return new JsonResult<>(map,msg,code);
+        }
+        msg="审核成功";
+        code="0";
+        return new JsonResult<>(msg,code);
+    }
+
 }

@@ -5,6 +5,19 @@
 <mapper namespace="edu.lgxy.lbj.asms.mapper.AdminMapper">
 
 
+    <update id="updateParticipant" parameterType="edu.lgxy.lbj.asms.entity.ContestParticipant">
+        update contest_participant
+        <trim prefix="set"  suffixOverrides=",">
+            <if test="examineReply != null and examineReply != ''">
+                examine_reply = #{examineReply},
+            </if>
+            <if test="examineState != null and examineState != ''">
+                examine_state = #{examineState},
+            </if>
+        </trim>
+        where contest_participant_id = #{contestParticipantId} and applicant_id=#{applicantId}
+    </update>
+
     <update id="updateDeclaration" parameterType="edu.lgxy.lbj.asms.entity.ContestDeclaration">
         update contest_declaration
         <trim prefix="set"  suffixOverrides=",">
@@ -17,7 +30,61 @@
         </trim>
         where contest_declaration_id = #{contestDeclarationId}
     </update>
+<!--    <select id="selectByPageAndUserId" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">-->
+<!--        select * from contest_participant-->
+<!--        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">-->
+<!--            <if test="contestName != null and contestName != ''">-->
+<!--                and contest_name = #{contestName}-->
+<!--            </if>-->
+<!--            <if test=" contestType!= null and contestType != ''">-->
+<!--                and contest_type = #{contestType}-->
+<!--            </if>-->
+<!--            <if test=" contestDate!= null and contestDate != ''">-->
+<!--                and contest_date like-->
+<!--                concat('%',#{contestDate},'%')-->
+<!--            </if>-->
 
+<!--            <if test=" applicantId!= null and applicantId != ''">-->
+<!--                and applicant_id = #{applicantId}-->
+<!--            </if>-->
+<!--        </trim>-->
+<!--        limit #{pageIndex},#{pageSize}-->
+<!--    </select>-->
+
+    <select id="selectByPageNoLimit" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
+        select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date like
+                concat('%',#{contestDate},'%')
+            </if>
+
+        </trim>
+    </select>
+
+    <select id="selectByPage" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
+        select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date like
+                concat('%',#{contestDate},'%')
+            </if>
+
+        </trim>
+        limit #{pageIndex},#{pageSize}
+    </select>
 
 </mapper>
 

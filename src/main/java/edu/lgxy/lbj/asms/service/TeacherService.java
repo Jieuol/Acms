@@ -1,6 +1,7 @@
 package edu.lgxy.lbj.asms.service;
 
 
+import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.config.PageAndUserId;
 import edu.lgxy.lbj.asms.entity.ContestDeclaration;
 import edu.lgxy.lbj.asms.entity.ContestParticipant;
@@ -32,6 +33,13 @@ public class TeacherService {
         return teacherMapper.deleteContestParticipant(contestDeclarationId);
     }
 
-
+    public Page getParticipantListByPage(int pageSize, int pageIndex,int applicantId,String contestName, String contestType, String contestDate) {
+        Page page =new Page();
+        page.setList(teacherMapper.selectParticipantByPageAndUserId(pageIndex,pageSize,applicantId,contestName,contestType,contestDate));
+        page.setPageIndex(pageIndex);
+        page.setPageSize(pageSize);
+        page.setTotalRecords(teacherMapper.selectByPageAndUserIdNoLimit(applicantId,contestName,contestType,contestDate).size());
+        return page;
+    }
 
 }

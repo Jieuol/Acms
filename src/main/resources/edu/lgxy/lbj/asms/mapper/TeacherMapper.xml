@@ -34,6 +34,50 @@
         </trim>
         limit #{pageIndex},#{pageSize}
     </select>
+    <select id="selectByPageAndUserIdNoLimit" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
+        select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
+        where contest_information_id in
+      (select contest_information_id from contest_information where
+         contest_declaration_id in
+      (SELECT contest_declaration_id from contest_declaration
+        where applicant_id=#{applicantId}))
+
+        <trim prefix="" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date like
+                concat('%',#{contestDate},'%')
+            </if>
+        </trim>
+    </select>
+
+    <select id="selectParticipantByPageAndUserId" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
+        select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
+        where contest_information_id in
+        (select contest_information_id from contest_information where
+        contest_declaration_id in
+        (SELECT contest_declaration_id from contest_declaration
+        where applicant_id=#{applicantId}))
+
+        <trim prefix="" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date like
+                concat('%',#{contestDate},'%')
+            </if>
+        </trim>
+        limit #{pageIndex},#{pageSize}
+    </select>
 
     <select id="selectByPageAndUserIdNoList" resultType="edu.lgxy.lbj.asms.entity.ContestDeclaration">
         select * from contest_declaration
