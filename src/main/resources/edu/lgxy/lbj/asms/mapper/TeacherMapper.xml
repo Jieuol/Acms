@@ -42,7 +42,7 @@
       (SELECT contest_declaration_id from contest_declaration
         where applicant_id=#{applicantId}))
 
-        <trim prefix="" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+        <trim prefix="and" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
             <if test="contestName != null and contestName != ''">
                 and contest_name = #{contestName}
             </if>
@@ -52,6 +52,9 @@
             <if test=" contestDate!= null and contestDate != ''">
                 and contest_date like
                 concat('%',#{contestDate},'%')
+            </if>
+            <if test=" examineState!= null and examineState != ''">
+                and examine_state=#{examineState} or examine_state='已完赛'
             </if>
         </trim>
     </select>
@@ -64,7 +67,7 @@
         (SELECT contest_declaration_id from contest_declaration
         where applicant_id=#{applicantId}))
 
-        <trim prefix="" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+        <trim prefix="and" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
             <if test="contestName != null and contestName != ''">
                 and contest_name = #{contestName}
             </if>
@@ -74,6 +77,9 @@
             <if test=" contestDate!= null and contestDate != ''">
                 and contest_date like
                 concat('%',#{contestDate},'%')
+            </if>
+            <if test=" examineState!= null and examineState != ''">
+                and examine_state=#{examineState} or examine_state='已完赛'
             </if>
         </trim>
         limit #{pageIndex},#{pageSize}
@@ -99,6 +105,19 @@
         </trim>
     </select>
 
+    <update id="updateParticipant" parameterType="edu.lgxy.lbj.asms.entity.ContestParticipant">
+        update contest_participant
+        <trim prefix="set"  suffixOverrides=",">
+            <if test="examineReply != null and examineReply != ''">
+                examine_reply = #{examineReply},
+            </if>
+            <if test="examineState != null and examineState != ''">
+                examine_state = #{examineState},
+            </if>
+        </trim>
+        where contest_participant_id = #{contestParticipantId} and applicant_id=#{applicantId}
+    </update>
+
     <delete id="deleteContestParticipant">
         delete from contest_declaration
         <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
@@ -107,8 +126,17 @@
             </if>
         </trim>
     </delete>
-
-
+    <select id="selectByContestParticipantId" resultType="edu.lgxy.lbj.asms.entity.ContestParticipant">
+        select * from contest_participant where contest_participant_id = #{contestParticipantId}
+    </select>
+    <insert id="insertResults" parameterType="edu.lgxy.lbj.asms.qo.ParticipantQo">
+        insert into contest_results
+        (contest_result,contest_participant_id,contest_date,
+         contest_name,contest_type)
+        values
+            (#{contestResult},#{contestParticipantId},#{contestDate},
+            #{contestName},#{contestType})
+    </insert>
 
 <!--    <select id="selectBaseCount" resultType="Integer">-->
 

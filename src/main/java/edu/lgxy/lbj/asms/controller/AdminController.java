@@ -90,21 +90,6 @@ public class AdminController {
         code="0";
         return new JsonResult<>(msg,code);
     }
-    @RequestMapping("/updateParticipant")
-    JsonResult<Map> updateParticipant(@RequestBody ContestParticipant contestParticipantc){
-        Map<String,Object> map = new HashMap<>();
-        String msg="";
-        String code="";
 
-        int participantresult = adminService.updateParticipant(contestParticipantc);
-        if(participantresult<=0){
-            msg="审核失败";
-            code="202";
-            return new JsonResult<>(map,msg,code);
-        }
-        msg="审核成功";
-        code="0";
-        return new JsonResult<>(msg,code);
-    }
 
 }

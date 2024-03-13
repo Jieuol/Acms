@@ -23,5 +23,7 @@ public interface AdminMapper {
                                            @Param("contestType")String contestType,
                                            @Param("contestDate") String contestDate);
 
-    int updateParticipant(ContestParticipant contestParticipantc);
+    
+
+    ContestParticipant selectByContestParticipantId(long contestParticipantId);
 }

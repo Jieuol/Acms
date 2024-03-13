@@ -6,9 +6,11 @@ import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.config.PageAndUserId;
 import edu.lgxy.lbj.asms.entity.ContestDeclaration;
 import edu.lgxy.lbj.asms.entity.ContestParticipant;
+import edu.lgxy.lbj.asms.entity.ContestResults;
 import edu.lgxy.lbj.asms.entity.Participant;
 import edu.lgxy.lbj.asms.qo.PageQo;
 import edu.lgxy.lbj.asms.qo.PageQo2;
+import edu.lgxy.lbj.asms.qo.ParticipantQo;
 import edu.lgxy.lbj.asms.service.TeacherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,6 +92,35 @@ public class TeacherController {
         return new JsonResult<>(map,msg,code);
 
     }
+    @RequestMapping("/teacher/gradesManagement")
+    JsonResult<Map> gradesManagement(PageQo2 pageQo2){
+
+        int pageSize=pageQo2.getPageSize();
+        int pageIndex= pageQo2.getPageIndex();
+        int applicantId = pageQo2.getApplicantId();
+        String contestDate=pageQo2.getContestDate();
+        String contestName=pageQo2.getContestName();
+        String contestType= pageQo2.getContestType();
+        String examineState="已通过";
+        Page page = teacherService.gradesManagement
+                (pageSize,pageIndex,applicantId,contestName,contestType,contestDate,examineState);
+        Map<String,Object> map = new HashMap<>();
+        String code="";
+        String msg ="服务器正常";
+        if(page.getList()==null){
+            code="0";
+            msg="暂无记录";
+            return new JsonResult<>(map,msg,code);
+        }
+        log.info("-----------------"+page.getList());
+        page.getList();
+        map.put("participant",page.getList());
+        map.put("totalRecords",page.getTotalRecords());
+        code="0";
+        return new JsonResult<>(map,msg,code);
+
+    }
+
     @RequestMapping("getDeclarationListByPage")
     JsonResult<Map> getDeclarationListByPage(PageQo2 pageQo){
 
@@ -138,4 +169,37 @@ public class TeacherController {
     }
 
 
+    //登记成绩
+    @RequestMapping("/insertResults")
+    JsonResult<Map> insertResults(@RequestBody ParticipantQo participantQo){
+        Map<String,Object> map = new HashMap<>();
+        String msg="";
+        String code="";
+
+        int result = teacherService.insertResults(participantQo);
+        if(result<=0){
+            msg="登记成绩失败";
+            code="202";
+            return new JsonResult<>(map,msg,code);
+        }
+        msg="登记成绩成功";
+        code="0";
+        return new JsonResult<>(msg,code);
+    }
+
+    @RequestMapping("/updateParticipant")
+    JsonResult<Map> updateParticipant(@RequestBody ContestParticipant contestParticipantc){
+        Map<String,Object> map = new HashMap<>();
+        String msg="";
+        String code="";
+        int participantresult = teacherService.updateParticipant(contestParticipantc);
+        if(participantresult<=0){
+            msg="审核失败";
+            code="202";
+            return new JsonResult<>(map,msg,code);
+        }
+        msg="审核成功";
+        code="0";
+        return new JsonResult<>(msg,code);
+    }
 }
