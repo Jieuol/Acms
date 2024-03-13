@@ -15,6 +15,9 @@
             </div>
 			<div class="userName">
 				<span >欢迎您：{{userName}}</span>
+				<el-button @click="createSseConnect(userId)" type="primary" style="margin-left: 16px;">
+				消息
+				</el-button>
 			</div>
             <el-button type="info" @click="logout()">退出</el-button>
         </el-header>
@@ -119,10 +122,16 @@
 					<router-view></router-view>
 				</transition>
 
-			 
 			</el-main>
         </el-container>
     </el-container>
+		//抽屉
+		<el-drawer
+		title="我是标题"
+		:visible.sync="drawer"
+		:with-header="false">
+		<span>我来啦!</span>
+		</el-drawer>
 	</div>
 </template>
 
@@ -135,7 +144,7 @@
 		background-image: url(../assets/images/bg.jpg);
         
 		background-size: 100% 100%;
-		color: #758fa7
+		color: #000000
 }
 
 .home-container{
@@ -174,14 +183,20 @@ export default{
 	data(){
 		
 		return{
+			userId:sessionStorage.getItem("userId"),
 			userGroup:sessionStorage.getItem('userGroup'),
 			userName:sessionStorage.getItem('username'),
+			drawer:false,
 		}
 	},
 	components:{
 
 	},
 	methods:{
+		// 建立连接
+		createSseConnect(userId){
+			this.drawer = true;
+		},
 		logout(){
 			sessionStorage.setItem('is_login',0);
 			this.$router.push('/login');

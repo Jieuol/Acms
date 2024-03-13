@@ -31,6 +31,7 @@
     :data="contestInfo"
     tooltip-effect="dark"
     style="width: 100%"
+    :row-class-name="tableRowClassName"
     max-height="450">
 			<el-table-column fixed tooltip-effect="dark" width="55">
 			</el-table-column>
@@ -167,6 +168,15 @@
       watch: {},
       //方法集合
       methods: {
+        tableRowClassName({row, rowIndex}) {
+          console.log(row.contestType);
+        if (row.contestType == '院级') {
+          return 'warning-row';
+        } else if (row.contestType == '校级') {
+          return 'success-row';
+        }
+        return '';
+      },
         queryInfo(){
         this.query.pageIndex=0;
         this.query.pageSize=5;
