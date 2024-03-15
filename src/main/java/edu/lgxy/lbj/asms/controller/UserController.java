@@ -1,6 +1,9 @@
 package edu.lgxy.lbj.asms.controller;
 
 
+import edu.lgxy.lbj.asms.config.RedisUtil;
+import edu.lgxy.lbj.asms.config.TokenUtil;
+import edu.lgxy.lbj.asms.config.VerificationCode;
 import edu.lgxy.lbj.asms.entity.User;
 import edu.lgxy.lbj.asms.qo.Receive;
 import edu.lgxy.lbj.asms.qo.ReceiveEmail;
@@ -18,7 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +42,8 @@ public class UserController {
 
     @Autowired(required = false)
     private RedisTemplate redisTemplate;
+    @Resource
+    private RedisUtil redisUtil;
 
     @RequestMapping("/getUseInfo")
     public JsonResult<Map> login(@RequestParam String username, HttpSession session) throws ParseException {
@@ -78,6 +87,10 @@ public class UserController {
 
     @RequestMapping("/login")
     public JsonResult<Map> login(@RequestBody Receive receive ,HttpSession session){
+        String verifyCode = (String) session.getAttribute("verify_code");
+        if(!verifyCode.equalsIgnoreCase(receive.getVerifyCode())){
+            return new JsonResult<>("验证码错误,请重新填写","202");
+        }
         Map<String, Object> map = new HashMap<>();
 //        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
 //        log.info("redis->"+redisTemplate.opsForValue().get("name"));
@@ -112,18 +125,38 @@ public class UserController {
         u.setUsername(username);
         log.info("u : "+u);
         User user = userService.selectByUserName(u);
+
         log.info("Mysql中查到user:"+user);
+
         if(user == null || !password.equals(user.getPassword())){
             msg= "用户名不存在或者密码错误";
             code="202";
             return new JsonResult<>(map,msg,code);
         }
         map.put("user",user);
+        String token = TokenUtil.sign(user);
+//        TokenUtil.verify(token);
+        map.put("token",token);
         msg="登陆成功!";
         return new JsonResult<>(map,msg);
     }
+
+    @RequestMapping("/verifyCode")
+    public void verifyCode(HttpServletRequest request, HttpServletResponse resp) throws IOException {
+        VerificationCode code = new VerificationCode();
+        BufferedImage image = code.getImage();
+        String text = code.getText();
+        HttpSession session = request.getSession(true);
+        session.setAttribute("verify_code", text);
+        VerificationCode.output(image,resp.getOutputStream());
+    }
+
     @RequestMapping("/forgot/checkEmail")
     public JsonResult<Map> forget_checkEmail(@RequestBody ReceiveEmail receiveEmail,HttpSession session){
+        String verifyCode = (String) session.getAttribute("verify_code");
+        if(!verifyCode.equalsIgnoreCase(receiveEmail.getVerifyCode())){
+            return new JsonResult<>("验证码错误,请重新填写","202");
+        }
         Map<String,Object> map = new HashMap<>();
         String email = receiveEmail.getEmail();
         String username = receiveEmail.getUsername();

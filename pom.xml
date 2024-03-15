@@ -77,6 +77,14 @@
         </dependency>
         <!--集成redis-->
 
+        <!--引入jwt-->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        <!--引入jwt-->
+
         <!-- 工具类Json快速转换 -->
         <dependency>
             <groupId>com.alibaba</groupId>

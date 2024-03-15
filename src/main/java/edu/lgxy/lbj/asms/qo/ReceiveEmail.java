@@ -6,4 +6,5 @@ import lombok.Data;
 public class ReceiveEmail {
     private String username;
     private String email;
+    private String verifyCode;
 }
