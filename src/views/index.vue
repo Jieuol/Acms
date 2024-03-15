@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:25 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-06 16:37:53
+ * @Last Modified time: 2024-03-15 12:06:45
  */
 
 <template>
@@ -198,7 +198,8 @@ export default{
 			this.drawer = true;
 		},
 		logout(){
-			sessionStorage.setItem('is_login',0);
+			// sessionStorage.setItem('token','');
+			sessionStorage.clear();
 			this.$router.push('/login');
 		},
 

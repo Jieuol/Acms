@@ -26,13 +26,13 @@ const routes = [
 		path: '/',
 		name: 'index',
 		component: index,
-		beforeEnter: (to,from,next) =>{
-			let isLogin = sessionStorage.getItem('is_login');
-			if(isLogin!=1){
-				return next('/login')
-			}
-			next();
-		},
+		// beforeEnter: (to,from,next) =>{
+		// 	let isLogin = sessionStorage.getItem('is_login');
+		// 	if(isLogin!=1){
+		// 		return next('/login')
+		// 	}
+		// 	next();
+		// },
 		meta: {
 			index: 0,
 			title: '首页'

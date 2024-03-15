@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:13 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-04 17:53:43
+ * @Last Modified time: 2024-03-15 14:05:06
  */
 
 <template>
@@ -23,6 +23,24 @@
 								autocomplete="off">
 							</el-input>
 						</el-form-item>
+
+						<el-form-item prop="verifyCode">
+						<el-col :span="16">
+							<el-input
+							v-model="loginForm.verifyCode"
+							prefix-icon="el-icon-message"
+							placeholder="验证码"
+							class="verifyCode"
+						></el-input>
+						</el-col>
+						<el-col :span="8">
+							<img class="verifyCodeImg" :src="imgUrl" @click="resetImg">
+						</el-col>
+						
+						
+						</el-form-item>
+
+						
 
 						<div class="btns">
 							<el-button type="primary" @click="sign_in('loginForm')">登录</el-button>
@@ -47,6 +65,7 @@
     data() {
       
       return {
+		imgUrl:"http://localhost:8080/verifyCode?time="+new Date(),
         loginForm: {
 					username: "",
 					password: "",
@@ -85,6 +104,10 @@
     watch: {},
     //方法集合
     methods: {
+
+      resetImg(){
+          this.imgUrl = "http://localhost:8080/verifyCode?time="+new Date();
+      },
 		sign_in(form1){
 				this.$refs[form1].validate((res1)=>{
 					if(!res1){
@@ -98,17 +121,23 @@
 							sessionStorage.setItem('userGroup',result.data.user.userGroup)
 							sessionStorage.setItem('realname',result.data.user.realname)
 							sessionStorage.setItem('userId',result.data.user.userId)
+							sessionStorage.setItem('token',result.data.token)
+							sessionStorage.setItem('setUser',result.data.user)
+							console.log('token:')
+							console.log(sessionStorage.getItem('token'))
 							console.log(sessionStorage.getItem('userGroup'))
 							console.log(sessionStorage.getItem('realname'))
 							console.log(sessionStorage.getItem('userId'))
 							console.log(result.data.user)
-							sessionStorage.setItem('is_login',1); //存储登录状态
+							// sessionStorage.setItem('is_login',1); //存储登录状态
 							this.$router.push("/")
 							return this.$message({
 								message:result.msg,
 								type:'success'
 							});
 						}
+						this.loginForm.verifyCode='';
+						this.resetImg();
 						this.$message.error(result.msg);
 					})
 				});

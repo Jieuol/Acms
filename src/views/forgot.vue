@@ -22,6 +22,21 @@
 				<el-input v-model="verificationForm.email" type="text" placeholder="请输入您绑定的邮箱">
 				</el-input>
 				</el-form-item>
+
+        <el-form-item prop="verifyCode" label="验证码">
+						<el-col :span="16">
+							<el-input
+							v-model="verificationForm.verifyCode"
+							prefix-icon="el-icon-message"
+							placeholder="验证码"
+							class="verifyCode"
+						></el-input>
+						</el-col>
+						<el-col :span="8">
+							<img class="verifyCodeImg" :src="imgUrl" @click="resetImg">
+						</el-col>
+						
+						</el-form-item>
 			</el-form>
 			<el-button style="margin-top: 12px;" @click="checkEmail('form')">验证</el-button>
 		</div>
@@ -82,6 +97,7 @@
       }
     };
   return{
+    imgUrl:"http://localhost:8080/verifyCode?time="+new Date(),
     active: 0,
     verificationForm:{
       email:'',
@@ -123,6 +139,9 @@
   },
 
     methods: {
+      resetImg(){
+          this.imgUrl = "http://localhost:8080/verifyCode?time="+new Date();
+      },
 		checkEmail(verificationForm) {
 			this.$refs.verificationForm.validate((res1)=>{
 				if(!res1){
@@ -142,6 +161,8 @@
 							type:'success'
 						});
 					}
+          this.verificationForm.verifyCode='';
+          this.resetImg();
 					this.$message.error(result.msg);
 				})
 			});

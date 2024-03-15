@@ -18,6 +18,33 @@ router.beforeEach((to, from, next) => {
   
   next();
 })
+//路由全局前置守卫
+router.beforeEach((to,from,next) => {
+  if(to.path === '/forgot' || to.path === '/login' || to.path === '/login2'){ //若是进入登录与注册页面 ==> pass
+    next()
+  }else{ 
+    let userToken = sessionStorage.getItem('token');
+    console.log("Token为:"+userToken); 
+    if(userToken == null || userToken == ''){
+      alert("无权限，请先登录!");
+      return next('/login');
+    }else{
+      next();
+    }
+  }
+}),
+//请求拦截器 在请求头中加token
+axios.interceptors.request.use(
+  config => {
+      if(sessionStorage.getItem('token')){
+          config.headers.token = sessionStorage.getItem('token');
+      }
+      return config;
+  },
+  error => {
+      return Promise.reject(error);
+  }
+)
 
 new Vue({
   router,
