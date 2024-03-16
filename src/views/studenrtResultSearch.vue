@@ -41,7 +41,7 @@
 			</el-row>
 		</el-form>
    <el-table  ref="multipleTable"
-   :data="contestInfo"
+   :data="dataInfo"
    tooltip-effect="dark"
    style="width: 100%"
    max-height="450">
@@ -59,7 +59,7 @@
 
      <el-table-column sortable prop="updateTime" label="更新时间" min-width="100">
      </el-table-column> -->
-     <el-table-column fixed="right" label="操作" min-width="120">
+     <!-- <el-table-column fixed="right" label="操作" min-width="120">
        <template slot-scope="scope">
          <el-button v-if="scope.row.examineState!='已完赛'"  class="el-button el-button--small is-plain el-button--default" 
          style="margin: 5px !important;" size="small" @click="detail(scope.row)">
@@ -70,7 +70,7 @@
            <span>查看记录</span>
          </el-button>
        </template>
-     </el-table-column>
+     </el-table-column> -->
    </el-table>
    
      <!-- 分页器 -->
@@ -203,7 +203,7 @@
         contestType:"",
        },
        // 数据
-       contestInfo: [],
+       dataInfo: [],
        multipleSelection: [],
        participantInfo:{},
        updateForm:{},
@@ -217,100 +217,17 @@
      watch: {},
      //方法集合
      methods: {
-      submit(){
-        console.log("form:");
-        console.log(this.form);
-        this.$axios.post("/insertResults",this.form).then(resp=>{
-          let result =resp.data;
-          if(result.code==='0'){
-            this.centerDialogVisible = false;
-            this.getParticipantListByPage()
-             return this.$message({
-               message:result.msg,
-               type:'success'
-             });
-           }
-           this.centerDialogVisible=false;
-           this.getParticipantListByPage()
-           return this.$message.error(result.msg);
-           
-        })
-      
-       
-      },
+
       back(){
         this.centerDialogVisible = false;
         this.form.contestResult="";
       },
-      updateParticipant(index){
-        if(index=='pass'){
-          console.log("pass_declaration");
-          console.log(this.form.contestDeclarationId);
-          this.updateForm.contestInformationId=this.form.contestInformationId;
-          this.updateForm.contestParticipantId=this.form.contestParticipantId;
-          this.updateForm.applicantId=this.form.applicantId;
-          this.updateForm.examineReply=this.form.examineReply;
-          this.updateForm.examineState="已通过";
-          this.$axios.post("/updateParticipant", this.updateForm).then(resp=>{
-          let result = resp.data;
-          if(result.code==='0'){
-            this.centerDialogVisible=false;
-            this.getParticipantListByPage();
-            this.$message({
-              message:result.msg,
-              type:'success'
-            });
-          }
-          else{
-           return this.$message.error(result.msg);
-          }
-        })
-        }
-        if(index=='fail'){
-        console.log("fail_declaration");
-        this.updateForm.contestInformationId=this.form.contestInformationId;
-          this.updateForm.contestParticipantId=this.form.contestParticipantId;
-          this.updateForm.applicantId=this.form.applicantId;
-          this.updateForm.examineReply=this.form.examineReply;
-        this.updateForm.examineState="未通过";
-        this.$axios.post("/updateParticipant", this.updateForm).then(resp=>{
-          let result = resp.data;
-          if(result.code==='0'){
-            this.getParticipantListByPage();
-            this.centerDialogVisible=false;
-            this.$message({
-              message:result.msg,
-              type:'success'
-            });
-          }
-          else{
-            return this.$message.error(result.msg);
-          }
-        })
-      }
-      },
-      deleteparticipate(){
-        console.log(this.participantInfo);
-        this.$axios.post("/deleteParticipant",this.participantInfo).then(resp=>{
-         let result =resp.data;
-         if(result.code==='0'){
-            this.deletecenterDialogVisible = false;
-            this.getParticipantListByPage()
-             return this.$message({
-               message:result.msg,
-               type:'success'
-             });
-           }
-           this.$message.error(result.msg);
-           this.deletecenterDialogVisible = false;
-           this.getParticipantListByPage()
-         })
-      },
+
       reset(){
           this.query.contestName="";
           this.query.contestDate="";
           this.query.contestType="";
-          this. getParticipantListByPage();
+          this. getContestResultsInfo();
         },
         handleCloseDelete(done) {
         this.$confirm('确认关闭？')
@@ -323,15 +240,6 @@
           });
       },
 
-       //查看详细信息
-       detail(row){
-         console.log("row");
-         console.log(row);
-         this.form=row;
-         console.log("form");
-         console.log(this.form);
-         this.centerDialogVisible=true;
-       },
        //分页器 第X页
        handleCurrentChange(newPage) {
        newPage=newPage-1
@@ -340,48 +248,31 @@
        this.query.pageIndex = newPage*this.query.pageSize
        // this.pageInfo.pageIndex = newPage+this.pageInfo.pageSize
        console.log("after：")
-       this.getParticipantListByPage()
+       this.getContestResultsInfo()
       },
       //选择每页信息个数
      handleSizeChange(val) {
        this.query.pageSize = val
-       this.getParticipantListByPage()
+       this.getContestResultsInfo()
        },
-     getParticipantListByPage(){
+     getContestResultsInfo(){
       this.query.applicantId=sessionStorage.getItem("userId")
        console.log("this.query");
        console.log(this.query);
-      if(this.userGroup=="管理员"){
         this.$axios({
-         url: "/admin/getParticipantListByPage",
+         url: "/studenrtResultSearch",
          method: 'GET',
          params: this.query
        }).then(resp=>{
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
-        
-         this.contestInfo=result.data.contestInfo;
+         this.dataInfo=result.data.contestResults;
          
          this.totalRecords=result.data.totalRecords;
        
          })
-      }
-      else{
-        this.$axios({
-         url: "/teacher/gradesManagement",
-         method: 'GET',
-         params: this.query
-       }).then(resp=>{
-
-         let result = JSON.stringify(resp.data);
-         result = eval("("+result+")");
-         this.contestInfo=result.data.participant;
-         
-         this.totalRecords=result.data.totalRecords;
-       
-         })
-      }
+      
        
        },
        toggleSelection(rows) {
@@ -396,14 +287,14 @@
      queryInfo(){
       this.query.pageIndex=0;
       this.query.pageSize=5;
-      this.getParticipantListByPage();
+      this.getContestResultsInfo();
      }
    },
      //生命周期 - 创建完成（可以访问当前this实例）
      created() {},
      //生命周期 - 挂载完成（可以访问DOM元素）
      mounted() {
-       this.getParticipantListByPage();
+       this.getContestResultsInfo();
      },
      beforeCreate() {}, //生命周期 - 创建之前
      beforeMount() {}, //生命周期 - 挂载之前

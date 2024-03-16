@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:13 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-15 14:05:06
+ * @Last Modified time: 2024-03-16 15:58:02
  */
 
 <template>
@@ -36,7 +36,6 @@
 						<el-col :span="8">
 							<img class="verifyCodeImg" :src="imgUrl" @click="resetImg">
 						</el-col>
-						
 						
 						</el-form-item>
 

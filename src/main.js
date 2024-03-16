@@ -20,7 +20,7 @@ router.beforeEach((to, from, next) => {
 })
 //路由全局前置守卫
 router.beforeEach((to,from,next) => {
-  if(to.path === '/forgot' || to.path === '/login' || to.path === '/login2'){ //若是进入登录与注册页面 ==> pass
+  if(to.path === '/forgot' || to.path === '/login' ){ //若是进入登录与注册页面 ==> pass
     next()
   }else{ 
     let userToken = sessionStorage.getItem('token');

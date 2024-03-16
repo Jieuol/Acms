@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:25 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-15 12:06:45
+ * @Last Modified time: 2024-03-16 17:13:04
  */
 
 <template>
@@ -37,7 +37,9 @@
 						<span>个人信息管理</span>
 						</template>
 						<el-menu-item-group>
-							<el-menu-item index="/userInfo">查看个人信息</el-menu-item>
+							
+							<el-menu-item index="/myInformation">查看个人信息</el-menu-item>
+							<!-- <el-menu-item index="/userInfo">查看个人信息</el-menu-item> -->
 							<el-menu-item index="/changePsw">修改密码</el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
@@ -125,7 +127,6 @@
 			</el-main>
         </el-container>
     </el-container>
-		//抽屉
 		<el-drawer
 		title="我是标题"
 		:visible.sync="drawer"

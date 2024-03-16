@@ -20,8 +20,10 @@
 				<el-input v-model="forgotPasswordForm.confirmPwd" show-password placeholder="重复密码" type="password">
 				</el-input>
 				</el-form-item>
+
+        <el-button style="margin-top: 12px;" @click="changePsw('form')">确认修改</el-button>
 			</el-form>
-			<el-button style="margin-top: 12px;" @click="changePsw('form')">确认修改</el-button>
+			
 	
 
 		</div>

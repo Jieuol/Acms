@@ -26,16 +26,16 @@
     <el-col :span="4"><div>邮箱:</div></el-col>
     <el-col :span="4"><div>{{ user.email }}</div></el-col>
     <el-col :span="4"><div>邮箱状态:</div></el-col>
-    <el-col :span="4"><div v-if="user.emailState=='0'">未认证</div></el-col>
+    <el-col :span="4"><div class="error" v-if="user.emailState=='0'">未认证</div></el-col>
   </el-row>
   
 
   <el-row :gutter="10">
     <el-col :span="4"><div>手机号码:</div></el-col>
     <el-col :span="4"><div>{{ user.phone }}</div></el-col>
-    <el-col :span="4"><div>手机状态:</div></el-col>
+    <!-- <el-col :span="4"><div>手机状态:</div></el-col>
 
-    <el-col :span="4"><div v-if="user.phoneState=='0'">未认证</div></el-col>
+    <el-col :span="4"><div v-if="user.phoneState=='0'">未认证</div></el-col> -->
   </el-row>
 
   <el-row :gutter="10">
@@ -201,6 +201,9 @@
 .el-row {
     margin-top: 10px;
     box-sizing: border-box;
+}
+.error{
+  color: red;
 }
 .container{
   color: black;
