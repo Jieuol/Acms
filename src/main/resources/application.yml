@@ -3,6 +3,13 @@ server:
 
 
 spring:
+
+    mail:
+
+        host: smtp.163.com
+        username: loubinjie2001@163.com
+        # 授权密码， 非邮箱密码，授权码是用于登录第三方邮件客户端的专用密码。
+        password: NIWAMHUYPKGNPIYY
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://localhost:3306/acms

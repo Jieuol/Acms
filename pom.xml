@@ -84,7 +84,17 @@
             <version>3.4.0</version>
         </dependency>
         <!--引入jwt-->
-
+        <!--引入邮箱-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!--引入hutool-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.3.3</version>
+        </dependency>
         <!-- 工具类Json快速转换 -->
         <dependency>
             <groupId>com.alibaba</groupId>

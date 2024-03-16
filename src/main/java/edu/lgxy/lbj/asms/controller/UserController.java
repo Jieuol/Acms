@@ -9,6 +9,7 @@ import edu.lgxy.lbj.asms.qo.Receive;
 import edu.lgxy.lbj.asms.qo.ReceiveEmail;
 import edu.lgxy.lbj.asms.qo.ReceivePassword;
 import edu.lgxy.lbj.asms.qo.ReceiveUser;
+import edu.lgxy.lbj.asms.service.EmailService;
 import edu.lgxy.lbj.asms.service.UserService;
 import edu.lgxy.lbj.asms.config.JsonResult;
 
@@ -44,6 +45,8 @@ public class UserController {
     private RedisTemplate redisTemplate;
     @Resource
     private RedisUtil redisUtil;
+    @Resource
+    private EmailService emailService;
 
     @RequestMapping("/getUseInfo")
     public JsonResult<Map> login(@RequestParam String username, HttpSession session) throws ParseException {
@@ -150,13 +153,9 @@ public class UserController {
         session.setAttribute("verify_code", text);
         VerificationCode.output(image,resp.getOutputStream());
     }
+    @RequestMapping("/sendEmail")
+    public JsonResult<Map> sendCode(@RequestBody ReceiveEmail receiveEmail, HttpSession httpSession) {
 
-    @RequestMapping("/forgot/checkEmail")
-    public JsonResult<Map> forget_checkEmail(@RequestBody ReceiveEmail receiveEmail,HttpSession session){
-        String verifyCode = (String) session.getAttribute("verify_code");
-        if(!verifyCode.equalsIgnoreCase(receiveEmail.getVerifyCode())){
-            return new JsonResult<>("验证码错误,请重新填写","202");
-        }
         Map<String,Object> map = new HashMap<>();
         String email = receiveEmail.getEmail();
         String username = receiveEmail.getUsername();
@@ -164,7 +163,7 @@ public class UserController {
         String code="";
         if(username==null||"".equals(username)){
             code="202";
-            msg="密码不能为空";
+            msg="用户名不能为空";
             return new JsonResult<>(map,msg,code);
         }
         username = username.trim();//去除字符串首尾空白字符
@@ -187,14 +186,41 @@ public class UserController {
             msg="账户不存在";
             return new JsonResult<>(map,msg,code);
         }
-
         if(!user.getEmail().equals(email)){
             code="202";
             msg="邮箱验证失败";
             return new JsonResult<>(map,msg,code);
         }
-        msg="验证成功，请修改您的密码";
-        code="0";
+
+        String randomCode= emailService.email(receiveEmail.getEmail());
+        httpSession.setAttribute("code", randomCode);
+        map.put("randomCode",randomCode);
+        return new JsonResult<>(map,"验证码已发送到指定邮箱","0");
+
+    }
+    @RequestMapping("/forgot/checkEmail")
+    public JsonResult<Map> forget_checkEmail(@RequestBody ReceiveEmail receiveEmail,HttpSession session,HttpServletRequest request){
+        String verifyCode = (String) session.getAttribute("verify_code");
+        if(!verifyCode.equalsIgnoreCase(receiveEmail.getVerifyCode())){
+            return new JsonResult<>("图片验证码错误,请重新填写","202");
+        }
+        String Code = (String) session.getAttribute("code");
+
+        if (Code == null||Code.equals("")) {
+            return new JsonResult<>("邮箱验证码未发送","202");
+        }
+        Map<String,Object> map = new HashMap<>();
+        User u = new User();
+        String username = receiveEmail.getUsername();
+        u.setUsername(username);
+        User user = userService.selectByUserName(u);
+        map.put("username",username);
+
+        if (receiveEmail.getCode().equals(Code)) {
+            return new JsonResult<>(map,"验证成功，请修改您的密码","0");
+        }
+        String msg="验证失败，邮箱验证码错误";
+        String code="202";
         return new JsonResult<>(map,msg,code);
 
     }
