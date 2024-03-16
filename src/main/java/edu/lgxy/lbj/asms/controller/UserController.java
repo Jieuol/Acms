@@ -1,17 +1,12 @@
 package edu.lgxy.lbj.asms.controller;
 
 
-import edu.lgxy.lbj.asms.config.RedisUtil;
-import edu.lgxy.lbj.asms.config.TokenUtil;
-import edu.lgxy.lbj.asms.config.VerificationCode;
+import edu.lgxy.lbj.asms.config.*;
+import edu.lgxy.lbj.asms.entity.Student;
 import edu.lgxy.lbj.asms.entity.User;
-import edu.lgxy.lbj.asms.qo.Receive;
-import edu.lgxy.lbj.asms.qo.ReceiveEmail;
-import edu.lgxy.lbj.asms.qo.ReceivePassword;
-import edu.lgxy.lbj.asms.qo.ReceiveUser;
+import edu.lgxy.lbj.asms.qo.*;
 import edu.lgxy.lbj.asms.service.EmailService;
 import edu.lgxy.lbj.asms.service.UserService;
-import edu.lgxy.lbj.asms.config.JsonResult;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +66,7 @@ public class UserController {
         log.info("u : "+u);
         User user = userService.selectByUserName(u);
         log.info("Mysql中查到user:"+user);
+        Student student = userService.selectStudentInfo(user.getUserId());
         if(user == null){
             msg= "用户名不存在";
             code="202";
@@ -83,11 +79,43 @@ public class UserController {
 //        String dateString = cst.format(dateTime);
 
         map.put("user",user);
+        map.put("student",student);
         msg="查询个人信息成功!";
         log.info("userInfo.getLoginTime->"+user.getLoginTime());
         return new JsonResult<>(map,msg);
     }
 
+
+
+
+    @RequestMapping("/studenrtResultSearch")
+    JsonResult<Map> studenrtResultSearch(PageQo2 pageQo2){
+
+        int pageSize=pageQo2.getPageSize();
+        int pageIndex= pageQo2.getPageIndex();
+        int applicantId = pageQo2.getApplicantId();
+        String contestDate=pageQo2.getContestDate();
+        String contestName=pageQo2.getContestName();
+        String contestType= pageQo2.getContestType();
+        String examineState="已通过";
+        Page page = userService.getResults
+                (pageSize,pageIndex,applicantId,contestName,contestType,contestDate);
+        Map<String,Object> map = new HashMap<>();
+        String code="";
+        String msg ="服务器正常";
+        if(page.getList()==null){
+            code="0";
+            msg="暂无记录";
+            return new JsonResult<>(map,msg,code);
+        }
+        log.info("-----------------"+page.getList());
+        page.getList();
+        map.put("contestResults",page.getList());
+        map.put("totalRecords",page.getTotalRecords());
+        code="0";
+        return new JsonResult<>(map,msg,code);
+
+    }
     @RequestMapping("/login")
     public JsonResult<Map> login(@RequestBody Receive receive ,HttpSession session){
         String verifyCode = (String) session.getAttribute("verify_code");

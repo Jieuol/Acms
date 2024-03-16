@@ -70,7 +70,9 @@
         </trim>
 
     </select>
-
+    <select id="selectStudentInfo" resultType="edu.lgxy.lbj.asms.entity.Student">
+        select * from student where user_id = #{userId}
+    </select>
     <update id="updatePassword" parameterType="edu.lgxy.lbj.asms.entity.User">
         update user
         <trim prefix="SET" suffixOverrides=",">
@@ -79,12 +81,63 @@
         where username = #{username}
     </update>
 
+    <select id="selectContestResultsByPageAndUserId" resultType="edu.lgxy.lbj.asms.entity.ContestResults">
+        select * from contest_results where contest_participant_id in
+        (select contest_participant_id from contest_participant
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test=" applicantId!= null and applicantId != ''">
+                and applicant_id = #{applicantId}
+            </if>
+        </trim>
 
+        )
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date like
+                concat('%',#{contestDate},'%')
+            </if>
+
+        </trim>
+        limit #{pageIndex},#{pageSize}
+    </select>
+
+    <select id="selectContestResultsByPageAndUserIdNoLimit" resultType="edu.lgxy.lbj.asms.entity.ContestResults">
+        select * from contest_results where contest_participant_id in
+        (select contest_participant_id from contest_participant
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test=" applicantId!= null and applicantId != ''">
+                and applicant_id = #{applicantId}
+            </if>
+        </trim>
+
+        )
+        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+            <if test="contestName != null and contestName != ''">
+                and contest_name = #{contestName}
+            </if>
+            <if test=" contestType!= null and contestType != ''">
+                and contest_type = #{contestType}
+            </if>
+            <if test=" contestDate!= null and contestDate != ''">
+                and contest_date like
+                concat('%',#{contestDate},'%')
+            </if>
+
+        </trim>
+
+    </select>
 
     <update id="updateUser" parameterType="edu.lgxy.lbj.asms.entity.User">
         update user
         <trim prefix="SET" suffixOverrides=",">
             <if test="state != null ">state = #{state},</if>
+            <if test="gender != null ">gender = #{gender},</if>
             <if test="userGroup != null  and userGroup != ''">user_group = #{userGroup},</if>
             <if test="loginTime != null ">login_time = #{loginTime},</if>
             <if test="phone != null  and phone != ''">phone = #{phone},</if>
