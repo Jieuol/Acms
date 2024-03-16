@@ -47,13 +47,12 @@
    max-height="450">
      <el-table-column fixed tooltip-effect="dark" width="55">
      </el-table-column>
-     <el-table-column prop="applicantRealname" label="报名人" min-width="50">
-     </el-table-column>
+
      <el-table-column prop="contestName" label="赛项名称" min-width="100">
      </el-table-column>
      <el-table-column prop="contestType" label="赛项类型" min-width="100">
      </el-table-column>
-     <el-table-column prop="examineState" label="审核状态" min-width="100">
+     <el-table-column prop="contestResult" label="赛事成绩" min-width="100">
      </el-table-column>
      <el-table-column sortable prop="contestDate" label="赛项日期" min-width="100">
      </el-table-column>
@@ -62,9 +61,13 @@
      </el-table-column> -->
      <el-table-column fixed="right" label="操作" min-width="120">
        <template slot-scope="scope">
-         <el-button class="el-button el-button--small is-plain el-button--default" 
+         <el-button v-if="scope.row.examineState!='已完赛'"  class="el-button el-button--small is-plain el-button--default" 
          style="margin: 5px !important;" size="small" @click="detail(scope.row)">
-           <span>报名详情</span>
+           <span>登记成绩</span>
+         </el-button>
+         <el-button v-if="scope.row.examineState=='已完赛'"  class="el-button el-button--small is-plain el-button--default" 
+         style="margin: 5px !important;" size="small" @click="detail(scope.row)">
+           <span>查看记录</span>
          </el-button>
        </template>
      </el-table-column>
@@ -90,15 +93,15 @@
       :visible.sync="deletecenterDialogVisible"
       width="30%"
       :before-close="handleCloseDelete">
-      <span>确认是否取消报名</span>
+      <span>确认是否取消登记</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="deletecenterDialogVisible = false">返 回</el-button>
         <el-button type="primary" @click="deleteparticipate()">确 认</el-button>
       </span>
     </el-dialog>
    <!-- 遮罩2 -->
-   <el-dialog title="报名人详细信息" :visible.sync="centerDialogVisible" width="1000px">
- <div class=" container" style="margin-top:25px;margin-left:30px;">
+   <!-- <el-dialog title="参赛人详细信息" :visible.sync="centerDialogVisible" width="1000px"> -->
+ <!-- <div class=" container" style="margin-top:25px;margin-left:30px;">
    <el-row :gutter="10">
      <el-col :span="4"><div class="title">竞赛名称: {{ form.contestName }}</div></el-col>
    </el-row>
@@ -109,7 +112,7 @@
    </el-row>
    
    <el-row :gutter="10">
-     <el-col :span="4"><div class="text">报名人姓名: {{ form.applicantRealname }}</div></el-col>
+     <el-col :span="4"><div class="text">参赛人姓名: {{ form.applicantRealname }}</div></el-col>
    </el-row>
 
    <el-row :gutter="20">
@@ -125,49 +128,22 @@
    <el-row :gutter="20">
      <el-col :span="24"><div class="introduce">审核状态: {{ form.examineState }}</div></el-col>
    </el-row>
-
-   <el-row :gutter="10" v-if="form.examineState=='已通过'">
-    <el-col :span="10">
-       <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
-       <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="danger" size="small" @click="updateParticipant('fail')">
-        <span>不予通过</span>
-       </el-button>
+   <el-row :gutter="20">
+     <el-col :span="24"><div class="introduce">审核回复: {{ form.examineReply }}</div></el-col>
+   </el-row>
+   <el-row :gutter="20">
+     <el-col :span="24">
+      <el-input v-model="form.contestResult" style="width: 15%" placeholder="请输入该生成绩"></el-input>
+      <el-button type="success" @click="submit()">确认登记</el-button>
     </el-col>
+    
    </el-row>
-
-   <el-row :gutter="10" v-if="form.examineState=='未通过'">
-    <el-col :span="10">
-       <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
-
-       <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="success" size="small" @click="updateParticipant('pass')">
-        <span>审核通过</span>
-       </el-button>
-    </el-col>
-   </el-row>
-
-   <el-row :gutter="10" v-if="form.examineState=='未审核'">
-    <el-col :span="10">
-       <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
-       <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="danger" size="small" @click="updateParticipant('fail')">
-        <span>不予通过</span>
-       </el-button>
-
-       <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="success" size="small" @click="updateParticipant('pass')">
-        <span>审核通过</span>
-       </el-button>
-      </el-col>
-   </el-row>
- </div>
+  </div>
  <div slot="footer" class="dialog-footer">
-   <el-button @click="centerDialogVisible = false">返 回</el-button>
-
+   <el-button @click="back()">返 回</el-button>
  </div>
 
-</el-dialog>
+</el-dialog> -->
  
   </div>
  </template>
@@ -197,6 +173,7 @@
         },
         ],
          form:{
+          contestResult:"",
          },
          deletecenterDialogVisible:false,
          centerDialogVisible:false,
@@ -240,6 +217,31 @@
      watch: {},
      //方法集合
      methods: {
+      submit(){
+        console.log("form:");
+        console.log(this.form);
+        this.$axios.post("/insertResults",this.form).then(resp=>{
+          let result =resp.data;
+          if(result.code==='0'){
+            this.centerDialogVisible = false;
+            this.getParticipantListByPage()
+             return this.$message({
+               message:result.msg,
+               type:'success'
+             });
+           }
+           this.centerDialogVisible=false;
+           this.getParticipantListByPage()
+           return this.$message.error(result.msg);
+           
+        })
+      
+       
+      },
+      back(){
+        this.centerDialogVisible = false;
+        this.form.contestResult="";
+      },
       updateParticipant(index){
         if(index=='pass'){
           console.log("pass_declaration");
@@ -358,6 +360,7 @@
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
+        
          this.contestInfo=result.data.contestInfo;
          
          this.totalRecords=result.data.totalRecords;
@@ -366,14 +369,14 @@
       }
       else{
         this.$axios({
-         url: "/teacher/getParticipantListByPage",
+         url: "/teacher/gradesManagement",
          method: 'GET',
          params: this.query
        }).then(resp=>{
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
-         this.contestInfo=result.data.contestInfo;
+         this.contestInfo=result.data.participant;
          
          this.totalRecords=result.data.totalRecords;
        
@@ -514,7 +517,7 @@
        font-size: 14px;
        cursor: pointer;
        color: #fff;
-     }
+    }
  .modal_wrap .modal_box .btn_box span:nth-child(2){
    background: #409EFF;
    color: #fff;

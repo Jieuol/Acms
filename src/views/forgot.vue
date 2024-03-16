@@ -2,7 +2,7 @@
 <template>
   <div class="page-container">
 	<div class="forgot-password">
-		<button type="text" v-show="active>='1'" class="return-page-wr" @click="$router.go(-1)"> <i class="el-icon-arrow-left"></i> 上一步 </button>
+		<button type="text" v-show="active>='1'" class="return-page-wr" @click="back()"> <i class="el-icon-arrow-left"></i> 上一步 </button>
 		<button type="text" v-show="active=='0'" class="return-page-wr" @click="$router.push({path:'/login'})"> <i class="el-icon-arrow-left"></i> 返回 </button>
 		<div class="content">
 		<el-steps :active="active" finish-status="success">
@@ -21,6 +21,22 @@
 				<el-form-item prop="email" label="邮箱">
 				<el-input v-model="verificationForm.email" type="text" placeholder="请输入您绑定的邮箱">
 				</el-input>
+				</el-form-item>
+
+        <el-form-item prop="code" label="邮箱验证码">
+          <el-col :span="16">
+							<el-input
+							v-model="verificationForm.code"
+							prefix-icon="el-icon-message"
+							placeholder="邮箱验证码"
+							class="verifyCode"
+						></el-input>
+						</el-col>
+
+						<el-col :span="8">
+              <el-button  type="success" @click="sendEmail()">发送</el-button>
+						</el-col>
+
 				</el-form-item>
 
         <el-form-item prop="verifyCode" label="验证码">
@@ -52,7 +68,7 @@
 				</el-input>
 				</el-form-item>
 			</el-form>
-			<el-button style="margin-top: 12px;" @click="changePsw('verificationForm')">确认修改</el-button>
+			<el-button style="margin-top: 12px;" type="success" @click="changePsw('verificationForm')">确认修改</el-button>
 		</div>
 	
 
@@ -100,6 +116,7 @@
     imgUrl:"http://localhost:8080/verifyCode?time="+new Date(),
     active: 0,
     verificationForm:{
+      code:'',
       email:'',
       username:'',
     },
@@ -139,14 +156,40 @@
   },
 
     methods: {
+      back(){
+        this.active--
+      },
+     
       resetImg(){
           this.imgUrl = "http://localhost:8080/verifyCode?time="+new Date();
       },
+    sendEmail(){
+      if(this.verificationForm.email==''){
+        return this.$message.error("请输入邮箱");
+      }
+      this.$axios.post("/sendEmail",this.verificationForm).then(resp=>{
+          console.log("-------------------");
+          console.log(this.verificationForm);
+					let result = resp.data;
+					console.log(resp);
+					if(result.code==='0'){
+						sessionStorage.setItem('username',result.data.username);
+						console.log(sessionStorage.getItem('username'));
+						return this.$message({
+							message:result.msg,
+							type:'success'
+						});
+					}
+					return this.$message.error(result.msg);
+				})
+    }
+      ,
 		checkEmail(verificationForm) {
 			this.$refs.verificationForm.validate((res1)=>{
 				if(!res1){
 					return;
 				}
+ 
 				this.$axios.post("/forgot/checkEmail",this.verificationForm).then(resp=>{
           console.log("-------------------");
           console.log(this.verificationForm);
@@ -168,6 +211,7 @@
 			});
         
       },
+    
 	  changePsw(forgotPasswordForm) {
 			this.$refs.forgotPasswordForm.validate((res1)=>{
 				this.forgotPasswordForm.username=sessionStorage.getItem('username')
