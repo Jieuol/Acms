@@ -36,7 +36,13 @@
     </select>
     <select id="selectByPageAndUserIdNoLimit" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
         select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
-        where contest_information_id in
+        where
+        <trim suffix="and">
+            <if test=" examineState!= null and examineState != ''">
+                (examine_state=#{examineState} or examine_state='已完赛')
+            </if>
+        </trim>
+            contest_information_id in
       (select contest_information_id from contest_information where
          contest_declaration_id in
       (SELECT contest_declaration_id from contest_declaration
@@ -53,15 +59,20 @@
                 and contest_date like
                 concat('%',#{contestDate},'%')
             </if>
-            <if test=" examineState!= null and examineState != ''">
-                and examine_state=#{examineState} or examine_state='已完赛'
-            </if>
+
         </trim>
     </select>
 
     <select id="selectParticipantByPageAndUserId" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
         select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
-        where contest_information_id in
+        where
+        <trim suffix="and">
+            <if test=" examineState!= null and examineState != ''">
+                (examine_state=#{examineState} or examine_state='已完赛')
+            </if>
+        </trim>
+
+            contest_information_id in
         (select contest_information_id from contest_information where
         contest_declaration_id in
         (SELECT contest_declaration_id from contest_declaration
@@ -78,9 +89,7 @@
                 and contest_date like
                 concat('%',#{contestDate},'%')
             </if>
-            <if test=" examineState!= null and examineState != ''">
-                and examine_state=#{examineState} or examine_state='已完赛'
-            </if>
+
         </trim>
         limit #{pageIndex},#{pageSize}
     </select>
