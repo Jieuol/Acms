@@ -26,6 +26,8 @@ public class AdminController {
     private ContestService contestService;
     @Resource
     private AdminService adminService;
+
+    //删除竞赛信息
     @RequestMapping("/deleteContestInfo")
     JsonResult<Map> deleteContestInfo(@RequestBody ContestInformation contestInformation){
         log.info("%%%%%%%%%%%%%%%"+contestInformation);
