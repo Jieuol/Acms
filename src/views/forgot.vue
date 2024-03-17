@@ -243,11 +243,22 @@
 </script>
 
 <style scoped>
+.main{
+  box-sizing: border-box;
+		height: 100vh;
+		padding: .5rem;
+		width: 100%;
+		background-image: url(../assets/images/bg.jpg);
+        
+		background-size: 100% 100%;
+		color: #758fa7
+}
 .page-container {
   width: 100%;
   height: 100vh;
   min-height: 600px;
   overflow-y: auto;
+  background-image: url(../assets/images/bg.jpg);
   /* background: url("../../assets/images/login/login-bag.jpg") no-repeat center; */
   background-size: cover;
   display: flex;
@@ -273,10 +284,11 @@
         vertical-align: middle;
       }
     }
-    width:580px;
-    height:540px;
+
+    width: 600px;
+    height: 700px;
     background: #FFFFFF;
-    border-radius: 6px;
+    border-radius: 40px;
    .content{
      padding: 30px 90px;
      box-sizing: border-box;

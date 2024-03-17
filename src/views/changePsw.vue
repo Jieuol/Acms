@@ -159,7 +159,8 @@
   /* background: url("../../assets/images/login/login-bag.jpg") no-repeat center; */
   background-size: cover;
   display: flex;
-  align-items: center;
+  margin-top: 20px;
+  /* align-items: center; */
   justify-content: center;
   .wid{
     width: 100%;
@@ -169,9 +170,10 @@
   }
 
   .forgot-password{
+    margin-top: 10px;
     .return-page-wr{
       position: relative;
-      top: 30px;
+      top: 10px;
       left: 30px;
       color: #e5525b;
       font-size: 16px;
@@ -181,11 +183,12 @@
         vertical-align: middle;
       }
     }
-    width:580px;
-    height:540px;
+    width: 600px;
+    height: 450px;
     background: #FFFFFF;
-    border-radius: 6px;
+    border-radius: 40px;
    .content{
+    
      padding: 30px 90px;
      box-sizing: border-box;
    }
