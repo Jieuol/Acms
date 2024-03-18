@@ -26,5 +26,6 @@ public class ParticipantInfomation {
     private String major;
     private String grade;
     private String academy;
+    private String contestResult;
 
 }

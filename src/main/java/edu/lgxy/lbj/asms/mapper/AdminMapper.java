@@ -17,11 +17,14 @@ public interface AdminMapper {
                                              @Param("pageSize") int pageSize ,
                                              @Param("contestName")String contestName,
                                              @Param("contestType")String contestType,
-                                             @Param("contestDate") String contestDate);
+                                             @Param("contestDate") String contestDate,
+                                             @Param("examineState") String  examineState
+                                            );
 
     List<ParticipantInfomation> selectByPageNoLimit( @Param("contestName")String contestName,
                                            @Param("contestType")String contestType,
-                                           @Param("contestDate") String contestDate);
+                                           @Param("contestDate") String contestDate,
+                                           @Param("examineState") String  examineState  );
 
     
 

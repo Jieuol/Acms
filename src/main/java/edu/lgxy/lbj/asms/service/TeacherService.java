@@ -5,6 +5,7 @@ import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.config.PageAndUserId;
 import edu.lgxy.lbj.asms.entity.ContestDeclaration;
 import edu.lgxy.lbj.asms.entity.ContestParticipant;
+import edu.lgxy.lbj.asms.entity.ContestResults;
 import edu.lgxy.lbj.asms.entity.Participant;
 import edu.lgxy.lbj.asms.mapper.ParticipantMapper;
 import edu.lgxy.lbj.asms.mapper.TeacherMapper;
@@ -43,10 +44,10 @@ public class TeacherService {
 
     public Page getParticipantListByPage(int pageSize, int pageIndex,int applicantId,String contestName, String contestType, String contestDate) {
         Page page =new Page();
-        page.setList(teacherMapper.selectParticipantByPageAndUserId(pageIndex,pageSize,applicantId,contestName,contestType,contestDate,""));
+        page.setList(teacherMapper.selectParticipantByPageAndUserId(pageIndex,pageSize,applicantId,contestName,contestType,contestDate,"未审核"));
         page.setPageIndex(pageIndex);
         page.setPageSize(pageSize);
-        page.setTotalRecords(teacherMapper.selectByPageAndUserIdNoLimit(applicantId,contestName,contestType,contestDate,"").size());
+        page.setTotalRecords(teacherMapper.selectByPageAndUserIdNoLimit(applicantId,contestName,contestType,contestDate,"未审核").size());
         return page;
     }
 
@@ -97,5 +98,13 @@ public class TeacherService {
         teacherMapper.updateParticipant(contestParticipant);
         return teacherMapper.insertResults(participantQo);
 
+    }
+
+    public ContestResults getResults(ParticipantQo participantQo) {
+        return teacherMapper.selectResultsByUserIdAndParticipantId(participantQo);
+    }
+
+    public int updateResults(ParticipantQo participantQo) {
+        return teacherMapper.updateResults(participantQo);
     }
 }

@@ -101,7 +101,7 @@ public class TeacherController {
         String contestDate=pageQo2.getContestDate();
         String contestName=pageQo2.getContestName();
         String contestType= pageQo2.getContestType();
-        String examineState="已通过";
+        String examineState="已完赛";
         Page page = teacherService.gradesManagement
                 (pageSize,pageIndex,applicantId,contestName,contestType,contestDate,examineState);
         Map<String,Object> map = new HashMap<>();
@@ -175,7 +175,18 @@ public class TeacherController {
         Map<String,Object> map = new HashMap<>();
         String msg="";
         String code="";
-
+        ContestResults selectResult = teacherService.getResults(participantQo);
+        if(selectResult!=null){
+            int updateResult = teacherService.updateResults(participantQo);
+            if(updateResult<=0){
+                msg="修改成绩失败";
+                code="202";
+                return new JsonResult<>(map,msg,code);
+            }
+            msg="修改成绩成功";
+            code="0";
+            return new JsonResult<>(msg,code);
+        }
         int result = teacherService.insertResults(participantQo);
         if(result<=0){
             msg="登记成绩失败";

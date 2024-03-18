@@ -52,14 +52,14 @@ public class AdminController {
 
     @RequestMapping("/admin/getParticipantListByPage")
     JsonResult<Map> getParticipantListByPage(PageQo pageQo){
-
         int pageSize=pageQo.getPageSize();
         int pageIndex= pageQo.getPageIndex();
         String contestDate=pageQo.getContestDate();
         String contestName=pageQo.getContestName();
         String contestType= pageQo.getContestType();
+        String examineState="未审核";
         Page page = adminService.getParticipantListByPage
-                (pageSize,pageIndex,contestName,contestType,contestDate);
+                (pageSize,pageIndex,contestName,contestType,contestDate,examineState);
         Map<String,Object> map = new HashMap<>();
         String code="";
         String msg ="服务器正常";
@@ -76,6 +76,34 @@ public class AdminController {
         return new JsonResult<>(map,msg,code);
 
     }
+
+    @RequestMapping("/admin/gradesManagement")
+    JsonResult<Map> gradesManagement(PageQo pageQo){
+        int pageSize=pageQo.getPageSize();
+        int pageIndex= pageQo.getPageIndex();
+        String contestDate=pageQo.getContestDate();
+        String contestName=pageQo.getContestName();
+        String contestType= pageQo.getContestType();
+        String examineState="已完赛";
+        Page page = adminService.getParticipantListByPage
+                (pageSize,pageIndex,contestName,contestType,contestDate,examineState);
+        Map<String,Object> map = new HashMap<>();
+        String code="";
+        String msg ="服务器正常";
+        if(page.getList()==null){
+            code="0";
+            msg="暂无记录";
+            return new JsonResult<>(map,msg,code);
+        }
+        log.info("-----------------"+page.getList());
+        page.getList();
+        map.put("contestInfo",page.getList());
+        map.put("totalRecords",page.getTotalRecords());
+        code="0";
+        return new JsonResult<>(map,msg,code);
+
+    }
+
     @RequestMapping("/updateDeclaration")
     JsonResult<Map> updateDeclaration(@RequestBody ContestDeclaration contestDeclaration){
         Map<String,Object> map = new HashMap<>();

@@ -42,7 +42,17 @@
 
     <select id="selectByPageNoLimit" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
         select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
-        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+        where
+        <trim suffix="">
+            <if test=" examineState == '已完赛'">
+                (examine_state=#{examineState} or examine_state='已通过')
+            </if>
+            <if test=" examineState == '未审核'">
+                (examine_state=#{examineState} or examine_state='已通过' or examine_state='未通过')
+            </if>
+        </trim>
+
+    <trim prefix="and" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
             <if test="contestName != null and contestName != ''">
                 and contest_name = #{contestName}
             </if>
@@ -58,8 +68,19 @@
     </select>
 
     <select id="selectByPage" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
-        select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
-        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
+        select A.*,contest_result from (
+        select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id =
+        b.user_id
+        where
+        <trim suffix="">
+            <if test=" examineState == '已完赛'">
+                (examine_state=#{examineState} or examine_state='已通过')
+            </if>
+            <if test=" examineState == '未审核'">
+                (examine_state=#{examineState} or examine_state='已通过' or examine_state='未通过')
+            </if>
+        </trim>
+        <trim prefix="and" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
             <if test="contestName != null and contestName != ''">
                 and contest_name = #{contestName}
             </if>
@@ -72,6 +93,8 @@
             </if>
 
         </trim>
+        )
+        As A left join contest_results on A.contest_participant_id  =  contest_results.contest_participant_id
         limit #{pageIndex},#{pageSize}
     </select>
     <select id="selectByContestParticipantId" resultType="edu.lgxy.lbj.asms.entity.ContestParticipant">

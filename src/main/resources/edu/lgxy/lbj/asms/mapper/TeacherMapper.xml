@@ -39,7 +39,7 @@
         where
         <trim suffix="and">
             <if test=" examineState!= null and examineState != ''">
-                (examine_state=#{examineState} or examine_state='已完赛')
+                (examine_state=#{examineState} or examine_state='已通过')
             </if>
         </trim>
             contest_information_id in
@@ -62,17 +62,36 @@
 
         </trim>
     </select>
-
+    <select id="selectResultsByUserIdAndParticipantId" resultType="edu.lgxy.lbj.asms.entity.ContestResults" parameterType="edu.lgxy.lbj.asms.qo.ParticipantQo">
+        select * from contest_results where contest_participant_id = #{contestParticipantId}
+    </select>
+    <update id="updateResults" parameterType="edu.lgxy.lbj.asms.entity.ContestResults">
+        update contest_results
+        <trim prefix="set"  suffixOverrides=",">
+            <if test="contestResult != null and contestResult != ''">
+                contest_result = #{contestResult},
+            </if>
+        </trim>
+            where contest_participant_id= #{contestParticipantId}
+    </update>
     <select id="selectParticipantByPageAndUserId" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">
-        select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id = b.user_id
+
+        select A.*,contest_result
+        from (
+        select a.*,b.major,b.grade,b.academy from contest_participant a INNER JOIN student b on a.applicant_id =
+        b.user_id
         where
         <trim suffix="and">
-            <if test=" examineState!= null and examineState != ''">
-                (examine_state=#{examineState} or examine_state='已完赛')
+            <if test=" examineState == '已完赛'">
+                (examine_state=#{examineState} or examine_state='已通过')
+            </if>
+            <if test=" examineState == '未审核'">
+                (examine_state=#{examineState} or examine_state='已通过' or examine_state='未通过')
             </if>
         </trim>
 
-            contest_information_id in
+
+        contest_information_id in
         (select contest_information_id from contest_information where
         contest_declaration_id in
         (SELECT contest_declaration_id from contest_declaration
@@ -91,6 +110,8 @@
             </if>
 
         </trim>
+        ) As A left join contest_results on A.contest_participant_id  =  contest_results.contest_participant_id
+
         limit #{pageIndex},#{pageSize}
     </select>
 

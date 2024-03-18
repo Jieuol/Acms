@@ -22,12 +22,12 @@ public class AdminService {
         return adminMapper.updateDeclaration(contestDeclarationId);
     }
 
-    public Page getParticipantListByPage(int pageSize, int pageIndex, String contestName, String contestType, String contestDate) {
+    public Page getParticipantListByPage(int pageSize, int pageIndex, String contestName, String contestType, String contestDate,String examineState) {
         Page page =new Page();
-        page.setList(adminMapper.selectByPage(pageIndex,pageSize,contestName,contestType,contestDate));
+        page.setList(adminMapper.selectByPage(pageIndex,pageSize,contestName,contestType,contestDate,examineState));
         page.setPageIndex(pageIndex);
         page.setPageSize(pageSize);
-        page.setTotalRecords(adminMapper.selectByPageNoLimit(contestName,contestType,contestDate).size());
+        page.setTotalRecords(adminMapper.selectByPageNoLimit(contestName,contestType,contestDate,examineState).size());
         return page;
     }
 

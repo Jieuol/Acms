@@ -2,6 +2,7 @@ package edu.lgxy.lbj.asms.mapper;
 
 import edu.lgxy.lbj.asms.entity.ContestDeclaration;
 import edu.lgxy.lbj.asms.entity.ContestParticipant;
+import edu.lgxy.lbj.asms.entity.ContestResults;
 import edu.lgxy.lbj.asms.entity.ParticipantInfomation;
 import edu.lgxy.lbj.asms.qo.ParticipantQo;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +37,8 @@ public interface TeacherMapper {
                                                      @Param("examineState") String examineState);
 
     int insertResults(ParticipantQo participantQo);
+
+    ContestResults selectResultsByUserIdAndParticipantId(ParticipantQo participantQo);
+
+    int updateResults(ParticipantQo participantQo);
 }
