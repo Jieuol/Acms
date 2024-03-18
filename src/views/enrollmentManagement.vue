@@ -40,7 +40,14 @@
         </el-col>
 			</el-row>
 		</el-form>
-   <el-table  ref="multipleTable"
+
+    <download-excel class = "export-excel-wrapper":data = "contestInfo"
+       :fields = "json_fields" name = "filename.xls">
+    		<el-button style="float: right;" round type="success" icon="download" > 导出 </el-button>
+    </download-excel>
+
+    <el-table  ref="multipleTable"
+   id="table"
    :data="contestInfo"
    tooltip-effect="dark"
    style="width: 100%"
@@ -76,7 +83,7 @@
        @size-change="handleSizeChange"
        @current-change="handleCurrentChange"
        :current-page="currentPage" 
-       :page-sizes="[5,10,15]"
+       :page-sizes="[50,100,150]"
        :page-size = "query.pageSize" 
        layout="total, sizes, prev, pager, next, jumper"
        :total="totalRecords"
@@ -178,11 +185,24 @@
  import mixin from "@/mixins/page.js";
 
    export default {
+
+
      //import引入的组件需要注入到对象中才能使用
      components: {},
      data() {
        //这里存放数据
        return {
+        tableDataType:"报名信息",
+        json_fields: {
+        报名人: "applicantRealname",    //常规字段
+        学院:"academy",
+        专业:"major",
+        赛项名称: "contestName", //支持嵌套属性
+        赛项类型: "contestType",
+        赛项日期: "contestDate",
+
+      },
+
         userGroup:sessionStorage.getItem("userGroup"),
         options: [{
           value: '院级',
@@ -205,7 +225,7 @@
          totalRecords: 0,
           //总条数，总共有多少条数据,
           pageInfo:{
-           pageSize: 5,
+           pageSize: 50,
            pageIndex: 0,
           },
          // 弹框
@@ -216,10 +236,17 @@
        
        // 字段ID
        field: "",
-
+       json_meta: [
+        [
+          {
+            " key ": " charset ",
+            " value ": " utf- 8 "
+          }
+        ]
+      ],
        // 查询
        query: {
-        pageSize: 5,
+        pageSize: 50,
         pageIndex: 0,
         contestName:"",
         contestDate:"",
@@ -240,6 +267,31 @@
      watch: {},
      //方法集合
      methods: {
+      exportExcelHeader() {
+      this.json_fields = {};
+      this.tableFilterData.forEach(e => {
+      this.json_fields[e.label] = e.prop;
+      });
+    },
+    // exportExcel() {
+      // table 是表格组件的ID
+    //   let tables = document.getElementById("table");
+    //   let table_book = this.$XLSX.utils.table_to_book(tables);
+    //   var table_write = this.$XLSX.write(table_book, {
+    //     bookType: "xlsx",
+    //     bookSST: true,
+    //     type: "array",
+    //   });
+    //   try {
+    //     this.$FileSaver.saveAs(
+    //       new Blob([table_write], { type: "application/octet-stream" }),
+    //       "报名信息"+ ".xlsx"
+    //     );
+    //   } catch (e) {
+    //     if (typeof console !== "undefined") console.log(e, table_write);
+    //   }
+    //   return table_write;
+    // },
       updateParticipant(index){
         if(index=='pass'){
           console.log("pass_declaration");
@@ -392,7 +444,7 @@
      },
      queryInfo(){
       this.query.pageIndex=0;
-      this.query.pageSize=5;
+      this.query.pageSize=50;
       this.getParticipantListByPage();
      }
    },

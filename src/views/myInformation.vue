@@ -94,9 +94,22 @@
   <el-form :model="form" :rules="formRule" ref="form" label-width="150px">
       <div class="updateinfo">
   <div class="left">
-        <el-form-item label="头像" prop="avatar">
+    <el-upload
+          class="avatar-uploader"
+          action="#"
+          accept=".jpg,.jpeg,.png,.JPG,.JPEG"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img style="width:150px;height:110px" :src="form.avatar"></img>
+         
+        </el-upload>
+
+
+        <!-- <el-form-item label="头像" prop="avatar">
             <img style="width:150px;height:110px" :src="form.avatar"></img>
-        </el-form-item>
+        </el-form-item> -->
 
 
           <el-form-item label="年级" prop="grade"  v-if="userGroup=='学生'">
@@ -209,6 +222,25 @@ export default {
     watch: {},
     //方法集合
     methods: {
+      //上传头像
+      handleAvatarSuccess(file) {
+      //addImageFile  addImageUrl 自己在data中定义 file指的就是选择的文件对象
+      this.addImageFile = file;
+      this.form.avatar=require('../assets/images/avatar/'+this.addImageFile.name);
+      console.log(this.addImageFile)
+      // this.form.avatar = URL.createObjectURL(file.raw);
+   
+      console.log(this.form.avatar)
+    },
+      //上传头像
+    beforeAvatarUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 5;
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 5MB!');
+      }
+      return  isLt2M;
+    },
+
         handleClose(done) {
           this.$confirm('确认关闭？')
             .then(_ => {
@@ -267,6 +299,7 @@ export default {
             this.user = result.data.user;
             this.student = result.data.student;
             this.form = this.user;
+            
             if(this.userGroup=="学生"){
             this.form.major=this.student.major;
             this.form.grade=this.student.grade;
@@ -318,5 +351,34 @@ export default {
 .right {
   overflow: hidden;
 }
+.avatar-uploader{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  align-items: center;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 130px;
+  height: 130px;
+  line-height: 130px;
+  text-align: center;
+}
+.avatar {
+  width: 130px;
+  height: 130px;
+  display: block;
+}
+
   </style>
   

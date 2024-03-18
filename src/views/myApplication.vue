@@ -117,6 +117,10 @@
      </el-row>
 
      <el-row :gutter="20">
+       <el-col :span="24"><div class="introduce">截止日期: {{ form.deadlineTime }}</div></el-col>
+     </el-row>
+
+     <el-row :gutter="20">
        <el-col :span="24"><div class="introduce">竞赛介绍: {{ form.contestIntroduction }}</div></el-col>
      </el-row>
 

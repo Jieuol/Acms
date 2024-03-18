@@ -75,7 +75,7 @@
        @size-change="handleSizeChange"
        @current-change="handleCurrentChange"
        :current-page="currentPage" 
-       :page-sizes="[5,10,15]"
+       :page-sizes="[10,20,30]"
        :page-size = "query.pageSize" 
        layout="total, sizes, prev, pager, next, jumper"
        :total="totalRecords"
@@ -109,6 +109,10 @@
    
    <el-row :gutter="20">
      <el-col :span="24"><div class="introduce">竞赛日期: {{ form.contestDate }}</div></el-col>
+   </el-row>
+
+   <el-row :gutter="20">
+     <el-col :span="24"><div class="introduce">截止日期: {{ form.deadlineTime }}</div></el-col>
    </el-row>
 
    <el-row :gutter="20">
@@ -193,7 +197,7 @@
          totalRecords: 0,
           //总条数，总共有多少条数据,
           pageInfo:{
-           pageSize: 5,
+           pageSize: 10,
            pageIndex: 0,
           },
          // 弹框
@@ -218,7 +222,7 @@
         ],
        // 查询
        query: {
-        pageSize: 5,
+        pageSize: 10,
         pageIndex: 0,
         contestName:"",
         contestDate:"",

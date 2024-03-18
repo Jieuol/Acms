@@ -8,7 +8,15 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
-import axios from 'axios'
+import JsonExcel from 'vue-json-excel';
+Vue.component('downloadExcel', JsonExcel)
+
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
+  
+Vue.prototype.$FileSaver = FileSaver; //设置全局
+Vue.prototype.$XLSX = XLSX; //设置全局
+import axios from 'axios';
 Vue.prototype.$axios = axios
 
 
@@ -33,6 +41,9 @@ router.beforeEach((to,from,next) => {
     }
   }
 }),
+
+
+
 //请求拦截器 在请求头中加token
 axios.interceptors.request.use(
   config => {

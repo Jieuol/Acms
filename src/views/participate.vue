@@ -10,12 +10,25 @@
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <el-form-item label="赛项类型">
-            <el-input v-model="query.contestType"></el-input>
+            <el-select v-model="query.contestType" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <el-form-item label="赛项日期">
-            <el-input v-model="query.contestDate"></el-input>
+            <el-date-picker
+            v-model="query.contestDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+
           </el-form-item>
         </el-col>
 
@@ -37,21 +50,24 @@
 			</el-table-column>
 			<el-table-column prop="contestName" label="赛项名称" min-width="200">
 			</el-table-column>
-			<el-table-column prop="contestType" label="赛项类型" min-width="200">
+			<el-table-column prop="contestType" label="赛项类型" min-width="100">
 			</el-table-column>
-			<el-table-column prop="participantsNumber" label="可报名人数剩余" min-width="200">
+			<el-table-column prop="participantsNumber" label="可报名人数剩余" min-width="150">
 			</el-table-column>
 			<el-table-column sortable prop="contestDate" label="赛项日期" min-width="200">
                 <!-- <template slot-scope="scope">
                 	{{ $toTime(scope.row["contestDate"],"yyyy-MM-dd") }}
                 </template> -->
 			</el-table-column>
-
-			<el-table-column sortable prop="updateTime" label="更新时间" min-width="200">
+			<el-table-column sortable prop="deadlineTime" label="报名截止日期" min-width="200">
                 <!-- <template slot-scope="scope">
-                	{{ $toTime(scope.row["updateTime"],"yyyy-MM-dd hh:mm:ss") }}
+                	{{ $toTime(scope.row["contestDate"],"yyyy-MM-dd") }}
                 </template> -->
-			</el-table-column> -->
+			</el-table-column>
+			<!-- <el-table-column prop="participationConditions" label="竞赛状态" min-width="200">
+
+			</el-table-column>  -->
+
 			<el-table-column fixed="right" label="操作" min-width="120">
 				<template slot-scope="scope">
           <el-button class="el-button el-button--small is-plain el-button--default" style="margin: 5px !important;" size="small" @click="detail(scope.row)">
@@ -127,6 +143,18 @@
       data() {
         //这里存放数据
         return {
+          options: [{
+          value: '院级',
+          label: '院级'
+        }, {
+          value: '校级',
+          label: '校级'
+        },
+        {
+          value: '国家级',
+          label: '国家级'
+        },
+        ],
           form:{
           },
           centerDialogVisible:false,

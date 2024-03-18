@@ -40,6 +40,11 @@
         </el-col>
 			</el-row>
 		</el-form>
+
+    <download-excel class = "export-excel-wrapper":data = "contestInfo"
+       :fields = "json_fields" name = "filename.xls">
+    		<el-button style="float: right;" round type="success" icon="download" > 导出 </el-button>
+    </download-excel>
    <el-table  ref="multipleTable"
    :data="contestInfo"
    tooltip-effect="dark"
@@ -160,6 +165,15 @@
      data() {
        //这里存放数据
        return {
+      //   json_fields: {
+      //   报名人: "applicantRealname",    //常规字段
+      //   学院:"academy",
+      //   专业:"major",
+      //   赛项名称: "contestName", //支持嵌套属性
+      //   赛项类型: "contestType",
+      //   赛项日期: "contestDate",
+
+      // },
         userGroup:sessionStorage.getItem("userGroup"),
         options: [{
           value: '院级',
@@ -173,6 +187,15 @@
           label: '国家级'
         },
         ],
+        //导出excel设置
+        json_meta: [
+        [
+          {
+            " key ": " charset ",
+            " value ": " utf- 8 "
+          }
+        ]
+      ],
          form:{
           contestResult:"",
          },
@@ -218,6 +241,13 @@
      watch: {},
      //方法集合
      methods: {
+      //导出Excel
+      exportExcelHeader() {
+      this.json_fields = {};
+      this.tableFilterData.forEach(e => {
+      this.json_fields[e.label] = e.prop;
+      });
+    },
       submit(){
         console.log("form:");
         console.log(this.form);

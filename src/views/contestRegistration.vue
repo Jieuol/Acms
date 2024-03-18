@@ -29,6 +29,15 @@
           </el-date-picker>
         </el-form-item>
 
+        <el-form-item label="截止时间" label-width="100px">
+          <el-date-picker
+            v-model="addForm.deadlineTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+
         <el-form-item label="参与人数"  label-width="100px">
           <el-input v-model="addForm.participantsNumber" style="width: 30%" autocomplete="off"></el-input>
         </el-form-item>
