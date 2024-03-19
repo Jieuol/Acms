@@ -176,9 +176,9 @@
         赛项名称: "contestName", 
         赛项类型: "contestType",
         赛项日期: "contestDate",
+        成绩:"contestResult",
         审核状态: "examineState",
         审核回复: "examineReply", 
-
       },
         userGroup:sessionStorage.getItem("userGroup"),
         options: [{

@@ -85,7 +85,7 @@
 
 
 
-      <el-dialog
+  <el-dialog
   title="修改个人信息"
   :visible.sync="dialogFormVisible"
   :before-close="handleClose"
