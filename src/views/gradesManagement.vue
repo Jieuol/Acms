@@ -60,6 +60,9 @@
      </el-table-column>
      <el-table-column prop="examineState" label="审核状态" min-width="100">
      </el-table-column>
+     <el-table-column prop="contestResult" label="成绩" min-width="50">
+    </el-table-column>
+
      <el-table-column sortable prop="contestDate" label="赛项日期" min-width="100">
      </el-table-column>
 
@@ -140,7 +143,8 @@
    <el-row :gutter="20">
      <el-col :span="24">
       <el-input v-model="form.contestResult" style="width: 15%" placeholder="请输入该生成绩"></el-input>
-      <el-button type="success" @click="submit()">确认登记</el-button>
+      <el-button v-if="form.examineState!='已完赛'" type="success" @click="submit()">确认登记</el-button>
+      <el-button v-if="form.examineState=='已完赛'" type="success" @click="submit()">确认修改</el-button>
     </el-col>
     
    </el-row>
@@ -165,15 +169,17 @@
      data() {
        //这里存放数据
        return {
-      //   json_fields: {
-      //   报名人: "applicantRealname",    //常规字段
-      //   学院:"academy",
-      //   专业:"major",
-      //   赛项名称: "contestName", //支持嵌套属性
-      //   赛项类型: "contestType",
-      //   赛项日期: "contestDate",
+        json_fields: {
+        报名人: "applicantRealname",    //常规字段
+        学院:"academy",
+        专业:"major",
+        赛项名称: "contestName", 
+        赛项类型: "contestType",
+        赛项日期: "contestDate",
+        审核状态: "examineState",
+        审核回复: "examineReply", 
 
-      // },
+      },
         userGroup:sessionStorage.getItem("userGroup"),
         options: [{
           value: '院级',
@@ -384,7 +390,7 @@
        console.log(this.query);
       if(this.userGroup=="管理员"){
         this.$axios({
-         url: "/admin/getParticipantListByPage",
+         url: "/admin/gradesManagement",
          method: 'GET',
          params: this.query
        }).then(resp=>{

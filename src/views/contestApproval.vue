@@ -98,10 +98,12 @@
     <!-- 遮罩2 -->
  <el-dialog title="详细信息" :visible.sync="centerDialogVisible" width="1000px">
  <div class=" container" style="margin-top:25px;margin-left:30px;">
+  <el-row :gutter="10">
+     <el-col :span="4"><div class="title">申请人: {{ form.realname }}</div></el-col>
+   </el-row>
    <el-row :gutter="10">
      <el-col :span="4"><div class="title">竞赛名称: {{ form.contestName }}</div></el-col>
    </el-row>
-
      
    <el-row :gutter="10">
      <el-col :span="4"><div class="text">竞赛类别: {{ form.contestType }}</div></el-col>
@@ -260,9 +262,13 @@
         if(index=='pass'){
           console.log("pass_declaration");
           console.log(this.form.contestDeclarationId);
+          this.updateForm.contestName=this.form.contestName;
+          this.updateForm.applicantId=this.form.applicantId;
           this.updateForm.contestDeclarationId=this.form.contestDeclarationId;
           this.updateForm.examineReply=this.form.examineReply;
           this.updateForm.examineState="已通过";
+          console.log("!!!!!updateForm!!!!!!!!")
+          console.log(this.updateForm)
           this.$axios.post("/updateDeclaration", this.updateForm).then(resp=>{
           let result = resp.data;
           if(result.code==='0'){
@@ -292,8 +298,12 @@
         if(index=='fail'){
         console.log("fail_declaration");
         console.log(this.form.contestDeclarationId);
+        this.updateForm.contestName=this.form.contestName;
+        this.updateForm.applicantId=this.form.applicantId;
         this.updateForm.contestDeclarationId=this.form.contestDeclarationId;
         this.updateForm.examineState="未通过";
+        console.log("!!!!!updateForm!!!!!!!!")
+        console.log(this.updateForm)
         this.$axios.post("/updateDeclaration", this.updateForm).then(resp=>{
           let result = resp.data;
           if(result.code==='0'){

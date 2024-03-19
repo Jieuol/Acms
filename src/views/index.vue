@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:25 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-16 17:13:04
+ * @Last Modified time: 2024-03-19 10:49:11
  */
 
 <template>
@@ -24,9 +24,9 @@
         <!-- 页面主体区域 -->
         <el-container>
             <!-- 侧边栏 -->
-            <el-aside width="200px">
+            <el-aside style="background: rgba(255, 255, 255, 0.7);" width="200px">
 				<el-menu
-					background-color="#b0d9ee"
+					style="background: rgba(255, 255, 255, 0.7);"
 					text-color="black"
 					active-text-color="red"
 					router
@@ -126,12 +126,33 @@
 
 			</el-main>
         </el-container>
+
+	//消息
     </el-container>
+		
 		<el-drawer
 		title="我是标题"
 		:visible.sync="drawer"
 		:with-header="false">
-		<span>我来啦!</span>
+		<span v-if="messageData==null">暂无消息</span>
+		<el-collapse accordion>
+		<el-collapse-item v-for="(list,index) in messageData" :key="index" >
+		<template slot="title">
+		<span v-if="list.state == '0'">[未读]</span>
+		<span v-if="list.state == '1'" class="actived">[已读]</span>
+		<b @click="messageActive(list.messageId,list.state)">{{list.messageName}}</b><i class="el-icon-alarm-clock time">{{list.createTime.substring(0,16)}}</i></template>
+		<div>{{list.messageInformation}}</div>
+		</el-collapse-item>
+		</el-collapse>
+
+
+
+
+
+
+
+
+
 		</el-drawer>
 	</div>
 </template>
@@ -175,6 +196,16 @@
   .el-main{
     background-color: rgba(209, 242, 249, 0.5);
 }
+.el-collapse{border:none;}
+    .el-collapse div:last-child > div div{border:none;}
+    .el-collapse-item__header{position:relative;font-size:16px;justify-content:space-between;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .el-collapse-item__header b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:normal;}
+    .is-active b{padding-left:20px;transition:all .5s;}
+    .el-collapse-item__header .time{position:absolute;right:30px;font-size:14px;}
+    .el-icon-alarm-clock:before{margin-right:10px;}
+    .el-collapse-item__header span{font-size:12px;color:brown;margin-right:10px;}
+    .el-collapse-item__header span.actived{color:#666;}
+    .el-collapse-item__content{font-size:14px;line-height:26px;padding:30px 20px;color:#666;background:#f8f8f8;}
 </style>
 
 <script>
@@ -184,6 +215,7 @@ export default{
 	data(){
 		
 		return{
+			messageData:[],
 			userId:sessionStorage.getItem("userId"),
 			userGroup:sessionStorage.getItem('userGroup'),
 			userName:sessionStorage.getItem('username'),
@@ -194,9 +226,39 @@ export default{
 
 	},
 	methods:{
+        getMessage(){
+         this.$axios.get("/getMessage?userId="+this.userId).then(resp=>{
+			let result = JSON.stringify(resp.data);
+        	 result = eval("("+result+")");
+			 console.log("--------------");
+			 console.log(result);
+			 if(result.code=='0'){
+				this.messageData=result.data.messageData;
+				console.log("--------------");
+			 	console.log(this.messageData);
+			 }
+
+		 })
+	  
+		 },
+	messageActive(eventId,eventState) {
+      console.log(eventId,eventState);
+      if(eventState == '0'){ //阅读状态是未读提交已读申请
+        this.$axios.get("/updateMessage?messageId="+eventId).then(resp=>{
+			let result = resp.data;
+			if (result.data.messageData.state=='1') {
+            //提交成功后更新阅读状态为已读不用重新申请数据也不用刷新页面
+            this.getMessage();
+          }
+		})
+
+
+		}
+	},
 		// 建立连接
 		createSseConnect(userId){
 			this.drawer = true;
+			this.getMessage();
 		},
 		logout(){
 			// sessionStorage.setItem('token','');
