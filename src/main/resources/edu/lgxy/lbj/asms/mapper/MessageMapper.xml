@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.lgxy.lbj.asms.mapper.MessageMapper">
+
+    <select id="selectMessageByUserId" resultType="edu.lgxy.lbj.asms.entity.Message">
+        select * from message where user_id=#{userId}
+    </select>
+
+    <select id="selectMessageByMsageId" resultType="edu.lgxy.lbj.asms.entity.Message">
+        select * from message where message_id=#{messageId}
+    </select>
+
+    <update id="updateMessage">
+        update message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="state != '0' ">state ='1',</if>
+        </trim>
+        where message_id=#{messageId}
+    </update>
+    <insert id="insertMessage" parameterType="edu.lgxy.lbj.asms.entity.Message">
+        insert into message
+        (user_id,message_name,message_information)
+        values
+        (#{userId},#{messageName},#{messageInformation})
+    </insert>
+
+
+<!--    <select id="selectBaseCount" resultType="Integer">-->
+<!--        ${count}-->
+<!--    </select>-->
+
+<!--    <select id="selectBaseOne" resultType="Object">-->
+<!--        ${select}-->
+<!--    </select>-->
+
+<!--    <update id="updateBaseSql">-->
+<!--        <trim prefix="SET" suffixOverrides=",">-->
+<!--            <if test="state != null ">state = #{state},</if>-->
+<!--        </trim>-->
+<!--        where username = #{username}-->
+<!--    </update>-->
+
+<!--    <delete id="deleteBaseSql">-->
+<!--        ${sql}-->
+<!--    </delete>-->
+
+</mapper>

@@ -71,7 +71,7 @@ public class ContestController {
 //        code="0";
 //        return new JsonResult<>(map,msg,code);
 //    }
-
+    //获取所有竞赛信息
     @RequestMapping("/getContestListByPage")
     JsonResult<Map> contestList(PageQo pageQo ){
         log.info("pageIndex："+pageQo.getPageIndex());

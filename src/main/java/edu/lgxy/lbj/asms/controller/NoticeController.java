@@ -23,7 +23,7 @@ import java.util.Map;
 public class NoticeController {
     @Resource
     private NoticeService noticeService;
-
+    //新增通知
     @RequestMapping("/addNotice")
     public JsonResult<Map> addNotice(@RequestBody NoticeQo notice){
         log.info("notice:"+notice);
@@ -35,6 +35,7 @@ public class NoticeController {
         String code="0";
         return new JsonResult<>(msg,code);
     }
+    //编辑通知
     @RequestMapping("/editNotice")
     public JsonResult<Map> editNotice(@RequestBody Notice notice){
         int result = noticeService.editForm(notice);
@@ -45,7 +46,7 @@ public class NoticeController {
         String code="0";
         return new JsonResult<>(msg,code);
     }
-
+    //撤回通知
     @RequestMapping("/withDrawNotice")
     public JsonResult<Map> withDrawNotice(@RequestParam int noticeId){
         int rest = noticeService.withDrawNoticeByNoticeId(noticeId);
@@ -60,7 +61,7 @@ public class NoticeController {
         return new JsonResult<>(msg,code);
     }
 
-
+    //删除通知
     @RequestMapping("/deleteNotice")
     public JsonResult<Map> deleteNotice(@RequestParam int noticeId){
         int rest = noticeService.deleteNotice(noticeId);
@@ -74,6 +75,7 @@ public class NoticeController {
 
         return new JsonResult<>(msg,code);
     }
+    //根据用户分组获取通知
     @RequestMapping("getNoticeByUserGroup")
     public JsonResult<Map> getNoticeByUserGroup(PageQo3 pageQo){
         log.info("pageIndex："+pageQo.getPageIndex());
@@ -99,7 +101,7 @@ public class NoticeController {
         code="0";
         return new JsonResult<>(map,msg,code);
     }
-
+    //发布通知
     @RequestMapping("/publishNotice")
     public JsonResult<Map> publishNotice(@RequestParam int noticeId){
         int rest = noticeService.publishNoticeNoticeByNoticeId(noticeId);

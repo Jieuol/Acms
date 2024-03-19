@@ -15,7 +15,7 @@
     </insert>
 
     <select id="selectByPageAndUserId" resultType="edu.lgxy.lbj.asms.entity.ContestDeclaration">
-        select * from contest_declaration
+        select A.*,realname from contest_declaration As A  INNER JOIN user B on A.applicant_id=B.user_id
         <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
             <if test="contestName != null and contestName != ''">
                 and contest_name = #{contestName}
@@ -32,6 +32,7 @@
                 and applicant_id = #{applicantId}
             </if>
         </trim>
+
         limit #{pageIndex},#{pageSize}
     </select>
     <select id="selectByPageAndUserIdNoLimit" resultType="edu.lgxy.lbj.asms.entity.ParticipantInfomation">

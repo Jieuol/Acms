@@ -4,6 +4,7 @@ import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.config.PageAndUserId;
 import edu.lgxy.lbj.asms.entity.ContestDeclaration;
 import edu.lgxy.lbj.asms.entity.ContestParticipant;
+import edu.lgxy.lbj.asms.entity.Message;
 import edu.lgxy.lbj.asms.mapper.AdminMapper;
 import edu.lgxy.lbj.asms.mapper.ParticipantMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,9 @@ public class AdminService {
     private AdminMapper adminMapper;
     @Resource
     private ParticipantMapper participantMapper;
+
     public int updateDeclaration(ContestDeclaration contestDeclarationId) {
+
         return adminMapper.updateDeclaration(contestDeclarationId);
     }
 

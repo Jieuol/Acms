@@ -50,6 +50,7 @@ public class ParticipantController {
         return new JsonResult<>(map,msg,code);
 
     }
+    //增加报名信息-通过userId
     @RequestMapping("/insertParticipant")
     JsonResult<Map> insertParticipant(@RequestBody Participant participant){
         Map<String,Object> map = new HashMap<>();
@@ -75,6 +76,7 @@ public class ParticipantController {
         code="0";
         return new JsonResult<>(msg,code);
     }
+    //删除报名信息-by userId
     @RequestMapping("/deleteParticipant")
     JsonResult<Map> deleteParticipant(@RequestBody Participant participant){
         Map<String,Object> map = new HashMap<>();
