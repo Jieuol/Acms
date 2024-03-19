@@ -164,6 +164,9 @@ public class UserController {
             code="202";
             return new JsonResult<>(map,msg,code);
         }
+        if(user.getState()==0){
+            return new JsonResult<>("您的账号已被禁用，请联系管理员处理","202");
+        }
         map.put("user",user);
         String token = TokenUtil.sign(user);
 //        TokenUtil.verify(token);
@@ -292,7 +295,7 @@ public class UserController {
     }
 
     @RequestMapping("/updateByUserName")
-    public JsonResult<Map> updateByUserName(@RequestBody ReceiveUser user){
+    public JsonResult<Map> updateByUserName(@RequestBody User user){
         Map<String,Object> map = new HashMap<>();
         String code="";
         String msg ="服务器正常";

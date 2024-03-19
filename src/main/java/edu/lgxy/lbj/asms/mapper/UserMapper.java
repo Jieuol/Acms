@@ -21,4 +21,10 @@ public interface UserMapper {
     List<ContestResults> selectContestResultsByPageAndUserIdNoLimit(int applicantId, String contestName, String contestType, String contestDate);
 
     Student selectStudentInfo(long userId);
+
+    List<User> selectUserInformation(int pageIndex, int pageSize, String userGroup);
+
+    List<User> selectUserInformationNolimit(String userGroup);
+
+    int updateUserInformation(User user);
 }

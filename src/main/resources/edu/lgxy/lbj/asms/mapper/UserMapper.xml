@@ -151,7 +151,50 @@
         </trim>
         where username = #{username}
     </update>
+    <select id="selectUserInformation" resultType="edu.lgxy.lbj.asms.entity.User">
+        select * from user
+        <trim prefix="where">
+            <if test="userGroup!=null and userGroup!=''">
+                user_group=#{userGroup}
+            </if>
+            <if test="userGroup==null or userGroup==''">
+                user_group!='管理员'
+            </if>
+        </trim>
+        limit #{pageIndex},#{pageSize}
+    </select>
 
+    <select id="selectUserInformationNolimit" resultType="edu.lgxy.lbj.asms.entity.User">
+        select * from user
+        <trim prefix="where">
+            <if test="userGroup!=null and userGroup!=''">
+                user_group=#{userGroup}
+            </if>
+            <if test="userGroup==null or userGroup==''">
+                user_group!='管理员'
+            </if>
+        </trim>
+
+    </select>
+    <update id="updateUserInformation" parameterType="edu.lgxy.lbj.asms.entity.User">
+        update user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="state != null ">state = #{state},</if>
+            <if test="gender != null ">gender = #{gender},</if>
+            <if test="userGroup != null  and userGroup != ''">user_group = #{userGroup},</if>
+            <if test="loginTime != null ">login_time = #{loginTime},</if>
+            <if test="phone != null  and phone != ''">phone = #{phone},</if>
+            <if test="phoneState != null ">phone_state = #{phoneState},</if>
+            <if test="username != null  and username != ''">username = #{username},</if>
+            <if test="password != null  and password != ''">password = #{password},</if>
+            <if test="email != null  and email != ''">email = #{email},</if>
+            <if test="emailState != null ">email_state = #{emailState},</if>
+            <if test="avatar != null  and avatar != ''">avatar = #{avatar},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where user_id = #{userId}
+
+    </update>
 <!--    <insert id="insert" parameterType="edu.lgxy.lbj.asms.entity.User">-->
 <!--        insert into User (username,password)-->
 <!--        values-->

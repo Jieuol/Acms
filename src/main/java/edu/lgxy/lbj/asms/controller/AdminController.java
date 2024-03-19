@@ -3,28 +3,27 @@ package edu.lgxy.lbj.asms.controller;
 import edu.lgxy.lbj.asms.config.JsonResult;
 import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.config.PageAndUserId;
-import edu.lgxy.lbj.asms.entity.ContestDeclaration;
-import edu.lgxy.lbj.asms.entity.ContestInformation;
-import edu.lgxy.lbj.asms.entity.ContestParticipant;
-import edu.lgxy.lbj.asms.entity.Message;
+import edu.lgxy.lbj.asms.entity.*;
 import edu.lgxy.lbj.asms.qo.PageQo;
 import edu.lgxy.lbj.asms.qo.PageQo2;
-import edu.lgxy.lbj.asms.service.AdminService;
-import edu.lgxy.lbj.asms.service.ContestService;
-import edu.lgxy.lbj.asms.service.MessageService;
-import edu.lgxy.lbj.asms.service.TeacherService;
+import edu.lgxy.lbj.asms.qo.UserPage;
+import edu.lgxy.lbj.asms.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RestController
 public class AdminController {
+    @Resource
+    private UserService userService;
     @Resource
     private ContestService contestService;
     @Resource
@@ -161,5 +160,39 @@ public class AdminController {
         return new JsonResult<>(msg,code);
     }
 
+    @RequestMapping("/getUserInformation")
+    JsonResult<Map> getUserInformation(UserPage userPage){
+        int pageSize=userPage.getPageSize();
+        int pageIndex= userPage.getPageIndex();
+        String userGroup= userPage.getUserGroup();
+
+        Page page = userService.getUserInformation
+                (pageSize,pageIndex,userGroup);
+        Map<String,Object> map = new HashMap<>();
+        String code="";
+        String msg ="服务器正常";
+        if(page.getList()==null){
+            code="0";
+            msg="暂无记录";
+            return new JsonResult<>(map,msg,code);
+        }
+        log.info("-----------------"+page.getList());
+        page.getList();
+        map.put("userInformation",page.getList());
+        map.put("totalRecords",page.getTotalRecords());
+        code="0";
+        return new JsonResult<>(map,msg,code);
+    }
+
+    @RequestMapping("/updateUserInformation")
+    JsonResult<Map> updateUserInformation(@RequestBody User user){
+        log.info("!!!!!!!!!!!!!!!"+user);
+        int result = userService.updateUserInformation(user);
+        if(result<=0){
+            return new JsonResult<>("操作失败","202");
+        }
+        String msg ="操作正常";
+        return new JsonResult<>("操作成功","0");
+    }
 
 }

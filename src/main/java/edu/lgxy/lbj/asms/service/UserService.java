@@ -8,6 +8,7 @@ import edu.lgxy.lbj.asms.qo.ReceiveUser;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -24,8 +25,8 @@ public class UserService {
         return  userMapper.updatePassword(user1);
     }
 
-    public int updateUser(ReceiveUser user) {
-        return userMapper.updateUser(user);
+    public int updateUser(User user) {
+        return userMapper.updateUserInformation(user);
     }
 
     public Page getResults(int pageSize, int pageIndex, int applicantId, String contestName, String contestType, String contestDate) {
@@ -39,5 +40,19 @@ public class UserService {
 
     public Student selectStudentInfo(long userId) {
         return userMapper.selectStudentInfo(userId);
+    }
+
+
+    public Page getUserInformation(int pageSize, int pageIndex, String userGroup) {
+        Page page =new Page();
+        page.setList(userMapper.selectUserInformation(pageIndex,pageSize,userGroup));
+        page.setPageIndex(pageIndex);
+        page.setPageSize(pageSize);
+        page.setTotalRecords(userMapper.selectUserInformationNolimit(userGroup).size());
+        return page;
+    }
+
+    public int updateUserInformation(User user) {
+        return userMapper.updateUserInformation(user);
     }
 }
