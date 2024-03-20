@@ -227,6 +227,13 @@
           console.log(this.participantInfo);
           this.$axios.post("/insertParticipant",this.participantInfo).then(resp=>{
           let result =resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
               this.dialogFormVisible = false;
               this.getContestListByPage()
@@ -276,6 +283,13 @@
 
 					let result = JSON.stringify(resp.data);
           result = eval("("+result+")");
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           this.contestInfo=result.data.contestInfo
           this.totalRecords=result.data.totalRecords;
         

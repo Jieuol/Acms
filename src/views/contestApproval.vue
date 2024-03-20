@@ -271,6 +271,13 @@
           console.log(this.updateForm)
           this.$axios.post("/updateDeclaration", this.updateForm).then(resp=>{
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
             this.centerDialogVisible=false;
             this.getDeclarationListByPage();
@@ -285,6 +292,13 @@
         })
         this.$axios.post("/insertContestInfo",this.contestInformaion).then(resp=>{
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
 
             return this.$message({
@@ -306,6 +320,13 @@
         console.log(this.updateForm)
         this.$axios.post("/updateDeclaration", this.updateForm).then(resp=>{
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
             this.getDeclarationListByPage();
             this.centerDialogVisible=false;
@@ -320,6 +341,13 @@
         })
         this.$axios.post("/deleteContestInfo",this.contestInformaion).then(resp=>{
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
             return this.$message({
               message:result.msg,
@@ -337,6 +365,13 @@
         this.$axios.post("/deleteDeclaration",this.contestDeclaration).then(resp=>{
           
          let result =resp.data;
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
          if(result.code==='0'){
             this.deletecenterDialogVisible = false;
             this.getDeclarationListByPage()
@@ -411,6 +446,13 @@
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
          this.contestInfo=result.data.contestDeclaration;
          
          this.totalRecords=result.data.totalRecords;
@@ -430,6 +472,13 @@
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
          this.contestInfo=result.data.contestDeclaration;
          
          this.totalRecords=result.data.totalRecords;

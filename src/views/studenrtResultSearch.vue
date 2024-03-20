@@ -267,6 +267,13 @@
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
          this.dataInfo=result.data.contestResults;
          
          this.totalRecords=result.data.totalRecords;

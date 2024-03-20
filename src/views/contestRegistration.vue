@@ -114,6 +114,13 @@
         console.log(this.addForm);
         this.$axios.post("/applyContest",this.addForm).then(resp=>{
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==="0"){
             this.addForm={};
             return this.$message({

@@ -259,6 +259,13 @@
         console.log(this.form);
         this.$axios.post("/insertResults",this.form).then(resp=>{
           let result =resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
             this.centerDialogVisible = false;
             this.getParticipantListByPage()
@@ -290,6 +297,13 @@
           this.updateForm.examineState="已通过";
           this.$axios.post("/updateParticipant", this.updateForm).then(resp=>{
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
             this.centerDialogVisible=false;
             this.getParticipantListByPage();
@@ -312,6 +326,13 @@
         this.updateForm.examineState="未通过";
         this.$axios.post("/updateParticipant", this.updateForm).then(resp=>{
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
             this.getParticipantListByPage();
             this.centerDialogVisible=false;
@@ -330,6 +351,13 @@
         console.log(this.participantInfo);
         this.$axios.post("/deleteParticipant",this.participantInfo).then(resp=>{
          let result =resp.data;
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
          if(result.code==='0'){
             this.deletecenterDialogVisible = false;
             this.getParticipantListByPage()
@@ -397,7 +425,13 @@
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
-        
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
          this.contestInfo=result.data.contestInfo;
          
          this.totalRecords=result.data.totalRecords;
@@ -413,6 +447,13 @@
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
          this.contestInfo=result.data.participant;
          
          this.totalRecords=result.data.totalRecords;

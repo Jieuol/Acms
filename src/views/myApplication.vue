@@ -213,6 +213,13 @@
           console.log(this.contestDeclaration);
           this.$axios.post("/deleteDeclaration",this.contestDeclaration).then(resp=>{
            let result =resp.data;
+           if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
            if(result.code==='0'){
               this.deletecenterDialogVisible = false;
               this.getDeclarationListByPageAndUserId()
@@ -288,6 +295,13 @@
   
            let result = JSON.stringify(resp.data);
            result = eval("("+result+")");
+           if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
            this.contestInfo=result.data.contestDeclaration;
            
            this.totalRecords=result.data.totalRecords;

@@ -414,7 +414,15 @@
 		   console.log("row");
 		   console.log(row);
 		   this.$axios.post("/updateUserInformation",row).then(resp=>{
+			
 			let resutlt  = resp.data;
+			if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
 			if (resutlt.code==='0'){
 				return this.$message({
 					type:"success",
@@ -433,6 +441,13 @@
 		   console.log(row);
 		   this.$axios.post("/updateUserInformation",row).then(resp=>{
 			let resutlt  = resp.data;
+			if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
 			if (resutlt.code==='0'){
 				return this.$message({
 					type:"success",
@@ -469,6 +484,13 @@
           console.log(this.form)
           this.$axios.post("/updateByUserName",this.form).then(resp=>{
           let result =resp.data;
+		  if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
               this.dialogFormVisible = false;
 							return this.$message({
@@ -496,6 +518,13 @@
 			this.updateForm.examineState="已通过";
 			this.$axios.post("/updateParticipant", this.updateForm).then(resp=>{
 			let result = resp.data;
+			if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
 			if(result.code==='0'){
 			  this.centerDialogVisible=false;
 			  this.getUserInformation();
@@ -518,6 +547,13 @@
 		  this.updateForm.examineState="未通过";
 		  this.$axios.post("/updateParticipant", this.updateForm).then(resp=>{
 			let result = resp.data;
+			if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
 			if(result.code==='0'){
 			  this.getUserInformation();
 			  this.centerDialogVisible=false;
@@ -584,9 +620,16 @@
   
 		   let result = JSON.stringify(resp.data);
 		   result = eval("("+result+")");
+		   if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
 		   this.userInfo=result.data.userInformation;
 		   this.totalRecords=result.data.totalRecords;
-		 
+			
 		   })
 		
 		},

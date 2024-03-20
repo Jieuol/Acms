@@ -267,6 +267,13 @@
           console.log("addForm")
           console.log(this.addForm)
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==0){
             this.AddcenterDialogVisible=false;
             this.addForm={};
@@ -286,6 +293,13 @@
           this.$axios.get("/withDrawNotice?noticeId="+row.noticeId).then(resp=>{
             this.getNoticeByUserGroup();
             let result =resp.data;
+            if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
 							return this.$message({
 								message:result.msg,
@@ -302,6 +316,13 @@
           this.$axios.get("/deleteNotice?noticeId="+row.noticeId).then(resp=>{
             this.getNoticeByUserGroup();
             let result =resp.data;
+            if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
 							return this.$message({
 								message:result.msg,
@@ -318,6 +339,13 @@
           this.$axios.get("/publishNotice?noticeId="+row.noticeId).then(resp=>{
             this.getNoticeByUserGroup();
             let result =resp.data;
+            if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
 							return this.$message({
 								message:result.msg,
@@ -348,6 +376,13 @@
        editNow(form){
         this.$axios.post("/editNotice",this.editForm).then(resp=>{
           let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
           if(result.code==='0'){
             this.centerDialogVisible=false;
 							return this.$message({
@@ -386,6 +421,13 @@
 
          let result = JSON.stringify(resp.data);
          result = eval("("+result+")");
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
          this.noticeInfo=result.data.noticeInfo
          this.totalRecords=result.data.totalRecords;
        

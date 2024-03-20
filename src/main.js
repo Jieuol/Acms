@@ -49,6 +49,7 @@ axios.interceptors.request.use(
   config => {
       if(sessionStorage.getItem('token')){
           config.headers.token = sessionStorage.getItem('token');
+          config.headers.username = sessionStorage.getItem('username');
       }
       return config;
   },

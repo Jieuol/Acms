@@ -294,6 +294,14 @@ export default {
             console.log(result);
             console.log("result.data");
             console.log(result.data);
+
+            if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
             console.log("result.data.user");
             console.log(result.data.user);
             this.user = result.data.user;

@@ -97,6 +97,13 @@
 				this.$axios.post("/forgot/checkEmail",this.verificationForm).then(resp=>{
 					let result = resp.data;
 					console.log(resp);
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
 					if(result.code==='0'){
 						sessionStorage.setItem('username',result.data.username);
 						console.log(sessionStorage.getItem('username'));
@@ -128,6 +135,13 @@
 				this.$axios.post("/forgot/changePsw",this.forgotPasswordForm).then(resp=>{
 					let result = resp.data;
 					console.log(resp);
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
 					if(result.code==='0'){
 						this.$router.push('/login')
 						if (this.active++ > 2) this.active = 0;
