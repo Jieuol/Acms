@@ -1,5 +1,6 @@
 package edu.lgxy.lbj.asms.controller;
 
+import edu.lgxy.lbj.asms.config.CheckToken;
 import edu.lgxy.lbj.asms.config.JsonResult;
 import edu.lgxy.lbj.asms.config.PageAndUserId;
 import edu.lgxy.lbj.asms.entity.ContestInformation;
@@ -10,11 +11,14 @@ import edu.lgxy.lbj.asms.qo.PageQo;
 import edu.lgxy.lbj.asms.qo.PageQo2;
 import edu.lgxy.lbj.asms.service.ContestService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +28,12 @@ public class ContestController {
 
     @Resource
     private ContestService contestService;
+    @Autowired
+    private HttpServletRequest request;
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private CheckToken checkToken;
 
 //    @RequestMapping("/insertParticipant")
 //    JsonResult<Map> insertParticipant(@RequestBody Participant participant){
@@ -74,6 +84,12 @@ public class ContestController {
     //获取所有竞赛信息
     @RequestMapping("/getContestListByPage")
     JsonResult<Map> contestList(PageQo pageQo ){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         log.info("pageIndex："+pageQo.getPageIndex());
         log.info("pageSize："+pageQo.getPageSize());
         log.info("contestDate："+pageQo.getContestDate());

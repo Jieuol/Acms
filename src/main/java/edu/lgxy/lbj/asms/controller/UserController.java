@@ -11,10 +11,7 @@ import edu.lgxy.lbj.asms.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +30,12 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class UserController {
+    @Autowired
+    private HttpServletRequest request;
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private CheckToken checkToken;
     @Resource
     private UserService userService;
 
@@ -44,7 +47,13 @@ public class UserController {
     private EmailService emailService;
 
     @RequestMapping("/getUseInfo")
-    public JsonResult<Map> login(@RequestParam String username, HttpSession session) throws ParseException {
+    public JsonResult<Map> login(@RequestParam String username) throws ParseException {
+
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         Map<String, Object> map = new HashMap<>();
 //        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
 //        log.info("redis->"+redisTemplate.opsForValue().get("name"));
@@ -90,7 +99,12 @@ public class UserController {
 
     @RequestMapping("/studenrtResultSearch")
     JsonResult<Map> studenrtResultSearch(PageQo2 pageQo2){
-
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int pageSize=pageQo2.getPageSize();
         int pageIndex= pageQo2.getPageIndex();
         int applicantId = pageQo2.getApplicantId();
@@ -123,6 +137,8 @@ public class UserController {
             return new JsonResult<>("验证码错误,请重新填写","202");
         }
         Map<String, Object> map = new HashMap<>();
+
+
 //        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
 //        log.info("redis->"+redisTemplate.opsForValue().get("name"));
         String username = receive.getUsername();
@@ -152,13 +168,13 @@ public class UserController {
             return new JsonResult<>(map,msg,code);
         }
 
+
         User u = new User();
         u.setUsername(username);
         log.info("u : "+u);
         User user = userService.selectByUserName(u);
 
         log.info("Mysql中查到user:"+user);
-
         if(user == null || !password.equals(user.getPassword())){
             msg= "用户名不存在或者密码错误";
             code="202";
@@ -168,10 +184,12 @@ public class UserController {
             return new JsonResult<>("您的账号已被禁用，请联系管理员处理","202");
         }
         map.put("user",user);
+        session.setAttribute("username",username);
         String token = TokenUtil.sign(user);
+        redisUtil.set(username,token,60*60);
 //        TokenUtil.verify(token);
-        map.put("token",token);
-        msg="登陆成功!";
+        map.put("token",redisUtil.get(username));
+        msg="登录成功!";
         return new JsonResult<>(map,msg);
     }
 
@@ -222,9 +240,13 @@ public class UserController {
             msg="邮箱验证失败";
             return new JsonResult<>(map,msg,code);
         }
-
+        if(redisUtil.get(username+"code")!=null){
+            return new JsonResult<>(map,"验证码已发送到指定邮箱,5分钟内容有效请注意查收","0");
+        }
         String randomCode= emailService.email(receiveEmail.getEmail());
-        httpSession.setAttribute("code", randomCode);
+
+        redisUtil.set(username+"code",randomCode,60*5);
+//        httpSession.setAttribute("code", randomCode);
         map.put("randomCode",randomCode);
         return new JsonResult<>(map,"验证码已发送到指定邮箱","0");
 
@@ -235,14 +257,20 @@ public class UserController {
         if(!verifyCode.equalsIgnoreCase(receiveEmail.getVerifyCode())){
             return new JsonResult<>("图片验证码错误,请重新填写","202");
         }
-        String Code = (String) session.getAttribute("code");
+        String username=receiveEmail.getUsername();
+        if(redisUtil.get(username+"code").toString()!=null){
+            String Code= redisUtil.get(username+"code").toString();
+            System.out.println("!!!!!!!!"+Code);
+        }
+        String Code= (String) redisUtil.get(username+"code");
+        System.out.println("!!!!!!!!"+Code);
+//        String Code = (String) session.getAttribute("code");
 
         if (Code == null||Code.equals("")) {
             return new JsonResult<>("邮箱验证码未发送","202");
         }
         Map<String,Object> map = new HashMap<>();
         User u = new User();
-        String username = receiveEmail.getUsername();
         u.setUsername(username);
         User user = userService.selectByUserName(u);
         map.put("username",username);
@@ -305,7 +333,6 @@ public class UserController {
             code="202";
             return new JsonResult<>(map,msg,code);
         }
-
         return new JsonResult<>(map);
     }
 

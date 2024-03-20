@@ -1,6 +1,7 @@
 package edu.lgxy.lbj.asms.controller;
 
 
+import edu.lgxy.lbj.asms.config.CheckToken;
 import edu.lgxy.lbj.asms.config.JsonResult;
 import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.config.PageAndUserId;
@@ -11,11 +12,14 @@ import edu.lgxy.lbj.asms.qo.ParticipantQo;
 import edu.lgxy.lbj.asms.service.MessageService;
 import edu.lgxy.lbj.asms.service.TeacherService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +27,12 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class TeacherController {
+    @Autowired
+    private HttpServletRequest request;
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private CheckToken checkToken;
     @Resource
     private TeacherService teacherService;
     @Resource
@@ -30,6 +40,12 @@ public class TeacherController {
     //申报竞赛项目
     @RequestMapping("/applyContest")
     public JsonResult<Map> applyContest(@RequestBody ContestDeclaration contestDeclaration){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int result = teacherService.insertContestDeclaration(contestDeclaration);
         if (result<=0){
             return new JsonResult<>("申报失败，服务器异常","202");
@@ -41,7 +57,12 @@ public class TeacherController {
     //获取申请的竞赛信息by current userId
     @RequestMapping("getDeclarationListByPageAndUserId")
     JsonResult<Map> getDeclarationListByPageAndUserId(PageQo2 pageQo){
-
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int pageSize=pageQo.getPageSize();
         int pageIndex= pageQo.getPageIndex();
         int applicantId = pageQo.getApplicantId();
@@ -70,7 +91,12 @@ public class TeacherController {
     //获取报名人信息
     @RequestMapping("/teacher/getParticipantListByPage")
     JsonResult<Map> getParticipantListByPage(PageQo2 pageQo2){
-
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int pageSize=pageQo2.getPageSize();
         int pageIndex= pageQo2.getPageIndex();
         int applicantId = pageQo2.getApplicantId();
@@ -99,7 +125,12 @@ public class TeacherController {
    //获取 报名人成绩
     @RequestMapping("/teacher/gradesManagement")
     JsonResult<Map> gradesManagement(PageQo2 pageQo2){
-
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int pageSize=pageQo2.getPageSize();
         int pageIndex= pageQo2.getPageIndex();
         int applicantId = pageQo2.getApplicantId();
@@ -128,6 +159,12 @@ public class TeacherController {
 
     @RequestMapping("/deleteDeclaration")
     JsonResult<Map> deleteParticipant(@RequestBody ContestDeclaration contestDeclaration){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         Map<String,Object> map = new HashMap<>();
         String msg="";
         String code="";
@@ -149,6 +186,12 @@ public class TeacherController {
     //登记成绩
     @RequestMapping("/insertResults")
     JsonResult<Map> insertResults(@RequestBody ParticipantQo participantQo){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         Map<String,Object> map = new HashMap<>();
         String msg="";
         String code="";
@@ -185,6 +228,12 @@ public class TeacherController {
     //更改审核信息
     @RequestMapping("/updateParticipant")
     JsonResult<Map> updateParticipant(@RequestBody ContestParticipant contestParticipantc){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         Map<String,Object> map = new HashMap<>();
         String msg="";
         String code="";

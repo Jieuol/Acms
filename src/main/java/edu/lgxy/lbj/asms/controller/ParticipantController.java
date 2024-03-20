@@ -1,5 +1,6 @@
 package edu.lgxy.lbj.asms.controller;
 
+import edu.lgxy.lbj.asms.config.CheckToken;
 import edu.lgxy.lbj.asms.config.JsonResult;
 import edu.lgxy.lbj.asms.config.PageAndUserId;
 import edu.lgxy.lbj.asms.entity.ContestParticipant;
@@ -7,11 +8,14 @@ import edu.lgxy.lbj.asms.entity.Participant;
 import edu.lgxy.lbj.asms.qo.PageQo2;
 import edu.lgxy.lbj.asms.service.ParticipantService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +25,21 @@ import java.util.Map;
 public class ParticipantController {
     @Resource
     private ParticipantService participantService;
+    @Autowired
+    private HttpServletRequest request;
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private CheckToken checkToken;
 
     @RequestMapping("getParticipantListByPageAndUserId")
     JsonResult<Map> getParticipantListByPageAndUserId(PageQo2 pageQo){
-
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int pageSize=pageQo.getPageSize();
         int pageIndex= pageQo.getPageIndex();
         int applicantId = pageQo.getApplicantId();
@@ -53,6 +68,12 @@ public class ParticipantController {
     //增加报名信息-通过userId
     @RequestMapping("/insertParticipant")
     JsonResult<Map> insertParticipant(@RequestBody Participant participant){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         Map<String,Object> map = new HashMap<>();
         String msg="";
         String code="";
@@ -79,6 +100,12 @@ public class ParticipantController {
     //删除报名信息-by userId
     @RequestMapping("/deleteParticipant")
     JsonResult<Map> deleteParticipant(@RequestBody Participant participant){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         Map<String,Object> map = new HashMap<>();
         String msg="";
         String code="";

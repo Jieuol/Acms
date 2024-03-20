@@ -1,5 +1,6 @@
 package edu.lgxy.lbj.asms.controller;
 
+import edu.lgxy.lbj.asms.config.CheckToken;
 import edu.lgxy.lbj.asms.config.JsonResult;
 import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.entity.ContestInformation;
@@ -8,12 +9,15 @@ import edu.lgxy.lbj.asms.qo.NoticeQo;
 import edu.lgxy.lbj.asms.qo.PageQo3;
 import edu.lgxy.lbj.asms.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +27,21 @@ import java.util.Map;
 public class NoticeController {
     @Resource
     private NoticeService noticeService;
+    @Autowired
+    private HttpServletRequest request;
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private CheckToken checkToken;
     //新增通知
     @RequestMapping("/addNotice")
     public JsonResult<Map> addNotice(@RequestBody NoticeQo notice){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         log.info("notice:"+notice);
         int result = noticeService.addNotice(notice);
         if(result<=0){
@@ -38,6 +54,12 @@ public class NoticeController {
     //编辑通知
     @RequestMapping("/editNotice")
     public JsonResult<Map> editNotice(@RequestBody Notice notice){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int result = noticeService.editForm(notice);
         if(result<=0){
             return new JsonResult<>("修改失败","202");
@@ -49,6 +71,12 @@ public class NoticeController {
     //撤回通知
     @RequestMapping("/withDrawNotice")
     public JsonResult<Map> withDrawNotice(@RequestParam int noticeId){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int rest = noticeService.withDrawNoticeByNoticeId(noticeId);
         String code= "0";
         String msg="撤回成功";
@@ -64,6 +92,12 @@ public class NoticeController {
     //删除通知
     @RequestMapping("/deleteNotice")
     public JsonResult<Map> deleteNotice(@RequestParam int noticeId){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int rest = noticeService.deleteNotice(noticeId);
         String code= "0";
         String msg="删除成功";
@@ -78,6 +112,12 @@ public class NoticeController {
     //根据用户分组获取通知
     @RequestMapping("getNoticeByUserGroup")
     public JsonResult<Map> getNoticeByUserGroup(PageQo3 pageQo){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         log.info("pageIndex："+pageQo.getPageIndex());
         log.info("pageSize："+pageQo.getPageSize());
         int pageSize=pageQo.getPageSize();
@@ -104,6 +144,12 @@ public class NoticeController {
     //发布通知
     @RequestMapping("/publishNotice")
     public JsonResult<Map> publishNotice(@RequestParam int noticeId){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
         int rest = noticeService.publishNoticeNoticeByNoticeId(noticeId);
         String code= "0";
         String msg="发布成功";
