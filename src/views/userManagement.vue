@@ -2,7 +2,15 @@
 <template>
 	<div class="main">
 	  <el-form label-position="right" :model="query" ref="query"  class="form p_4" label-width="120">
+		
+		
 		<el-row>
+			<el-col :xs="24" :sm="24" :lg="8">
+			<el-form-item label="用户名">
+			<el-input v-model="query.username"></el-input>
+			</el-form-item>
+			</el-col>
+
 		  <el-col :xs="24" :sm="24" :lg="8">
 			<el-form-item label="角色">
             <el-select v-model="query.userGroup" placeholder="请选择">
@@ -24,9 +32,11 @@
 		  </el-col>
 			  </el-row>
 		  </el-form>
-  
+	<!-- 添加新用户按钮 -->
+		  <el-button type="success" style="float: left;" @click="AddcenterDialogVisible=true">添加新用户</el-button>
+  	<!-- 导出按钮 -->
 	  <download-excel class = "export-excel-wrapper":data = "userInfo"
-		 :fields = "json_fields" name = "filename.xls">
+		 :fields = "json_fields" name = "用户信息.xls">
 			  <el-button style="float: right;" round type="success" icon="download" > 导出 </el-button>
 	  </download-excel>
 	 <el-table  ref="multipleTable"
@@ -178,6 +188,89 @@
 	 <el-button @click="back()">返 回</el-button>
    </div>
   
+     </el-dialog>
+
+    <!-- 创建用户遮罩 -->
+	<el-dialog title="创建用户" :visible.sync="AddcenterDialogVisible" :close-on-click-modal ="false" width="1000px" 
+  :before-close="handleCloseAdd">
+  <el-form :model="form" :rules="addformRule" ref="form" label-width="150px">
+      <div class="updateinfo">
+  <div class="left">
+    <el-upload
+          class="avatar-uploader"
+          action="#"
+          accept=".jpg,.jpeg,.png,.JPG,.JPEG"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img style="width:150px;height:110px" :src="form.avatar"></img>
+         
+        </el-upload>
+
+
+        <!-- <el-form-item label="头像" prop="avatar">
+            <img style="width:150px;height:110px" :src="form.avatar"></img>
+        </el-form-item> -->
+
+
+          <el-form-item label="年级" prop="grade"  v-if="userGroup=='学生'">
+            <el-input v-model="form.grade"></el-input>
+          </el-form-item>
+          <el-form-item label="性别" prop="sex">
+            <el-switch
+              v-model="form.gender"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="男"
+              inactive-text="女"
+              :active-value= "1"
+               :inactive-value= "0"
+            >
+            </el-switch>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="form.email"></el-input>
+          </el-form-item>
+          
+  </div>
+  <div class="right">
+      <el-form-item label="账号" prop="username">
+            <el-input v-model="form.username" ></el-input>
+          </el-form-item>
+          <el-form-item label="姓名" prop="realname">
+            <el-input v-model="form.realname" ></el-input>
+          </el-form-item>
+
+		  <el-form-item label="角色">
+            <el-select v-model="form.userGroup" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="学院" prop="academy"  v-if="userGroup=='学生'">
+            <el-input v-model="form.academy" ></el-input>
+          </el-form-item>
+
+          <el-form-item label="专业" prop="major"  v-if="userGroup=='学生'">
+            <el-input v-model="form.major" ></el-input>
+          </el-form-item>
+
+          <el-form-item label="手机号码" prop="phone">
+            <el-input v-model="form.phone"></el-input>
+          </el-form-item>
+  </div>
+  </div>
+  </el-form>
+    <div slot="footer" class="dialog-footer">
+    <el-button @click="add('form')">确认添加</el-button>
+    <el-button @click="resetForm()">取 消</el-button>
+    </div>
   </el-dialog>
 
 	 <!-- 修改信息 -->
@@ -235,6 +328,17 @@
           <el-form-item label="姓名" prop="realname">
             <el-input v-model="form.realname" ></el-input>
           </el-form-item>
+
+		  <el-form-item label="角色">
+            <el-select v-model="form.userGroup" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="学院" prop="academy"  v-if="userGroup=='学生'">
             <el-input v-model="form.academy" ></el-input>
           </el-form-item>
@@ -268,20 +372,20 @@
 	   components: {},
 	   data() {
         //自定义的邮箱和手机验证规则
-        var checkEmail = (rule, value, callback) => {
-      const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if (regEmail.test(value)) {
+    	var checkEmail = (rule, value, callback) => {
+    	const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    	if (regEmail.test(value)) {
         return callback();
-      }
-      callback(new Error("请输入合法的邮箱"));
+    	}
+      	callback(new Error("请输入合法的邮箱"));
     };
-    var checkMobile = (rule, value, callback) => {
-      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
-      if (regMobile.test(value)) {
-        return callback();
-      }
-      callback(new Error("请输入合法的手机号"));
-    };
+    	var checkMobile = (rule, value, callback) => {
+     	 const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+      	if (regMobile.test(value)) {
+      	  return callback();
+     	 }
+     	 callback(new Error("请输入合法的手机号"));
+   		 };
 		 //这里存放数据
 		 return {
 			student:{
@@ -291,21 +395,38 @@
 			user:{
 
 			},
+			addForm:{
+         	},
 		  json_fields: {
-		  报名人: "applicantRealname",    //常规字段
-		  学院:"academy",
-		  专业:"major",
-		  赛项名称: "contestName", 
-		  赛项类型: "contestType",
-		  赛项日期: "contestDate",
-		  成绩:"contestResult",
-		  审核状态: "examineState",
-		  审核回复: "examineReply", 
+		  用户id: "userId",    //常规字段
+		  用户名:"username",
+		  姓名:"realname",
+		  手机号: "phone", 
+		  邮箱号: "email",
+		  角色: "userGroup",
+
 		},
 		dialogFormVisible: false,
+		AddcenterDialogVisible:false,
         form:{
         
         },
+		addformRule:{
+        email: [
+            { required: false, message: "请输入邮箱", trigger: "blur" },
+            { validator: checkEmail, trigger: "blur" },
+          ],
+
+        phone:[
+            { required: false, message: '请输入手机号', trigger: 'blur' },
+            { min: 6, max: 11, message: '手机号不超过11个字符,请重新输入',trigger: "blur" },
+            { validator: checkMobile, trigger: 'blur' }
+          ],
+		  username:[
+            { required: true, message: '请输入用户账号', trigger: 'blur' },
+            { min: 4, max: 11, message: '用户账号因为6-20个字符,请重新输入',trigger: "blur" },
+          ],
+    	},
       formRule:{
         email: [
             { required: true, message: "请输入邮箱", trigger: "blur" },
@@ -316,6 +437,10 @@
             { required: true, message: '请输入手机号', trigger: 'blur' },
             { min: 6, max: 11, message: '手机号不超过11个字符,请重新输入',trigger: "blur" },
             { validator: checkMobile, trigger: 'blur' }
+          ],
+		  username:[
+            { required: true, message: '请输入用户账号', trigger: 'blur' },
+            { min: 4, max: 11, message: '用户账号因为4-11个字符,请重新输入',trigger: "blur" },
           ],
     	},
 
@@ -361,6 +486,7 @@
 		  pageSize: 50,
 		  pageIndex: 0,
 		  userGroup:'',
+		  username:'',
 		 },
 		 // 数据
 		 userInfo: [],
@@ -503,6 +629,43 @@
       })
 
     },
+
+	resetForm(){
+        this.form={};
+        this.AddcenterDialogVisible=false;
+      },
+	  add(form){
+        this.$axios.post("/addUser",this.form).then(resp=>{
+          console.log("form")
+          console.log(this.form)
+          let result = resp.data;
+          if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+          if(result.code=='0'){
+            this.AddcenterDialogVisible=false;
+            this.form={};
+			this.getUserInformation();
+            return this.$message({
+              message:result.msg,
+              type:'success'
+            });
+          }
+		  if(result.code=='203'){
+            this.AddcenterDialogVisible=false;
+            this.form={};
+            return this.$message({
+              message:result.msg,
+              type:'warning'
+            });
+          }
+          this.$message.error(result.msg);
+        })
+       },
 		back(){
 		  this.centerDialogVisible = false;
 		  this.form.contestResult="";
@@ -571,6 +734,7 @@
 
 		reset(){
 			this.query.userGroup="";
+			this.query.username="";
 			this. getUserInformation();
 		  },
 		  handleCloseDelete(done) {
@@ -664,6 +828,50 @@
 	 }
    </script>
    <style scoped>
+  .img {
+    width: 80px;
+    height: 80px;
+  }
+  .updateinfo {
+  height: 350px;
+  overflow: auto;
+}
+.left {
+  /* width: 330px; */
+  float: left;
+}
+.right {
+  overflow: hidden;
+}
+.avatar-uploader{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  align-items: center;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 130px;
+  height: 130px;
+  line-height: 130px;
+  text-align: center;
+}
+.avatar {
+  width: 130px;
+  height: 130px;
+  display: block;
+}
+
    .el-dialog__body {
 	 padding: 50px 20px;
 	 color: #606266;
@@ -705,7 +913,13 @@
    .float-right {
 	 float: right;
    }
-  
+   .left {
+  /* width: 330px; */
+  float: left;
+}
+.right {
+  overflow: hidden;
+}
   
    .modal_wrap{
 	 width: 100vw;

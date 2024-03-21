@@ -23,6 +23,7 @@
        </el-col>
      </el-row>
    </el-form>
+   <!-- 添加新公告按钮 -->
    <el-button type="success" v-if="query.userGroup=='管理员'" @click="AddcenterDialogVisible=true" style="margin-left: 900px;">添加新公告</el-button>
    <el-table  ref="multipleTable"
    :data="noticeInfo"
@@ -84,7 +85,7 @@
    </div>
    <!-- /分页器 -->
    
-    <!-- 创建遮罩 -->
+    <!-- 创建公告遮罩 -->
   <el-dialog title="创建公告" :visible.sync="AddcenterDialogVisible" :close-on-click-modal ="false" width="1000px" 
   :before-close="handleCloseAdd">
 
@@ -274,7 +275,7 @@
                 message:result.msg
               })
             }
-          if(result.code==0){
+          if(result.code=='0'){
             this.AddcenterDialogVisible=false;
             this.addForm={};
             return this.$message({
