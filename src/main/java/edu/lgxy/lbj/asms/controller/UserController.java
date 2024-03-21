@@ -73,7 +73,7 @@ public class UserController {
         User u = new User();
         u.setUsername(username);
         log.info("u : "+u);
-        User user = userService.selectByUserName(u);
+        User user = userService.selectByUser(u);
         log.info("Mysql中查到user:"+user);
         Student student = userService.selectStudentInfo(user.getUserId());
         if(user == null){
@@ -132,13 +132,16 @@ public class UserController {
     }
     @RequestMapping("/login")
     public JsonResult<Map> login(@RequestBody Receive receive ,HttpSession session){
+
         String verifyCode = (String) session.getAttribute("verify_code");
+
         if(!verifyCode.equalsIgnoreCase(receive.getVerifyCode())){
             return new JsonResult<>("验证码错误,请重新填写","202");
         }
         Map<String, Object> map = new HashMap<>();
 
-
+        redisUtil.hset("acms:user:1","username",receive.getUsername());
+        redisUtil.hset("acms:user:1","password",receive.getPassword());
 //        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
 //        log.info("redis->"+redisTemplate.opsForValue().get("name"));
         String username = receive.getUsername();
@@ -148,7 +151,7 @@ public class UserController {
         log.info("log---->从前端收到:"+username);
         log.info("log---->从前端收到:"+password);
         if(username == null||" ".equals(username)){
-            return new JsonResult<>(map);
+            return new JsonResult<>("用户名不能为空","202");
         }
         username = username.trim();//去除字符串首尾空白字符
         if(username.length()<6||username.length()>20){
@@ -172,7 +175,7 @@ public class UserController {
         User u = new User();
         u.setUsername(username);
         log.info("u : "+u);
-        User user = userService.selectByUserName(u);
+        User user = userService.selectByUser(u);
 
         log.info("Mysql中查到user:"+user);
         if(user == null || !password.equals(user.getPassword())){
@@ -200,6 +203,7 @@ public class UserController {
         String text = code.getText();
         HttpSession session = request.getSession(true);
         session.setAttribute("verify_code", text);
+        log.info("verifyCode:"+text);
         VerificationCode.output(image,resp.getOutputStream());
     }
     @RequestMapping("/sendEmail")
@@ -228,7 +232,7 @@ public class UserController {
         }
         User u = new User();
         u.setUsername(username);
-        User user = userService.selectByUserName(u);
+        User user = userService.selectByUser(u);
         map.put("username",username);
         if(user==null){
             code="202";
@@ -272,7 +276,7 @@ public class UserController {
         Map<String,Object> map = new HashMap<>();
         User u = new User();
         u.setUsername(username);
-        User user = userService.selectByUserName(u);
+        User user = userService.selectByUser(u);
         map.put("username",username);
 
         if (receiveEmail.getCode().equals(Code)) {
@@ -330,6 +334,37 @@ public class UserController {
         int update = userService.updateUser(user);
         if (update<=0){
             msg="更新个人信息失败";
+            code="202";
+            return new JsonResult<>(map,msg,code);
+        }
+        return new JsonResult<>(map);
+    }
+    @RequestMapping("/addUser")
+    public JsonResult<Map> addUser(@RequestBody User user){
+        String username = user.getUsername();
+        if(username == null||" ".equals(username)){
+            return new JsonResult<>("用户名不能为空","204");
+        }
+        username = username.trim();//去除字符串首尾空白字符
+        if(username.length()<6||username.length()>20){
+            return new JsonResult<>("用户名应为6-20位","204");
+        }
+        String userGroup = user.getUserGroup();
+        if(userGroup == null||" ".equals(userGroup)){
+            return new JsonResult<>("请确定您的角色","204");
+        }
+
+
+        Map<String,Object> map = new HashMap<>();
+        String code="";
+        String msg ="服务器正常";
+        User u = userService.selectByUserName(username);
+        if(u!=null){
+            return new JsonResult<>(map,"用户已存在","203");
+        }
+        int insert = userService.insertUser(user);
+        if (insert<=0){
+            msg="新增用户失败";
             code="202";
             return new JsonResult<>(map,msg,code);
         }

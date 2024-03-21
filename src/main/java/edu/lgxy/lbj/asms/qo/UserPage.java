@@ -10,6 +10,7 @@ public class UserPage implements Serializable {
     private int pageIndex;
     private int pageSize;
     private String userGroup;
+    private String username;
 
 
 }

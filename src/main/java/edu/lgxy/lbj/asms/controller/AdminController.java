@@ -216,9 +216,10 @@ public class AdminController {
         int pageSize=userPage.getPageSize();
         int pageIndex= userPage.getPageIndex();
         String userGroup= userPage.getUserGroup();
+        String usernameQo = userPage.getUsername();
 
         Page page = userService.getUserInformation
-                (pageSize,pageIndex,userGroup);
+                (pageSize,pageIndex,userGroup,usernameQo);
         Map<String,Object> map = new HashMap<>();
         String code="";
         String msg ="服务器正常";

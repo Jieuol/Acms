@@ -40,19 +40,17 @@
             <if test="avatar != null  and avatar != ''"> and avatar = #{avatar}</if>
         </where>
     </select>
-
-<!--    <select id="selectByUserName"  resultType="edu.lgxy.lbj.asms.entity.User">-->
-<!--        select user_id,username,password,email from user-->
-<!--        <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">-->
-<!--            <if test="username != null and username.length() > 0">-->
-<!--                and username = #{username}-->
-<!--            </if>-->
-
-<!--        </trim>-->
-
-<!--    </select>-->
-
+    <insert id="insertUser" parameterType="edu.lgxy.lbj.asms.entity.User">
+        insert into user
+        (username,user_group,realname,gender,email,phone)
+        values
+        (#{username},#{userGroup},#{realname},#{gender},#{email},#{phone})
+    </insert>
     <select id="selectByUserName"  resultType="edu.lgxy.lbj.asms.entity.User">
+        select * from user where username = #{username}
+    </select>
+
+    <select id="selectByUser"  resultType="edu.lgxy.lbj.asms.entity.User">
         select * from user
         <trim prefix="where" prefixOverrides="ADN|and" suffix="" suffixOverrides="">
             <if test="username != null and username.length() > 0">
@@ -153,12 +151,15 @@
     </update>
     <select id="selectUserInformation" resultType="edu.lgxy.lbj.asms.entity.User">
         select * from user
-        <trim prefix="where">
+        <trim prefix="where" prefixOverrides="and">
             <if test="userGroup!=null and userGroup!=''">
-                user_group=#{userGroup}
+                and user_group=#{userGroup}
+            </if>
+            <if test="username!=null and username!=''">
+                and username=#{username}
             </if>
             <if test="userGroup==null or userGroup==''">
-                user_group!='管理员'
+               and user_group!='管理员'
             </if>
         </trim>
         limit #{pageIndex},#{pageSize}
@@ -166,12 +167,15 @@
 
     <select id="selectUserInformationNolimit" resultType="edu.lgxy.lbj.asms.entity.User">
         select * from user
-        <trim prefix="where">
+        <trim prefix="where" prefixOverrides="and">
             <if test="userGroup!=null and userGroup!=''">
-                user_group=#{userGroup}
+                and user_group=#{userGroup}
+            </if>
+            <if test="username!=null and username!=''">
+                and username=#{username}
             </if>
             <if test="userGroup==null or userGroup==''">
-                user_group!='管理员'
+                and user_group!='管理员'
             </if>
         </trim>
 

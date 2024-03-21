@@ -16,10 +16,15 @@ public class UserService {
     @Resource
     private UserMapper userMapper;
 
-    public User selectByUserName(User u){
+    public User selectByUser(User u){
 
-        return  userMapper.selectByUserName(u);
+        return  userMapper.selectByUser(u);
     }
+    public User selectByUserName(String username){
+
+        return  userMapper.selectByUserName(username);
+    }
+
 
     public int updatePassword(User user1) {
         return  userMapper.updatePassword(user1);
@@ -43,16 +48,21 @@ public class UserService {
     }
 
 
-    public Page getUserInformation(int pageSize, int pageIndex, String userGroup) {
+    public Page getUserInformation(int pageSize, int pageIndex, String userGroup,String usernameQo) {
+        String username = usernameQo;
         Page page =new Page();
-        page.setList(userMapper.selectUserInformation(pageIndex,pageSize,userGroup));
+        page.setList(userMapper.selectUserInformation(pageIndex,pageSize,userGroup, username));
         page.setPageIndex(pageIndex);
         page.setPageSize(pageSize);
-        page.setTotalRecords(userMapper.selectUserInformationNolimit(userGroup).size());
+        page.setTotalRecords(userMapper.selectUserInformationNolimit(userGroup, username).size());
         return page;
     }
 
     public int updateUserInformation(User user) {
         return userMapper.updateUserInformation(user);
+    }
+
+    public int insertUser(User user) {
+        return userMapper.insertUser(user);
     }
 }

@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface UserMapper {
 
-    public User selectByUserName(User u);
-
+    public User selectByUser(User u);
+    public User selectByUserName(String username);
     int updatePassword(User user1);
 
     int updateUser(ReceiveUser user);
@@ -22,9 +22,11 @@ public interface UserMapper {
 
     Student selectStudentInfo(long userId);
 
-    List<User> selectUserInformation(int pageIndex, int pageSize, String userGroup);
+    List<User> selectUserInformation(int pageIndex, int pageSize, String userGroup,String username);
 
-    List<User> selectUserInformationNolimit(String userGroup);
+    List<User> selectUserInformationNolimit(String userGroup,String username);
 
     int updateUserInformation(User user);
+
+    int insertUser(User user);
 }
