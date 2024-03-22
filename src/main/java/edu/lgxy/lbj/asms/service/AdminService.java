@@ -16,13 +16,20 @@ import javax.annotation.Resource;
 @Slf4j
 public class AdminService {
     @Resource
+    private MessageService messageService;
+    @Resource
     private AdminMapper adminMapper;
     @Resource
     private ParticipantMapper participantMapper;
 
-    public int updateDeclaration(ContestDeclaration contestDeclarationId) {
-
-        return adminMapper.updateDeclaration(contestDeclarationId);
+    public int updateDeclaration(ContestDeclaration contestDeclaration) {
+        Message message= new Message();
+        message.setUserId(contestDeclaration.getApplicantId());
+        message.setMessageName("您的:"+contestDeclaration.getContestName()+",审核已完成");
+        message.setMessageInformation("审核结果为:"+contestDeclaration.getExamineState()+",详细信息请前往相关页面进行查询");
+        log.info("getContestDeclarationId():"+contestDeclaration.getContestDeclarationId());
+        messageService.insertMessage(message);
+        return adminMapper.updateDeclaration(contestDeclaration);
     }
 
     public Page getParticipantListByPage(int pageSize, int pageIndex, String contestName, String contestType, String contestDate,String examineState) {

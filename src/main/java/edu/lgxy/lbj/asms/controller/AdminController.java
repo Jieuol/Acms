@@ -188,11 +188,11 @@ public class AdminController {
         Map<String,Object> map = new HashMap<>();
         String msg="";
         String code="";
-        Message message= new Message();
-        message.setUserId(contestDeclaration.getApplicantId());
-        message.setMessageName("您的:"+contestDeclaration.getContestName()+",审核已完成");
-        message.setMessageInformation("审核结果为:"+contestDeclaration.getExamineState()+",详细信息请前往相关页面进行查询");
-        log.info("getContestDeclarationId():"+contestDeclaration.getContestDeclarationId());
+//        Message message= new Message();
+//        message.setUserId(contestDeclaration.getApplicantId());
+//        message.setMessageName("您的:"+contestDeclaration.getContestName()+",审核已完成");
+//        message.setMessageInformation("审核结果为:"+contestDeclaration.getExamineState()+",详细信息请前往相关页面进行查询");
+//        log.info("getContestDeclarationId():"+contestDeclaration.getContestDeclarationId());
         int result = adminService.updateDeclaration(contestDeclaration);
         if(result<=0){
             msg="审核失败";
@@ -201,7 +201,6 @@ public class AdminController {
         }
         msg="审核成功";
         code="0";
-        messageService.insertMessage(message);
         return new JsonResult<>(msg,code);
     }
 
@@ -278,6 +277,73 @@ public class AdminController {
 
         String msg ="操作正常";
         return new JsonResult<>("操作成功","0");
+
     }
 
+    @RequestMapping("/approvalAll")
+    JsonResult<Map> approvalAll(@RequestBody List<ContestDeclaration> contestDeclarations){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        log.info("!!!!!!!!!!!!!!!"+contestDeclarations);
+        for(ContestDeclaration data : contestDeclarations){
+            try{
+                data.setExamineState("已通过");
+                adminService.updateDeclaration(data);//更新一条数据，mybatis中如下面的xml文件的update
+                ContestInformation data2=new ContestInformation();
+                data2.setContestDate(data.getContestDate());
+                data2.setContestName(data.getContestName());
+                data2.setContestType(data.getContestType());
+                data2.setContestIntroduction(data.getContestIntroduction());
+                data2.setContestRules(data.getContestRules());
+                data2.setCreateTime(data.getCreateTime());
+                data2.setDeadlineTime(data.getDeadlineTime());
+                data2.setParticipantsNumber(data.getParticipantsNumber());
+                data2.setContestDeclarationId(data.getContestDeclarationId());
+                contestService.insertContestInfo(data2);
+            }
+            catch(Exception e){
+                return new JsonResult<>("操作失败","202");
+            }
+        }
+
+        return new JsonResult<>("操作成功","0");
+
+    }
+    @RequestMapping("/disApprovalAll")
+    JsonResult<Map> disApprovalAll(@RequestBody List<ContestDeclaration> contestDeclarations){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        log.info("!!!!!!!!!!!!!!!"+contestDeclarations);
+        for(ContestDeclaration data : contestDeclarations){
+            try{
+                data.setExamineState("未通过");
+                adminService.updateDeclaration(data);//更新一条数据，mybatis中如下面的xml文件的update
+                ContestInformation data2=new ContestInformation();
+                data2.setContestDate(data.getContestDate());
+                data2.setContestName(data.getContestName());
+                data2.setContestType(data.getContestType());
+                data2.setContestIntroduction(data.getContestIntroduction());
+                data2.setContestRules(data.getContestRules());
+                data2.setCreateTime(data.getCreateTime());
+                data2.setDeadlineTime(data.getDeadlineTime());
+                data2.setParticipantsNumber(data.getParticipantsNumber());
+                data2.setContestDeclarationId(data.getContestDeclarationId());
+                contestService.deleteContestInfo(data2);
+            }
+            catch(Exception e){
+                return new JsonResult<>("操作失败","202");
+            }
+        }
+
+        return new JsonResult<>("操作成功","0");
+
+    }
 }
