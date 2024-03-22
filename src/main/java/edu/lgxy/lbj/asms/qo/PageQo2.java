@@ -17,4 +17,5 @@ public class PageQo2 implements Serializable {
     private String contestDate;
     private String contestType;
 
+
 }

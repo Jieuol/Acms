@@ -139,9 +139,11 @@ public class UserController {
             return new JsonResult<>("验证码错误,请重新填写","202");
         }
         Map<String, Object> map = new HashMap<>();
+        int keys=1;
+        String item = receive.getUsername();
+        String values = receive.getPassword();
 
-        redisUtil.hset("acms:user:1","username",receive.getUsername());
-        redisUtil.hset("acms:user:1","password",receive.getPassword());
+
 //        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
 //        log.info("redis->"+redisTemplate.opsForValue().get("name"));
         String username = receive.getUsername();
@@ -170,8 +172,8 @@ public class UserController {
             code="202";
             return new JsonResult<>(map,msg,code);
         }
-
-
+//        redisUtil.hset("acms:user:1","username",receive.getUsername());
+//        redisUtil.hset("acms:user:1","password",receive.getPassword());
         User u = new User();
         u.setUsername(username);
         log.info("u : "+u);
@@ -187,15 +189,25 @@ public class UserController {
             return new JsonResult<>("您的账号已被禁用，请联系管理员处理","202");
         }
         map.put("user",user);
-        session.setAttribute("username",username);
+        String Cookie = request.getHeader("Cookie");
+
         String token = TokenUtil.sign(user);
         redisUtil.set(username,token,60*60);
+        redisUtil.set(Cookie,token,60*60);
 //        TokenUtil.verify(token);
-        map.put("token",redisUtil.get(username));
+        map.put("token",redisUtil.get(Cookie));
         msg="登录成功!";
         return new JsonResult<>(map,msg);
     }
 
+
+//    @RequestMapping("/getCookie")
+//    public JsonResult<Map> getCookie(){
+//        Map<String ,Object> map = new HashMap<>();
+//        String Cookie = request.getHeader("Cookie");
+//        map.put("token",redisUtil.get(Cookie));
+//        return new JsonResult<>(map,"","0");
+//    }
     @RequestMapping("/verifyCode")
     public void verifyCode(HttpServletRequest request, HttpServletResponse resp) throws IOException {
         VerificationCode code = new VerificationCode();
@@ -368,6 +380,12 @@ public class UserController {
             code="202";
             return new JsonResult<>(map,msg,code);
         }
+//        redisUtil.hset("acms:user:"+user.getUsername(),"username",user.getUsername());
+//        redisUtil.hset("acms:user:"+user.getUsername(),"password","123456");
+//        redisUtil.hset("acms:user:"+user.getUsername(),"userGroup",user.getUserGroup());
+//        redisUtil.hset("acms:user:"+user.getUsername(),"email",user.getEmail());
+//        redisUtil.hset("acms:user:"+user.getUsername(),"gender",user.getGender());
+//        redisUtil.hset("acms:user:"+user.getUsername(),"state","1");
         return new JsonResult<>(map);
     }
 
