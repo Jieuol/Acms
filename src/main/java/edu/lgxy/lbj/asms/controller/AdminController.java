@@ -253,4 +253,31 @@ public class AdminController {
         return new JsonResult<>("操作成功","0");
     }
 
+    @RequestMapping("/banByList")
+    JsonResult<Map> banByList(@RequestBody List<User> users){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        log.info("!!!!!!!!!!!!!!!"+users);
+        for(User data : users){
+            try{
+                if(data.getState()==0){
+                    data.setState(1);
+                }else {
+                    data.setState(0);
+                }
+                userService.updateUserInformation(data);//更新一条数据，mybatis中如下面的xml文件的update
+            }
+            catch(Exception e){
+                return new JsonResult<>("操作失败","202");
+            }
+        }
+
+        String msg ="操作正常";
+        return new JsonResult<>("操作成功","0");
+    }
+
 }

@@ -1,9 +1,6 @@
 package edu.lgxy.lbj.asms.mapper;
 
-import edu.lgxy.lbj.asms.entity.ContestDeclaration;
-import edu.lgxy.lbj.asms.entity.ContestParticipant;
-import edu.lgxy.lbj.asms.entity.Participant;
-import edu.lgxy.lbj.asms.entity.ParticipantInfomation;
+import edu.lgxy.lbj.asms.entity.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -29,4 +26,5 @@ public interface AdminMapper {
     
 
     ContestParticipant selectByContestParticipantId(long contestParticipantId);
+    int banByList(List<User> user);
 }
