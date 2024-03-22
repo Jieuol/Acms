@@ -18,18 +18,18 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <!-- <el-input v-model="query.contestType"></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <el-form-item label="赛项日期">
-              <el-date-picker
-              v-model="query.contestDate"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
+            <el-date-picker
+            v-model="query.contestDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+            <!-- <el-input v-model="query.contestDate"></el-input> -->
+          </el-form-item>
         </el-col>
 
         <el-col :xs="24" :sm="10" :lg="8">
@@ -38,32 +38,40 @@
             <el-button @click="reset()" style="margin-right: 74px;">重置</el-button>
           </el-form-item>
         </el-col>
-            </el-row>
-        </el-form>
-   <el-table  ref="multipleTable"
+			</el-row>
+		</el-form>
+    
+    <download-excel class = "export-excel-wrapper":data = "contestInfo"
+       :fields = "json_fields" name = "filename.xls">
+    		<el-button  style="float: right;" round type="success" icon="download" > 导出 </el-button>
+    </download-excel>
+
+    <el-table  ref="multipleTable"
+   id="table"
    :data="contestInfo"
    tooltip-effect="dark"
-   :row-class-name="tableRowClassName"
    style="width: 100%"
    max-height="450">
      <el-table-column fixed tooltip-effect="dark" width="55">
      </el-table-column>
-     <el-table-column prop="contestName" label="赛项名称" min-width="200">
+     <el-table-column prop="applicantRealname" label="报名人" min-width="50">
      </el-table-column>
-     <el-table-column prop="contestType" label="赛项类型" min-width="200">
+     <el-table-column prop="contestName" label="赛项名称" min-width="100">
      </el-table-column>
-     <el-table-column prop="examineState" label="审核状态" min-width="200">
+     <el-table-column prop="contestType" label="赛项类型" min-width="100">
      </el-table-column>
-     <el-table-column sortable prop="contestDate" label="赛项日期" min-width="200">
+     <el-table-column prop="examineState" label="审核状态" min-width="100">
+     </el-table-column>
+     <el-table-column sortable prop="contestDate" label="赛项日期" min-width="100">
      </el-table-column>
 
-     <el-table-column sortable prop="updateTime" label="更新时间" min-width="200">
+     <el-table-column sortable prop="updateTime" label="更新时间" min-width="100">
      </el-table-column> -->
      <el-table-column fixed="right" label="操作" min-width="120">
        <template slot-scope="scope">
          <el-button class="el-button el-button--small is-plain el-button--default" 
          style="margin: 5px !important;" size="small" @click="detail(scope.row)">
-           <span>竞赛详情</span>
+           <span>报名详情</span>
          </el-button>
        </template>
      </el-table-column>
@@ -75,7 +83,7 @@
        @size-change="handleSizeChange"
        @current-change="handleCurrentChange"
        :current-page="currentPage" 
-       :page-sizes="[10,20,30]"
+       :page-sizes="[50,100,150]"
        :page-size = "query.pageSize" 
        layout="total, sizes, prev, pager, next, jumper"
        :total="totalRecords"
@@ -89,44 +97,36 @@
       :visible.sync="deletecenterDialogVisible"
       width="30%"
       :before-close="handleCloseDelete">
-      <span>确认是否取消申报</span>
+      <span>确认是否取消报名</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="deletecenterDialogVisible = false">返 回</el-button>
         <el-button type="primary" @click="deleteparticipate()">确 认</el-button>
       </span>
     </el-dialog>
-    <!-- 遮罩2 -->
- <el-dialog title="详细信息" :visible.sync="centerDialogVisible" width="1000px">
+   <!-- 遮罩2 -->
+   <el-dialog title="报名人详细信息" :visible.sync="centerDialogVisible" width="1000px">
  <div class=" container" style="margin-top:25px;margin-left:30px;">
-  <el-row :gutter="10">
-     <el-col :span="4"><div class="title">申请人: {{ form.realname }}</div></el-col>
-   </el-row>
    <el-row :gutter="10">
      <el-col :span="4"><div class="title">竞赛名称: {{ form.contestName }}</div></el-col>
    </el-row>
+
      
    <el-row :gutter="10">
      <el-col :span="4"><div class="text">竞赛类别: {{ form.contestType }}</div></el-col>
    </el-row>
    
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">竞赛日期: {{ form.contestDate }}</div></el-col>
+   <el-row :gutter="10">
+     <el-col :span="4"><div class="text">报名人姓名: {{ form.applicantRealname }}</div></el-col>
    </el-row>
 
    <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">截止日期: {{ form.deadlineTime }}</div></el-col>
+     <el-col :span="24"><div class="text">所在学院: {{ form.academy }}</div></el-col>
    </el-row>
-
    <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">竞赛介绍: {{ form.contestIntroduction }}</div></el-col>
+     <el-col :span="24"><div class="text">所在年级: {{ form.grade }}</div></el-col>
    </el-row>
-
    <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">参与人数: {{ form.participantsNumber }}</div></el-col>
-   </el-row>
-
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">竞赛规则: {{ form.contestRules }}</div></el-col>
+     <el-col :span="24"><div class="text">所在专业: {{ form.major }}</div></el-col>
    </el-row>
 
    <el-row :gutter="20">
@@ -137,7 +137,7 @@
     <el-col :span="10">
        <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
        <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="danger" size="small" @click="updateDeclaration('fail')">
+         style="margin: 5px !important;" type="danger" size="small" @click="updateParticipant('fail')">
         <span>不予通过</span>
        </el-button>
     </el-col>
@@ -148,7 +148,7 @@
        <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
 
        <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="success" size="small" @click="updateDeclaration('pass')">
+         style="margin: 5px !important;" type="success" size="small" @click="updateParticipant('pass')">
         <span>审核通过</span>
        </el-button>
     </el-col>
@@ -158,12 +158,12 @@
     <el-col :span="10">
        <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
        <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="danger" size="small" @click="updateDeclaration('fail')">
+         style="margin: 5px !important;" type="danger" size="small" @click="updateParticipant('fail')">
         <span>不予通过</span>
        </el-button>
 
        <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="success" size="small" @click="updateDeclaration('pass')">
+         style="margin: 5px !important;" type="success" size="small" @click="updateParticipant('pass')">
         <span>审核通过</span>
        </el-button>
       </el-col>
@@ -185,32 +185,26 @@
  import mixin from "@/mixins/page.js";
 
    export default {
+
+
      //import引入的组件需要注入到对象中才能使用
      components: {},
      data() {
        //这里存放数据
        return {
-         form:{
-         },
-         deletecenterDialogVisible:false,
-         centerDialogVisible:false,
-         currentPage:1,
-         //分页
-         totalRecords: 0,
-          //总条数，总共有多少条数据,
-          pageInfo:{
-           pageSize: 10,
-           pageIndex: 0,
-          },
-         // 弹框
-       showModal: false,
-       // 获取数据地址
-       url_get_list: "",
-       url_del: "",
-       
-       // 字段ID
-       field: "",
-       options: [{
+        tableDataType:"报名信息",
+        json_fields: {
+        报名人: "applicantRealname",    //常规字段
+        学院:"academy",
+        专业:"major",
+        赛项名称: "contestName", //支持嵌套属性
+        赛项类型: "contestType",
+        赛项日期: "contestDate",
+
+      },
+
+        userGroup:sessionStorage.getItem("userGroup"),
+        options: [{
           value: '院级',
           label: '院级'
         }, {
@@ -222,26 +216,50 @@
           label: '国家级'
         },
         ],
+         form:{
+         },
+         deletecenterDialogVisible:false,
+         centerDialogVisible:false,
+         currentPage:1,
+         //分页
+         totalRecords: 0,
+          //总条数，总共有多少条数据,
+          pageInfo:{
+           pageSize: 50,
+           pageIndex: 0,
+          },
+         // 弹框
+       showModal: false,
+       // 获取数据地址
+       url_get_list: "",
+       url_del: "",
+       
+       // 字段ID
+       field: "",
+       json_meta: [
+        [
+          {
+            " key ": " charset ",
+            " value ": " utf- 8 "
+          }
+        ]
+      ],
        // 查询
        query: {
-        pageSize: 10,
+        pageSize: 50,
         pageIndex: 0,
         contestName:"",
         contestDate:"",
         contestType:"",
        },
-       contestInformaion:{
-        
-       },
        // 数据
        contestInfo: [],
        multipleSelection: [],
-       contestDeclaration:{},
-       updateForm:{
-          
-        },
+       participantInfo:{},
+       updateForm:{},
        }
-   
+       
+       
      },
      //监听属性 类似于data概念
      computed: {},
@@ -249,27 +267,41 @@
      watch: {},
      //方法集合
      methods: {
-      updateDeclaration(index){
-        this.contestInformaion.contestName=this.form.contestName;
-        this.contestInformaion.contestType=this.form.contestType;
-        this.contestInformaion.contestDate=this.form.contestDate;
-        this.contestInformaion.contestIntroduction=this.form.contestIntroduction;
-        this.contestInformaion.contestDeclarationId=this.form.contestDeclarationId;
-        this.contestInformaion.contestRules=this.form.contestRules;
-        this.contestInformaion.createTime=this.form.createTime;
-        this.contestInformaion.participantsNumber=this.form.participantsNumber;
-        
+      exportExcelHeader() {
+      this.json_fields = {};
+      this.tableFilterData.forEach(e => {
+      this.json_fields[e.label] = e.prop;
+      });
+    },
+    // exportExcel() {
+      // table 是表格组件的ID
+    //   let tables = document.getElementById("table");
+    //   let table_book = this.$XLSX.utils.table_to_book(tables);
+    //   var table_write = this.$XLSX.write(table_book, {
+    //     bookType: "xlsx",
+    //     bookSST: true,
+    //     type: "array",
+    //   });
+    //   try {
+    //     this.$FileSaver.saveAs(
+    //       new Blob([table_write], { type: "application/octet-stream" }),
+    //       "报名信息"+ ".xlsx"
+    //     );
+    //   } catch (e) {
+    //     if (typeof console !== "undefined") console.log(e, table_write);
+    //   }
+    //   return table_write;
+    // },
+      updateParticipant(index){
         if(index=='pass'){
           console.log("pass_declaration");
           console.log(this.form.contestDeclarationId);
-          this.updateForm.contestName=this.form.contestName;
+          this.updateForm.contestInformationId=this.form.contestInformationId;
+          this.updateForm.contestParticipantId=this.form.contestParticipantId;
           this.updateForm.applicantId=this.form.applicantId;
-          this.updateForm.contestDeclarationId=this.form.contestDeclarationId;
           this.updateForm.examineReply=this.form.examineReply;
           this.updateForm.examineState="已通过";
-          console.log("!!!!!updateForm!!!!!!!!")
-          console.log(this.updateForm)
-          this.$axios.post("/updateDeclaration", this.updateForm).then(resp=>{
+          this.$axios.post("/updateParticipant", this.updateForm).then(resp=>{
           let result = resp.data;
           if(result.code==='401'){
               this.$router.push("/login")
@@ -280,7 +312,7 @@
             }
           if(result.code==='0'){
             this.centerDialogVisible=false;
-            this.getDeclarationListByPage();
+            this.getParticipantListByPage();
             this.$message({
               message:result.msg,
               type:'success'
@@ -290,35 +322,15 @@
            return this.$message.error(result.msg);
           }
         })
-        this.$axios.post("/insertContestInfo",this.contestInformaion).then(resp=>{
-          let result = resp.data;
-          if(result.code==='401'){
-              this.$router.push("/login")
-              return this.$message({
-                type:"warning",
-                message:result.msg
-              })
-            }
-          if(result.code==='0'){
-
-            return this.$message({
-              message:result.msg,
-              type:'success'
-            });
-          }
-          this.$message.error(result.msg);
-        });
         }
         if(index=='fail'){
         console.log("fail_declaration");
-        console.log(this.form.contestDeclarationId);
-        this.updateForm.contestName=this.form.contestName;
-        this.updateForm.applicantId=this.form.applicantId;
-        this.updateForm.contestDeclarationId=this.form.contestDeclarationId;
+        this.updateForm.contestInformationId=this.form.contestInformationId;
+          this.updateForm.contestParticipantId=this.form.contestParticipantId;
+          this.updateForm.applicantId=this.form.applicantId;
+          this.updateForm.examineReply=this.form.examineReply;
         this.updateForm.examineState="未通过";
-        console.log("!!!!!updateForm!!!!!!!!")
-        console.log(this.updateForm)
-        this.$axios.post("/updateDeclaration", this.updateForm).then(resp=>{
+        this.$axios.post("/updateParticipant", this.updateForm).then(resp=>{
           let result = resp.data;
           if(result.code==='401'){
               this.$router.push("/login")
@@ -328,7 +340,7 @@
               })
             }
           if(result.code==='0'){
-            this.getDeclarationListByPage();
+            this.getParticipantListByPage();
             this.centerDialogVisible=false;
             this.$message({
               message:result.msg,
@@ -339,31 +351,11 @@
             return this.$message.error(result.msg);
           }
         })
-        this.$axios.post("/deleteContestInfo",this.contestInformaion).then(resp=>{
-          let result = resp.data;
-          if(result.code==='401'){
-              this.$router.push("/login")
-              return this.$message({
-                type:"warning",
-                message:result.msg
-              })
-            }
-          if(result.code==='0'){
-            return this.$message({
-              message:result.msg,
-              type:'success'
-            });
-          }
-          this.$message.error(result.msg);
-        });
       }
-
-
       },
       deleteparticipate(){
-        console.log(this.contestDeclaration);
-        this.$axios.post("/deleteDeclaration",this.contestDeclaration).then(resp=>{
-          
+        console.log(this.participantInfo);
+        this.$axios.post("/deleteParticipant",this.participantInfo).then(resp=>{
          let result =resp.data;
          if(result.code==='401'){
               this.$router.push("/login")
@@ -374,7 +366,7 @@
             }
          if(result.code==='0'){
             this.deletecenterDialogVisible = false;
-            this.getDeclarationListByPage()
+            this.getParticipantListByPage()
              return this.$message({
                message:result.msg,
                type:'success'
@@ -382,23 +374,14 @@
            }
            this.$message.error(result.msg);
            this.deletecenterDialogVisible = false;
-           this.getDeclarationListByPage()
+           this.getParticipantListByPage()
          })
-      },
-      canclecontestDeclaration(row){
-        this.deletecenterDialogVisible = true;
-        this.contestDeclaration.contestName=row.contestName;
-        this.contestDeclaration.contestDate=row.contestDate;
-        this.contestDeclaration.contestType=row.contestType;
-        this.contestDeclaration.contestDeclarationId=row.contestDeclarationId
-
-
       },
       reset(){
           this.query.contestName="";
           this.query.contestDate="";
           this.query.contestType="";
-          this.getDeclarationListByPage();
+          this. getParticipantListByPage();
         },
         handleCloseDelete(done) {
         this.$confirm('确认关闭？')
@@ -410,6 +393,7 @@
 
           });
       },
+
        //查看详细信息
        detail(row){
          console.log("row");
@@ -427,45 +411,20 @@
        this.query.pageIndex = newPage*this.query.pageSize
        // this.pageInfo.pageIndex = newPage+this.pageInfo.pageSize
        console.log("after：")
-       this.getDeclarationListByPage()
+       this.getParticipantListByPage()
       },
       //选择每页信息个数
      handleSizeChange(val) {
        this.query.pageSize = val
-       this.getDeclarationListByPage()
+       this.getParticipantListByPage()
        },
-       getDeclarationListByPage(){
-       console.log("this.query");
-       console.log(this.query);
-
-       this.$axios({
-         url: "/getDeclarationListByPage",
-         method: 'GET',
-         params: this.query
-       }).then(resp=>{
-
-         let result = JSON.stringify(resp.data);
-         result = eval("("+result+")");
-         if(result.code==='401'){
-              this.$router.push("/login")
-              return this.$message({
-                type:"warning",
-                message:result.msg
-              })
-            }
-         this.contestInfo=result.data.contestDeclaration;
-         
-         this.totalRecords=result.data.totalRecords;
-       
-         })
-     
-       },
-      getDeclarationListByPageAndUserId(){
+     getParticipantListByPage(){
       this.query.applicantId=sessionStorage.getItem("userId")
        console.log("this.query");
        console.log(this.query);
-       this.$axios({
-         url: "/getDeclarationListByPageAndUserId",
+      if(this.userGroup=="管理员"){
+        this.$axios({
+         url: "/admin/getParticipantListByPage",
          method: 'GET',
          params: this.query
        }).then(resp=>{
@@ -479,17 +438,35 @@
                 message:result.msg
               })
             }
-         this.contestInfo=result.data.contestDeclaration;
+         this.contestInfo=result.data.contestInfo;
          
          this.totalRecords=result.data.totalRecords;
        
          })
-     
-       },
-       queryInfo(){
-        this.query.pageIndex=0;
-        this.query.pageSize=5;
-        this.getDeclarationListByPage();
+      }
+      else{
+        this.$axios({
+         url: "/teacher/getParticipantListByPage",
+         method: 'GET',
+         params: this.query
+       }).then(resp=>{
+
+         let result = JSON.stringify(resp.data);
+         result = eval("("+result+")");
+         if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+         this.contestInfo=result.data.contestInfo;
+         
+         this.totalRecords=result.data.totalRecords;
+       
+         })
+      }
+       
        },
        toggleSelection(rows) {
          if (rows) {
@@ -500,13 +477,17 @@
            this.$refs.multipleTable.clearSelection();
          }
      },
-
+     queryInfo(){
+      this.query.pageIndex=0;
+      this.query.pageSize=50;
+      this.getParticipantListByPage();
+     }
    },
      //生命周期 - 创建完成（可以访问当前this实例）
      created() {},
      //生命周期 - 挂载完成（可以访问DOM元素）
      mounted() {
-       this.getDeclarationListByPage();
+       this.getParticipantListByPage();
      },
      beforeCreate() {}, //生命周期 - 创建之前
      beforeMount() {}, //生命周期 - 挂载之前
@@ -627,11 +608,4 @@
    border-color: #409EFF;
    margin-left: 15px;
  }
- .el-table .warning-row {
-    background: oldlace;
-  }
-
-  .el-table .success-row {
-    background: #f0f9eb;
-  }
  </style>

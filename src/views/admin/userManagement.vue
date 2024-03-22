@@ -339,6 +339,7 @@
               </el-option>
             </el-select>
           </el-form-item>
+
           <el-form-item label="学院" prop="academy"  v-if="userGroup=='学生'">
             <el-input v-model="form.academy" ></el-input>
           </el-form-item>
@@ -508,7 +509,7 @@
 	handleAvatarSuccess(file) {
       //addImageFile  addImageUrl 自己在data中定义 file指的就是选择的文件对象
       this.addImageFile = file;
-      this.form.avatar=require('../assets/images/avatar/'+this.addImageFile.name);
+      this.form.avatar=require('../../assets/images/avatar/'+this.addImageFile.name);
       console.log(this.addImageFile)
       // this.form.avatar = URL.createObjectURL(file.raw);
    
@@ -635,6 +636,11 @@
         this.AddcenterDialogVisible=false;
       },
 	  add(form){
+		if(this.form.gender==0){
+            this.form.gender='女'
+        }else{
+            this.form.gender='男'
+        }
         this.$axios.post("/addUser",this.form).then(resp=>{
           console.log("form")
           console.log(this.form)

@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:13 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-16 15:58:02
+ * @Last Modified time: 2024-03-21 15:54:18
  */
 
 <template>
@@ -120,10 +120,11 @@
 							sessionStorage.setItem('userGroup',result.data.user.userGroup)
 							sessionStorage.setItem('realname',result.data.user.realname)
 							sessionStorage.setItem('userId',result.data.user.userId)
-							sessionStorage.setItem('token',result.data.token)
 							sessionStorage.setItem('setUser',result.data.user)
+							sessionStorage.setItem('token',result.data.token)
+							localStorage.setItem('token',result.data.token)
 							console.log('token:')
-							console.log(sessionStorage.getItem('token'))
+							console.log(localStorage.getItem('token'))
 							console.log(sessionStorage.getItem('userGroup'))
 							console.log(sessionStorage.getItem('realname'))
 							console.log(sessionStorage.getItem('userId'))

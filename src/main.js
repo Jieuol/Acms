@@ -16,9 +16,13 @@ import XLSX from 'xlsx';
   
 Vue.prototype.$FileSaver = FileSaver; //设置全局
 Vue.prototype.$XLSX = XLSX; //设置全局
-import axios from 'axios';
-Vue.prototype.$axios = axios
+// import axios from 'axios';
+// Vue.prototype.$axios = axios
 
+// 引入 文件  
+import axios from './utils/axiosConfig'
+// 挂载拦截器
+Vue.prototype.$axios = axios
 
 router.beforeEach((to, from, next) => {
   //路由发生改变时,触发
@@ -33,7 +37,9 @@ router.beforeEach((to,from,next) => {
   }else{ 
     let userToken = sessionStorage.getItem('token');
     console.log("Token为:"+userToken); 
+
     if(userToken == null || userToken == ''){
+
       alert("无权限，请先登录!");
       return next('/login');
     }else{
@@ -41,6 +47,7 @@ router.beforeEach((to,from,next) => {
     }
   }
 }),
+
 
 
 

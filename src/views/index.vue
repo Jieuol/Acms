@@ -2,7 +2,7 @@
  * @Author: jack.Lou 
  * @Date: 2024-03-04 11:38:25 
  * @Last Modified by: jack.Lou
- * @Last Modified time: 2024-03-19 10:49:11
+ * @Last Modified time: 2024-03-21 15:54:50
  */
 
 <template>
@@ -255,6 +255,14 @@ export default{
 
 		}
 	},
+		// getCookie(){
+		// 		this.$axios.get("/getCookie").then(resp=>{
+		// 		let result = resp.data;
+		// 		if (result.code==='0'){
+		// 			sessionStorage.setItem('token',result.data.token)
+		// 		}
+		// 	})
+		// },
 		// 建立连接
 		createSseConnect(userId){
 			this.drawer = true;
@@ -267,6 +275,9 @@ export default{
 		},
 
 	},
+	mounted() {
+		//  this.getCookie();
+	   },
 };
 </script>
 

@@ -68,7 +68,7 @@ const routes = [
 			{
 			    path: '/participate',
 			    name: 'participate', 
-			    component: () => import("@/views/participate.vue"),
+			    component: () => import("@/views/student/participate.vue"),
 				meta: {
 					index: 0,
 					title: '竞赛报名'
@@ -77,7 +77,7 @@ const routes = [
 			{
 			    path: '/contestRegistration',
 			    name: 'contestRegistration', 
-			    component: () => import("@/views/contestRegistration.vue"),
+			    component: () => import("@/views/teacher/contestRegistration.vue"),
 				meta: {
 					index: 0,
 					title: '竞赛项目申报'
@@ -87,17 +87,17 @@ const routes = [
 			{
 			    path: '/myContest',
 			    name: 'myContest', 
-			    component: () => import("@/views/myContest.vue"),
+			    component: () => import("@/views/student/myContest.vue"),
 				meta: {
 					index: 0,
-					title: '我的已经报名项目'
+					title: '我的已报名项目'
 				},
 			},
 
 			{
 			    path: '/myApplication',
 			    name: 'myApplication', 
-			    component: () => import("@/views/myApplication.vue"),
+			    component: () => import("@/views/teacher/myApplication.vue"),
 				meta: {
 					index: 0,
 					title: '我的申报项目'
@@ -109,7 +109,7 @@ const routes = [
 			{
 			    path: '/enrollmentManagement',
 			    name: 'enrollmentManagement', 
-			    component: () => import("@/views/enrollmentManagement.vue"),
+			    component: () => import("@/views/teacher/enrollmentManagement.vue"),
 				meta: {
 					index: 0,
 					title: '报名人员管理'
@@ -119,7 +119,7 @@ const routes = [
 			{
 			    path: '/contestApproval',
 			    name: 'contestApproval', 
-			    component: () => import("@/views/contestApproval.vue"),
+			    component: () => import("@/views/admin/contestApproval.vue"),
 				meta: {
 					index: 0,
 					title: '竞赛项目审批'
@@ -128,7 +128,7 @@ const routes = [
 			{
 			    path: '/gradesManagement',
 			    name: 'gradesManagement', 
-			    component: () => import("@/views/gradesManagement.vue"),
+			    component: () => import("@/views/teacher/gradesManagement.vue"),
 				meta: {
 					index: 0,
 					title: '竞赛成绩管理'
@@ -138,7 +138,7 @@ const routes = [
 			{
 			    path: '/studenrtResultSearch',
 			    name: 'studenrtResultSearch', 
-			    component: () => import("@/views/studenrtResultSearch.vue"),
+			    component: () => import("@/views/student/studenrtResultSearch.vue"),
 				meta: {
 					index: 0,
 					title: '个人成绩查询'
@@ -147,7 +147,7 @@ const routes = [
 			{
 			    path: '/awardManagement',
 			    name: 'awardManagement', 
-			    component: () => import("@/views/awardManagement.vue"),
+			    component: () => import("@/views/teacher/awardManagement.vue"),
 				meta: {
 					index: 0,
 					title: '获奖信息管理'
@@ -156,7 +156,7 @@ const routes = [
 			{
 			    path: '/userManagement',
 			    name: 'userManagement', 
-			    component: () => import("@/views/userManagement.vue"),
+			    component: () => import("@/views/admin/userManagement.vue"),
 				meta: {
 					index: 0,
 					title: '用户管理'
@@ -188,7 +188,30 @@ const routes = [
 			title: '忘记密码'
 		}
 	},
- 
+	// 错误处理404
+	{
+		path: '/404',
+		name: 'error_404',
+		component:  () => import("@/views/error_404/404.vue"),
+		meta: {
+			index: 0,
+			title: '404'
+		}
+	},	
+ 	// 错误处理500
+	 {
+		path: '/500',
+		name: 'error_500',
+		component:  () => import("@/views/error_500/500.vue"),
+		meta: {
+			index: 0,
+			title: '500'
+		}
+	},
+	{
+        path: '*',//匹配未定义的路由
+        redirect: '/404'//重定向
+    }	
 
 ]
 
