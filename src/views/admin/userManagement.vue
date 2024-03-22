@@ -523,7 +523,42 @@
     },
     //批量操作
     handleOption(){
-      
+	  console.log("checkedList");
+      console.log(this.checkedList);
+	  this.$confirm("此操作将禁用/启用选中用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //遍历获得多选选中的index值
+		this.$axios.post("/banByList",this.checkedList).then(resp=>{
+		let result = resp.data;
+		if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+			if (result.code==='0'){
+				this.getUserInformation();
+				return this.$message({
+					type:"success",
+					message:result.msg
+				})
+			}
+			return this.$message.error(result.msg)
+
+		})
+
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消禁用/启用",
+          });
+        });
     },
 
 	//上传头像
@@ -563,7 +598,7 @@
 		   console.log(row);
 		   this.$axios.post("/updateUserInformation",row).then(resp=>{
 			
-			let resutlt  = resp.data;
+			let result  = resp.data;
 			if(result.code==='401'){
               this.$router.push("/login")
               return this.$message({
@@ -571,13 +606,13 @@
                 message:result.msg
               })
             }
-			if (resutlt.code==='0'){
+			if (result.code==='0'){
 				return this.$message({
 					type:"success",
-					message:resutlt.msg
+					message:result.msg
 				})
 			}
-			return this.$message.error(resutlt.msg)
+			return this.$message.error(result.msg)
 		   })
 
 		},
@@ -588,7 +623,7 @@
 		   console.log("row");
 		   console.log(row);
 		   this.$axios.post("/updateUserInformation",row).then(resp=>{
-			let resutlt  = resp.data;
+			let result  = resp.data;
 			if(result.code==='401'){
               this.$router.push("/login")
               return this.$message({
@@ -596,13 +631,13 @@
                 message:result.msg
               })
             }
-			if (resutlt.code==='0'){
+			if (result.code==='0'){
 				return this.$message({
 					type:"success",
-					message:resutlt.msg
+					message:result.msg
 				})
 			}
-			return this.$message.error(resutlt.msg)
+			return this.$message.error(result.msg)
 		   })
 
 		},
