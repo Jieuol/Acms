@@ -45,6 +45,10 @@
    tooltip-effect="dark"
    style="width: 100%"
    max-height="450">
+   <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
      <el-table-column fixed tooltip-effect="dark" width="55">
      </el-table-column>
      <el-table-column prop="applicantRealname" label="报名人" min-width="50">

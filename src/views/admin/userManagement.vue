@@ -39,11 +39,19 @@
 		 :fields = "json_fields" name = "用户信息.xls">
 			  <el-button style="float: right;" round type="success" icon="download" > 导出 </el-button>
 	  </download-excel>
+	  <el-button type="warning" @click="handleOption()">批量操作</el-button>
 	 <el-table  ref="multipleTable"
 	 :data="userInfo"
 	 tooltip-effect="dark"
 	 style="width: 100%"
-	 max-height="450">
+	 max-height="450"
+	 @selection-change="handleSelectionChange"
+    :row-key="getRowKeys">
+	 <el-table-column
+      type="selection"
+      width="55"
+	  :reserve-selection="true">
+    </el-table-column>
 	   <el-table-column fixed tooltip-effect="dark" width="55">
 	   </el-table-column>
 	   <el-table-column prop="username" label="用户名" min-width="100">
@@ -505,6 +513,19 @@
 	   watch: {},
 	   //方法集合
 	   methods: {
+    //多选
+	handleSelectionChange(list) {
+      console.log(list);
+      this.checkedList = list
+    },
+    getRowKeys(row) {
+      return row.userId
+    },
+    //批量操作
+    handleOption(){
+      
+    },
+
 	//上传头像
 	handleAvatarSuccess(file) {
       //addImageFile  addImageUrl 自己在data中定义 file指的就是选择的文件对象

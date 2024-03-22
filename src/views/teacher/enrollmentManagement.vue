@@ -45,13 +45,20 @@
        :fields = "json_fields" name = "filename.xls">
     		<el-button  style="float: right;" round type="success" icon="download" > 导出 </el-button>
     </download-excel>
-
+    <el-button type="warning" @click="handleOption()">批量操作</el-button>
     <el-table  ref="multipleTable"
    id="table"
    :data="contestInfo"
    tooltip-effect="dark"
    style="width: 100%"
-   max-height="450">
+   max-height="450"
+   @selection-change="handleSelectionChange"
+    :row-key="getRowKeys">
+   <el-table-column
+      type="selection"
+      width="55"
+      :reserve-selection="true">
+    </el-table-column>
      <el-table-column fixed tooltip-effect="dark" width="55">
      </el-table-column>
      <el-table-column prop="applicantRealname" label="报名人" min-width="50">
@@ -267,6 +274,18 @@
      watch: {},
      //方法集合
      methods: {
+      //多选
+      handleSelectionChange(list) {
+      console.log(list);
+      this.checkedList = list
+    },
+    getRowKeys(row) {
+      return row.contestParticipantId
+    },
+    //批量操作
+    handleOption(){
+      
+    },
       exportExcelHeader() {
       this.json_fields = {};
       this.tableFilterData.forEach(e => {

@@ -40,6 +40,7 @@
         </el-col>
             </el-row>
         </el-form>
+        <el-button type="warning" @click="handleOption()">批量操作</el-button>    
    <el-table  
    v-loading="loading"
    ref="multipleTable"
@@ -47,7 +48,16 @@
    tooltip-effect="dark"
    :row-class-name="tableRowClassName"
    style="width: 100%"
-   max-height="450">
+   max-height="450"
+   @selection-change="handleSelectionChange"
+    :row-key="getRowKeys">
+   
+
+	 <el-table-column
+      type="selection"
+      width="55"
+	  :reserve-selection="true">
+    </el-table-column>
      <el-table-column fixed tooltip-effect="dark" width="55">
      </el-table-column>
      <el-table-column prop="contestName" label="赛项名称" min-width="200">
@@ -251,6 +261,18 @@
      watch: {},
      //方法集合
      methods: {
+          //多选
+	handleSelectionChange(list) {
+      console.log(list);
+      this.checkedList = list
+    },
+    getRowKeys(row) {
+      return row.contestDeclarationId
+    },
+    //批量操作
+    handleOption(){
+      
+    },
       updateDeclaration(index){
         this.contestInformaion.contestName=this.form.contestName;
         this.contestInformaion.contestType=this.form.contestType;

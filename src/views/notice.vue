@@ -30,6 +30,10 @@
    tooltip-effect="dark"
    style="width: 100%"
    max-height="450">
+   <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
      <el-table-column fixed tooltip-effect="dark" width="55">
      </el-table-column>
      <el-table-column prop="noticeName" label="公告名称" min-width="200">
