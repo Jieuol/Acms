@@ -40,7 +40,8 @@
         </el-col>
             </el-row>
         </el-form>
-        <el-button type="warning" @click="handleOption()">批量操作</el-button>    
+        <el-button type="warning" @click="handleApprovalOption()">批量审核通过</el-button> 
+        <el-button type="warning" @click="handleDisApprovalOption()">批量审核不通过</el-button>    
    <el-table  
    v-loading="loading"
    ref="multipleTable"
@@ -270,8 +271,81 @@
       return row.contestDeclarationId
     },
     //批量操作
-    handleOption(){
-      
+    handleDisApprovalOption(){
+      console.log("checkedList");
+      console.log(this.checkedList);
+	  this.$confirm("此操作将选中的竞赛审核 全部 不通过, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //遍历获得多选选中的index值
+		this.$axios.post("/disApprovalAll",this.checkedList).then(resp=>{
+		let result = resp.data;
+		if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+			if (result.code==='0'){
+				this.getDeclarationListByPage();
+				return this.$message({
+					type:"success",
+					message:result.msg
+				})
+			}
+			return this.$message.error(result.msg)
+
+		})
+
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消禁用/启用",
+          });
+        });
+    },
+     handleApprovalOption(){
+	  console.log("checkedList");
+      console.log(this.checkedList);
+	  this.$confirm("此操作将选中的竞赛审核 全部 通过, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //遍历获得多选选中的index值
+		this.$axios.post("/approvalAll",this.checkedList).then(resp=>{
+		let result = resp.data;
+		if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+			if (result.code==='0'){
+				this.getDeclarationListByPage();
+				return this.$message({
+					type:"success",
+					message:result.msg
+				})
+			}
+			return this.$message.error(result.msg)
+
+		})
+
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消禁用/启用",
+          });
+        });
     },
       updateDeclaration(index){
         this.contestInformaion.contestName=this.form.contestName;
