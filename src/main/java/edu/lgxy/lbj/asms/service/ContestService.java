@@ -39,6 +39,10 @@ public class ContestService {
         return contestMapper.insertContestInfo(contestInformation);
     }
 
+    public ContestInformation selectContestById(long contestDeclarationId) {
+        return contestMapper.selectContestById(contestDeclarationId);
+    }
+
 
 //
 //    public List<ContestParticipant> selectParticipantInfo(Participant participant) {

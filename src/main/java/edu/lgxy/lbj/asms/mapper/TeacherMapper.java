@@ -20,7 +20,7 @@ public interface TeacherMapper {
     int deleteContestParticipant(long contestDeclarationId);
 
     int updateDeclaration(ContestDeclaration contestDeclarationId);
-    int updateParticipant(ContestParticipant contestParticipantc);
+    int updateParticipant(ContestParticipant contestParticipant);
     ContestParticipant selectByContestParticipantId(long contestParticipantId);
     List<ParticipantInfomation> selectParticipantByPageAndUserId(@Param("pageIndex") int pageIndex,
                                              @Param("pageSize") int pageSize ,
@@ -41,4 +41,6 @@ public interface TeacherMapper {
     ContestResults selectResultsByUserIdAndParticipantId(ParticipantQo participantQo);
 
     int updateResults(ParticipantQo participantQo);
+
+    int deleteParticipant(long contestParticipantId);
 }

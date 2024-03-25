@@ -227,7 +227,7 @@ public class TeacherController {
 
     //更改审核信息
     @RequestMapping("/updateParticipant")
-    JsonResult<Map> updateParticipant(@RequestBody ContestParticipant contestParticipantc){
+    JsonResult<Map> updateParticipant(@RequestBody ContestParticipant contestParticipant){
         String username = request.getHeader("username");
         String token = request.getHeader("token");
         JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
@@ -237,19 +237,114 @@ public class TeacherController {
         Map<String,Object> map = new HashMap<>();
         String msg="";
         String code="";
-        int participantresult = teacherService.updateParticipant(contestParticipantc);
+        int participantresult = teacherService.updateParticipant(contestParticipant);
         if(participantresult<=0){
             msg="审核失败";
             code="202";
             return new JsonResult<>(map,msg,code);
         }
         Message message= new Message();
-        message.setUserId(contestParticipantc.getApplicantId());
-        message.setMessageName("您的:"+contestParticipantc.getContestName()+",审核已完成");
-        message.setMessageInformation("审核结果为:"+contestParticipantc.getExamineState()+",详细信息请前往相关页面进行查询");
+        message.setUserId(contestParticipant.getApplicantId());
+        message.setMessageName("您的:"+contestParticipant.getContestName()+",审核已完成");
+        message.setMessageInformation("审核结果为:"+contestParticipant.getExamineState()+",详细信息请前往相关页面进行查询");
         messageService.insertMessage(message);
         msg="审核成功";
         code="0";
         return new JsonResult<>(msg,code);
     }
+    @RequestMapping("/teacher/deleteParticipant")
+    JsonResult<Map> deleteParticipant(@RequestBody ContestParticipant contestParticipant){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        int result = teacherService.deleteParticipant(contestParticipant.getContestParticipantId());
+        if(result<=0){
+            return new JsonResult<>("操作失败","202");
+        }
+        return new JsonResult<>("操作成功","0");
+    }
+
+    @RequestMapping("/teacher/approvalAll")
+    JsonResult<Map> approvalAll(@RequestBody List<ContestParticipant> contestParticipants){
+        Message message= new Message();
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        log.info("!!!!!!!!!!!!!!!"+contestParticipants);
+        for(ContestParticipant data : contestParticipants){
+            try{
+                data.setExamineState("已通过");
+                data.setExamineReply("申报正常,通过审核");
+                teacherService.updateParticipant(data);//更新一条数据，mybatis中如下面的xml文件的update
+                message.setUserId(data.getApplicantId());
+                message.setMessageName("您的:"+data.getContestName()+",审核已完成");
+                message.setMessageInformation("审核结果为:"+data.getExamineState()+",详细信息请前往相关页面进行查询");
+                messageService.insertMessage(message);
+            }
+            catch(Exception e){
+                log.info("异常:"+e);
+                return new JsonResult<>("操作失败","202");
+            }
+        }
+
+        return new JsonResult<>("操作成功","0");
+
+    }
+    @RequestMapping("/teacher/disApprovalAll")
+    JsonResult<Map> disApprovalAll(@RequestBody List<ContestParticipant> contestParticipants){
+        Message message= new Message();
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        log.info("!!!!!!!!!!!!!!!"+contestParticipants);
+        for(ContestParticipant data : contestParticipants){
+            try{
+                data.setExamineState("未通过");
+                data.setExamineReply("未通过审核");
+                teacherService.updateParticipant(data);//更新一条数据，mybatis中如下面的xml文件的update
+                message.setUserId(data.getApplicantId());
+                message.setMessageName("您的:"+data.getContestName()+",审核已完成");
+                message.setMessageInformation("审核结果为:"+data.getExamineState()+",详细信息请前往相关页面进行查询");
+                messageService.insertMessage(message);
+            }
+            catch(Exception e){
+                return new JsonResult<>("操作失败","202");
+            }
+        }
+
+        return new JsonResult<>("操作成功","0");
+
+    }
+
+    @RequestMapping("/teacher/deleteAll")
+    JsonResult<Map> deleteAll(@RequestBody List<ContestParticipant> contestParticipants){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        log.info("!!!!!!!!!!!!!!!"+contestParticipants);
+        for(ContestParticipant data : contestParticipants){
+            try{
+                teacherService.deleteParticipant(data.getContestParticipantId());//更新一条数据，mybatis中如下面的xml文件的update
+            }
+            catch(Exception e){
+                return new JsonResult<>("操作失败","202");
+            }
+        }
+
+        return new JsonResult<>("操作成功","0");
+
+    }
+
 }

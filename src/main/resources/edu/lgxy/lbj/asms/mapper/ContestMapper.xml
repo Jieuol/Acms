@@ -43,6 +43,10 @@
         limit #{pageIndex},#{pageSize}
     </select>
 
+    <select id="selectContestById"  resultType="edu.lgxy.lbj.asms.entity.ContestInformation">
+        select contest_information_id from contest_information where contest_declaration_id = #{contestDeclarationId}
+    </select>
+
     <select id="selectByPageNoList" resultMap="ContestResult">
         select * from contest_information where deadline_time &gt;= CURRENT_TIMESTAMP
         <trim prefix="and" prefixOverrides="ADN|and" suffix="" suffixOverrides="">

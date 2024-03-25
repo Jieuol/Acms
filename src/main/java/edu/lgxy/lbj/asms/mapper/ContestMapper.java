@@ -22,4 +22,6 @@ public interface ContestMapper {
     int insertContestInfo(ContestInformation contestInformation);
 
     int deleteContestInfo(ContestInformation contestInformation);
+
+    ContestInformation selectContestById(long contestDeclarationId);
 }

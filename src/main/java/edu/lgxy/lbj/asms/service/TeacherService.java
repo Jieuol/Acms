@@ -60,31 +60,37 @@ public class TeacherService {
         page.setTotalRecords(teacherMapper.selectByPageAndUserIdNoLimit(applicantId,contestName,contestType,contestDate,examineState).size());
         return page;
     }
-    public int updateParticipant(ContestParticipant contestParticipantc) {
+    public int updateParticipant(ContestParticipant contestParticipant) {
 
-        ContestParticipant result =  teacherMapper.selectByContestParticipantId(contestParticipantc.getContestParticipantId());
+        ContestParticipant result =  teacherMapper.selectByContestParticipantId(contestParticipant.getContestParticipantId());
         log.info("$$$$$$$$$$$$$$result:"+result.getExamineState());
-        log.info("$$$$$$$$$$$$$$contestParticipantc:"+contestParticipantc.getExamineState());
+        log.info("$$$$$$$$$$$$$$contestParticipant:"+contestParticipant.getExamineState());
         if (result.getExamineState().equals("未审核")){
-            if (contestParticipantc.getExamineState().equals("未通过")){
-                participantMapper.incrParticipantsNumber(String.valueOf(contestParticipantc.getContestInformationId()));
-                return teacherMapper.updateParticipant(contestParticipantc);
+            if (contestParticipant.getExamineState().equals("未通过")){
+                participantMapper.incrParticipantsNumber(String.valueOf(contestParticipant.getContestInformationId()));
+                return teacherMapper.updateParticipant(contestParticipant);
             }
-            if (contestParticipantc.getExamineState().equals("已通过")){
-                return teacherMapper.updateParticipant(contestParticipantc);
+            if (contestParticipant.getExamineState().equals("已通过")){
+                return teacherMapper.updateParticipant(contestParticipant);
             }
 
         }else if (result.getExamineState().equals("已通过")){
-            if (contestParticipantc.getExamineState().equals("未通过")){
-                participantMapper.incrParticipantsNumber(String.valueOf(contestParticipantc.getContestInformationId()));
-                return teacherMapper.updateParticipant(contestParticipantc);
+            if (contestParticipant.getExamineState().equals("未通过")){
+                participantMapper.incrParticipantsNumber(String.valueOf(contestParticipant.getContestInformationId()));
+                return teacherMapper.updateParticipant(contestParticipant);
+            }
+            if (contestParticipant.getExamineState().equals("已通过")){
+                return teacherMapper.updateParticipant(contestParticipant);
+            }
+        }else if (result.getExamineState().equals("未通过")){
+            if (contestParticipant.getExamineState().equals("未通过")){
+                return teacherMapper.updateParticipant(contestParticipant);
             }
         }
-        log.info("!!!!!!!!!!!"+contestParticipantc.getContestInformationId());
-        participantMapper.updateParticipantsNumber(String.valueOf(contestParticipantc.getContestInformationId()));
-        return teacherMapper.updateParticipant(contestParticipantc);
+        log.info("!!!!!!!!!!!"+contestParticipant.getContestInformationId());
+        participantMapper.updateParticipantsNumber(String.valueOf(contestParticipant.getContestInformationId()));
+        return teacherMapper.updateParticipant(contestParticipant);
     }
-
     public int insertResults(ParticipantQo participantQo) {
         ContestParticipant contestParticipant = new ContestParticipant();
         contestParticipant.setContestName(participantQo.getContestName());
@@ -106,5 +112,9 @@ public class TeacherService {
 
     public int updateResults(ParticipantQo participantQo) {
         return teacherMapper.updateResults(participantQo);
+    }
+
+    public int deleteParticipant(long contestParticipantId) {
+        return teacherMapper.deleteParticipant(contestParticipantId);
     }
 }

@@ -184,5 +184,8 @@
 <!--    <delete id="deleteBaseSql">-->
 <!--        ${sql}-->
 <!--    </delete>-->
+    <delete id="deleteParticipant">
+        delete from contest_participant where contest_participant_id=#{contestParticipantId}
+    </delete>
 
 </mapper>

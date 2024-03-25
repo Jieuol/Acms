@@ -292,6 +292,7 @@ public class AdminController {
         for(ContestDeclaration data : contestDeclarations){
             try{
                 data.setExamineState("已通过");
+                data.setExamineReply("申报正常,通过审核");
                 adminService.updateDeclaration(data);//更新一条数据，mybatis中如下面的xml文件的update
                 ContestInformation data2=new ContestInformation();
                 data2.setContestDate(data.getContestDate());
@@ -303,9 +304,14 @@ public class AdminController {
                 data2.setDeadlineTime(data.getDeadlineTime());
                 data2.setParticipantsNumber(data.getParticipantsNumber());
                 data2.setContestDeclarationId(data.getContestDeclarationId());
+                ContestInformation contestInformation=  contestService.selectContestById(data.getContestDeclarationId());
+                if(contestInformation!=null){
+                    continue;
+                }
                 contestService.insertContestInfo(data2);
             }
             catch(Exception e){
+                log.info("异常:"+e);
                 return new JsonResult<>("操作失败","202");
             }
         }
@@ -325,6 +331,7 @@ public class AdminController {
         for(ContestDeclaration data : contestDeclarations){
             try{
                 data.setExamineState("未通过");
+                data.setExamineReply("未通过审核");
                 adminService.updateDeclaration(data);//更新一条数据，mybatis中如下面的xml文件的update
                 ContestInformation data2=new ContestInformation();
                 data2.setContestDate(data.getContestDate());
@@ -336,6 +343,7 @@ public class AdminController {
                 data2.setDeadlineTime(data.getDeadlineTime());
                 data2.setParticipantsNumber(data.getParticipantsNumber());
                 data2.setContestDeclarationId(data.getContestDeclarationId());
+
                 contestService.deleteContestInfo(data2);
             }
             catch(Exception e){

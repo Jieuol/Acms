@@ -14,6 +14,9 @@ public class CheckToken {
     @Resource
     private RedisUtil redisUtil;
     public JsonResult<Map> checkTokenByUserName(String username, String token){
+        if(redisUtil.get(username)==null){
+            return new JsonResult<>("登录过期，请重新登录","401");
+        }
         if(!redisUtil.get(username).equals(token)){
             return new JsonResult<>("您的账号在另一设备登录，请重新登录","401");
         }
