@@ -45,7 +45,9 @@
        :fields = "json_fields" name = "filename.xls">
     		<el-button  style="float: right;" round type="success" icon="download" > 导出 </el-button>
     </download-excel>
-    <el-button type="warning" @click="handleOption()">批量操作</el-button>
+    <el-button type="warning" @click="handleApprovalOption()">批量审核通过</el-button> 
+    <el-button type="warning" @click="handleDisApprovalOption()">批量审核不通过</el-button>    
+    <el-button type="danger" @click="handleDelete()">批量删除</el-button> 
     <el-table  ref="multipleTable"
    id="table"
    :data="contestInfo"
@@ -79,6 +81,10 @@
          <el-button class="el-button el-button--small is-plain el-button--default" 
          style="margin: 5px !important;" size="small" @click="detail(scope.row)">
            <span>报名详情</span>
+         </el-button>
+         <el-button type="danger" v-if="scope.row.examineState=='未通过'" class="el-button el-button--small is-plain el-button--default" 
+         style="margin: 5px !important;" size="small" @click="deleteParticipate(scope.row)">
+           <span>删除</span>
          </el-button>
        </template>
      </el-table-column>
@@ -282,9 +288,153 @@
     getRowKeys(row) {
       return row.contestParticipantId
     },
-    //批量操作
-    handleOption(){
-      
+    deleteParticipate(row){
+
+              this.$confirm('此操作将永久删除该参与者, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.form=row;
+      this.$axios.post("/teacher/deleteParticipant",this.form).then(resp=>{
+        let result = resp.data;
+        if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+			if (result.code==='0'){
+				this.getParticipantListByPage();
+				return this.$message({
+					type:"success",
+					message:result.msg
+				})
+			}
+			return this.$message.error(result.msg)
+      })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
+ //批量操作
+ handleDelete(){
+  console.log("checkedList");
+      console.log(this.checkedList);
+	  this.$confirm("此操作将选中的参赛者全部删除, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "danger",
+      })
+        .then(() => {
+          //遍历获得多选选中的index值
+		this.$axios.post("/teacher/deleteAll",this.checkedList).then(resp=>{
+		let result = resp.data;
+		if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+			if (result.code==='0'){
+				this.getParticipantListByPage();
+				return this.$message({
+					type:"success",
+					message:result.msg
+				})
+			}
+			return this.$message.error(result.msg)
+
+		})
+
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消批量操作",
+          });
+        });
+ },
+ handleDisApprovalOption(){
+      console.log("checkedList");
+      console.log(this.checkedList);
+	  this.$confirm("此操作将选中的参赛者审核 全部 不通过, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //遍历获得多选选中的index值
+		this.$axios.post("/teacher/disApprovalAll",this.checkedList).then(resp=>{
+		let result = resp.data;
+		if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+			if (result.code==='0'){
+				this.getParticipantListByPage();
+				return this.$message({
+					type:"success",
+					message:result.msg
+				})
+			}
+			return this.$message.error(result.msg)
+
+		})
+
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消批量操作",
+          });
+        });
+    },
+     handleApprovalOption(){
+	  console.log("checkedList");
+      console.log(this.checkedList);
+	  this.$confirm("此操作将选中的参赛者审核 全部 通过, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //遍历获得多选选中的index值
+		this.$axios.post("/teacher/approvalAll",this.checkedList).then(resp=>{
+		let result = resp.data;
+		if(result.code==='401'){
+              this.$router.push("/login")
+              return this.$message({
+                type:"warning",
+                message:result.msg
+              })
+            }
+			if (result.code==='0'){
+				this.getParticipantListByPage();
+				return this.$message({
+					type:"success",
+					message:result.msg
+				})
+			}
+			return this.$message.error(result.msg)
+
+		})
+
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消批量操作",
+          });
+        });
     },
       exportExcelHeader() {
       this.json_fields = {};

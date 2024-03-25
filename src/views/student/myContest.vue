@@ -40,18 +40,17 @@
         </el-col>
 			</el-row>
 		</el-form>
-    <el-button type="warning" @click="handleOption()">批量操作</el-button>
+  
    <el-table  ref="multipleTable"
    :data="contestInfo"
    tooltip-effect="dark"
    style="width: 100%"
    max-height="450"
-   @selection-change="handleSelectionChange"
-    :row-key="getRowKeys">
+    >
    <el-table-column
       type="selection"
       width="55"
-      :reserve-selection="true">
+>
     </el-table-column>
      <el-table-column fixed tooltip-effect="dark" width="55">
      </el-table-column>
