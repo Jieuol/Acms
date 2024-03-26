@@ -59,18 +59,14 @@
 
      <el-table-column sortable prop="updateTime" label="更新时间" min-width="100">
      </el-table-column> -->
-     <!-- <el-table-column fixed="right" label="操作" min-width="120">
+     <el-table-column fixed="right" label="操作" min-width="120">
        <template slot-scope="scope">
          <el-button v-if="scope.row.examineState!='已完赛'"  class="el-button el-button--small is-plain el-button--default" 
          style="margin: 5px !important;" size="small" @click="detail(scope.row)">
-           <span>登记成绩</span>
-         </el-button>
-         <el-button v-if="scope.row.examineState=='已完赛'"  class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" size="small" @click="detail(scope.row)">
-           <span>查看记录</span>
+           <span>详细信息</span>
          </el-button>
        </template>
-     </el-table-column> -->
+     </el-table-column>
    </el-table>
    
      <!-- 分页器 -->
@@ -99,51 +95,41 @@
         <el-button type="primary" @click="deleteparticipate()">确 认</el-button>
       </span>
     </el-dialog>
-   <!-- 遮罩2 -->
-   <!-- <el-dialog title="参赛人详细信息" :visible.sync="centerDialogVisible" width="1000px"> -->
- <!-- <div class=" container" style="margin-top:25px;margin-left:30px;">
+   <!-- 遮罩——成绩详细信息 -->
+  <el-dialog title="成绩详细信息" :visible.sync="centerDialogVisible" width="1000px"> 
+ <div class=" container" style="margin-top:25px;margin-left:30px;">
    <el-row :gutter="10">
-     <el-col :span="4"><div class="title">竞赛名称: {{ form.contestName }}</div></el-col>
+     <el-col :span="4"><div class="title">竞赛名称: {{ detailForm.contestName }}</div></el-col>
    </el-row>
 
      
    <el-row :gutter="10">
-     <el-col :span="4"><div class="text">竞赛类别: {{ form.contestType }}</div></el-col>
+     <el-col :span="4"><div class="text">竞赛类别: {{ detailForm.contestType }}</div></el-col>
    </el-row>
    
    <el-row :gutter="10">
-     <el-col :span="4"><div class="text">参赛人姓名: {{ form.applicantRealname }}</div></el-col>
+     <el-col :span="4"><div class="text">竞赛日期: {{ detailForm.contestDate }}</div></el-col>
    </el-row>
 
    <el-row :gutter="20">
-     <el-col :span="24"><div class="text">所在学院: {{ form.academy }}</div></el-col>
+     <el-col :span="24"><div class="introduce">竞赛成绩: {{ detailForm.contestResult }}</div></el-col>
    </el-row>
    <el-row :gutter="20">
-     <el-col :span="24"><div class="text">所在年级: {{ form.grade }}</div></el-col>
-   </el-row>
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="text">所在专业: {{ form.major }}</div></el-col>
+     <el-col :span="24"><div class="text">竞赛排名: {{ detailForm.rank }}</div></el-col>
    </el-row>
 
    <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">审核状态: {{ form.examineState }}</div></el-col>
+     <el-col :span="24"><div class="title">负责老师: {{ detailForm.teacher }}</div></el-col>
    </el-row>
    <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">审核回复: {{ form.examineReply }}</div></el-col>
-   </el-row>
-   <el-row :gutter="20">
-     <el-col :span="24">
-      <el-input v-model="form.contestResult" style="width: 15%" placeholder="请输入该生成绩"></el-input>
-      <el-button type="success" @click="submit()">确认登记</el-button>
-    </el-col>
-    
+     <el-col :span="24"><div class="title">联系邮箱: {{ detailForm.email }}</div></el-col>
    </el-row>
   </div>
  <div slot="footer" class="dialog-footer">
    <el-button @click="back()">返 回</el-button>
  </div>
 
-</el-dialog> -->
+</el-dialog> 
  
   </div>
  </template>
@@ -172,6 +158,7 @@
           label: '国家级'
         },
         ],
+        detailForm:{},
          form:{
           contestResult:"",
          },
@@ -217,10 +204,25 @@
      watch: {},
      //方法集合
      methods: {
+      detail(row){
+        console.log(row);
+        this.contestParticipantId = row.contestParticipantId;
+        console.log( this.contestParticipantId);
+        this.$axios.get("/getRankById?contestParticipantId="+this.contestParticipantId).then(resp=>{
+          let result = resp.data;
+          if(result.code=='0'){
+            this.detailForm=result.data.rank;
+            this.centerDialogVisible=true;
+          }
+          else{
+            this.$message.error(result.msg);
+          }
 
+        })
+      },
       back(){
         this.centerDialogVisible = false;
-        this.form.contestResult="";
+        this.detailForm={};
       },
 
       reset(){

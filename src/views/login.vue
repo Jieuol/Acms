@@ -10,7 +10,7 @@
 	    <div class="warp">
 			<el-row>
 				<el-col>
-					<el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="60px" class="form">
+					<el-form @keyup.native.enter :model="loginForm" :rules="rules" ref="loginForm" label-width="60px" class="form">
 						<h1>学科竞赛管理系统</h1>
 						
 						<el-form-item label="账号" prop="username">
@@ -27,6 +27,7 @@
 						<el-form-item prop="verifyCode">
 						<el-col :span="16">
 							<el-input
+							@keyup.enter="sign_in('loginForm')"
 							v-model="loginForm.verifyCode"
 							prefix-icon="el-icon-message"
 							placeholder="验证码"
@@ -42,7 +43,7 @@
 						
 
 						<div class="btns">
-							<el-button type="primary" @click="sign_in('loginForm')">登录</el-button>
+							<el-button type="primary"  @click="sign_in('loginForm')">登录</el-button>
 						</div>
 						<div class="btns">
 							<router-link to="/forgot" >忘记密码?</router-link>
