@@ -4,6 +4,7 @@ import edu.lgxy.lbj.asms.config.Page;
 import edu.lgxy.lbj.asms.entity.Student;
 import edu.lgxy.lbj.asms.mapper.UserMapper;
 import edu.lgxy.lbj.asms.entity.User;
+import edu.lgxy.lbj.asms.qo.Rank;
 import edu.lgxy.lbj.asms.qo.ReceiveUser;
 import org.springframework.stereotype.Service;
 
@@ -67,4 +68,7 @@ public class UserService {
     }
 
 
+    public Rank selectRanksById(long contestParticipantId) {
+        return userMapper.selectRanksById(contestParticipantId);
+    }
 }

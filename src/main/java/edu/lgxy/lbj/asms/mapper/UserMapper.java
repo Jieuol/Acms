@@ -3,6 +3,7 @@ package edu.lgxy.lbj.asms.mapper;
 import edu.lgxy.lbj.asms.entity.ContestResults;
 import edu.lgxy.lbj.asms.entity.Student;
 import edu.lgxy.lbj.asms.entity.User;
+import edu.lgxy.lbj.asms.qo.Rank;
 import edu.lgxy.lbj.asms.qo.ReceiveUser;
 
 import java.util.Collection;
@@ -31,4 +32,5 @@ public interface UserMapper {
     int insertUser(User user);
 
 
+    Rank selectRanksById(long contestParticipantId);
 }

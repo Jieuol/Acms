@@ -220,6 +220,11 @@ public class TeacherController {
             code="202";
             return new JsonResult<>(map,msg,code);
         }
+        Message message= new Message();
+        message.setUserId(participantQo.getApplicantId());
+        message.setMessageName("您参加的:"+participantQo.getContestName()+",成绩已出");
+        message.setMessageInformation("成绩为:"+participantQo.getContestResult()+",详细信息请前往我的成绩进行查询");
+        messageService.insertMessage(message);
         msg="登记成绩成功";
         code="0";
         return new JsonResult<>(msg,code);

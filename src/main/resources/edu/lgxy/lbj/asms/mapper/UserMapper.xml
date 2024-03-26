@@ -205,5 +205,19 @@
 <!--        (#{username},#{password})-->
 <!--    </insert>-->
 
+    <select id ="selectRanksById" resultType="edu.lgxy.lbj.asms.qo.Rank">
+        select * from(SELECT
+        s.*,
+        (select count(distinct(contest_result)) from contest_results where contest_result >= s.contest_result ) as
+        'rank',(select realname from user where user_id in(
+        select applicant_id from contest_declaration where contest_declaration_id=a.contest_declaration_id)
+        ) as teacher,
+        (select email from user where user_id in(
+        select applicant_id from contest_declaration where contest_declaration_id=a.contest_declaration_id)
+        ) as email
+        FROM
+        contest_results as s INNER JOIN contest_information as a on a.contest_information_id=s.contest_information_id
+        order by contest_result desc) As P where contest_participant_id=#{contestParticipantId};
 
+    </select>
 </mapper>

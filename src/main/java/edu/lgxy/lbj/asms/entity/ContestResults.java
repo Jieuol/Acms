@@ -10,6 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class ContestResults {
 
   private long contestResultsId;
+  private long contestInformationId;
+  private long contestParticipantId;
   private String contestName;
   private String contestType;
   private java.sql.Date contestDate;

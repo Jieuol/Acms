@@ -389,5 +389,13 @@ public class UserController {
         return new JsonResult<>(map);
     }
 
+    @RequestMapping("/getRankById")
+    public JsonResult<Map> selectRankById(
+            @RequestParam  long  contestParticipantId){
+        Map<String,Object> map = new HashMap<>();
+        Rank rank = userService.selectRanksById(contestParticipantId);
+        map.put("rank",rank);
+        return new JsonResult<>(map);
+    }
 
 }

@@ -162,10 +162,10 @@
     </select>
     <insert id="insertResults" parameterType="edu.lgxy.lbj.asms.qo.ParticipantQo">
         insert into contest_results
-        (contest_result,contest_participant_id,contest_date,
+        (contest_result,contest_participant_id,contest_information_id,contest_date,
          contest_name,contest_type)
         values
-            (#{contestResult},#{contestParticipantId},#{contestDate},
+            (#{contestResult},#{contestParticipantId},#{contestInformationId},#{contestDate},
             #{contestName},#{contestType})
     </insert>
 
