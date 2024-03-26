@@ -43,7 +43,7 @@
 						
 
 						<div class="btns">
-							<el-button type="primary"  @click="sign_in('loginForm')">登录</el-button>
+							<el-button type="primary" :loading="loading"  @click="sign_in('loginForm')">登录</el-button>
 						</div>
 						<div class="btns">
 							<router-link to="/forgot" >忘记密码?</router-link>
@@ -52,6 +52,8 @@
 				</el-col>
 			</el-row>
 		</div>
+
+
     </div>
 </template>
 
@@ -70,6 +72,7 @@
 					username: "",
 					password: "",
 				},
+				loading:false,
                 rules: {
 					username: [{
 							required: true,
@@ -130,6 +133,7 @@
 							console.log(sessionStorage.getItem('realname'))
 							console.log(sessionStorage.getItem('userId'))
 							console.log(result.data.user)
+							this.loading=true;
 							// sessionStorage.setItem('is_login',1); //存储登录状态
 							this.$router.push("/")
 							return this.$message({

@@ -98,32 +98,58 @@
    <!-- 遮罩——成绩详细信息 -->
   <el-dialog title="成绩详细信息" :visible.sync="centerDialogVisible" width="1000px"> 
  <div class=" container" style="margin-top:25px;margin-left:30px;">
-   <el-row :gutter="10">
-     <el-col :span="4"><div class="title">竞赛名称: {{ detailForm.contestName }}</div></el-col>
-   </el-row>
+  <el-card>
+        <el-descriptions class="margin-top" :column="2" border>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-office-building"></i>
+              竞赛名称
+            </template>
+            {{ detailForm.contestName }}
+          </el-descriptions-item>
+          
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-office-building"></i>
+              竞赛类别
+            </template>
+            {{ detailForm.contestType }}
+          </el-descriptions-item>
 
-     
-   <el-row :gutter="10">
-     <el-col :span="4"><div class="text">竞赛类别: {{ detailForm.contestType }}</div></el-col>
-   </el-row>
-   
-   <el-row :gutter="10">
-     <el-col :span="4"><div class="text">竞赛日期: {{ detailForm.contestDate }}</div></el-col>
-   </el-row>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-date"></i>
+              竞赛日期
+            </template>
+            {{ detailForm.contestDate }}
+          </el-descriptions-item>
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">竞赛成绩: {{ detailForm.contestResult }}</div></el-col>
-   </el-row>
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="text">竞赛排名: {{ detailForm.rank }}</div></el-col>
-   </el-row>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-medal-1"></i>
+              排名
+            </template>
+            {{ detailForm.rank }}
+          </el-descriptions-item>
+          
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-user"></i>
+              负责人
+            </template>
+            {{ detailForm.teacher }}
+          </el-descriptions-item>
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="title">负责老师: {{ detailForm.teacher }}</div></el-col>
-   </el-row>
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="title">联系邮箱: {{ detailForm.email }}</div></el-col>
-   </el-row>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-message"></i>
+              邮箱
+            </template>
+            {{ detailForm.email }}
+          </el-descriptions-item>
+        </el-descriptions>
+  </el-card> 
+
   </div>
  <div slot="footer" class="dialog-footer">
    <el-button @click="back()">返 回</el-button>

@@ -109,42 +109,146 @@
       </span>
     </el-dialog>
    <!-- 遮罩2 -->
-   <el-dialog title="参赛人详细信息" :visible.sync="centerDialogVisible" width="1000px">
+   <el-dialog title="详细信息" :visible.sync="centerDialogVisible" width="1000px">
  <div class=" container" style="margin-top:25px;margin-left:30px;">
-   <el-row :gutter="10">
-     <el-col :span="4"><div class="title">竞赛名称: {{ form.contestName }}</div></el-col>
-   </el-row>
+  <el-card>
+        <el-descriptions class="margin-top" :column="2" border>
+        
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-office-building"></i>
+              竞赛名称
+            </template>
+            {{ form.contestName }}
+          </el-descriptions-item>
+          
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-star-on"></i>
+              竞赛类别
+            </template>
+            {{ form.contestType }}
+          </el-descriptions-item>
+          
 
-     
-   <el-row :gutter="10">
-     <el-col :span="4"><div class="text">竞赛类别: {{ form.contestType }}</div></el-col>
-   </el-row>
-   
-   <el-row :gutter="10">
-     <el-col :span="4"><div class="text">参赛人姓名: {{ form.applicantRealname }}</div></el-col>
-   </el-row>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-date"></i>
+              竞赛日期
+            </template>
+            {{ form.contestDate }}
+          </el-descriptions-item>
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="text">所在学院: {{ form.academy }}</div></el-col>
-   </el-row>
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="text">所在年级: {{ form.grade }}</div></el-col>
-   </el-row>
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="text">所在专业: {{ form.major }}</div></el-col>
-   </el-row>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-date"></i>
+              更新日期
+            </template>
+            {{ form.updateTime }}
+          </el-descriptions-item>
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-user"></i>
+              竞赛申请人
+            </template>
+            {{ form.applicantRealname }}
+          </el-descriptions-item>
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">审核状态: {{ form.examineState }}</div></el-col>
-   </el-row>
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">审核回复: {{ form.examineReply }}</div></el-col>
-   </el-row>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-odometer"></i>
+              年级
+            </template>
+            {{ form.grade }}
+          </el-descriptions-item>
+
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-location-outline"></i>
+              学院
+            </template>
+            {{ form.academy }}
+          </el-descriptions-item>
+          <el-descriptions-item >
+            <template slot="label">
+              <i class="el-icon-office-building"></i>
+              专业
+            </template>
+            {{ form.major }}
+          </el-descriptions-item>
+
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-opportunity"></i>
+              审核状态
+            </template>
+            {{ form.examineState }}
+          </el-descriptions-item>
+          
+          <el-descriptions-item v-if="form.examineState=='已通过'" labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              审核操作
+            </template>
+            <el-button class="el-button el-button--small is-plain el-button--default" 
+            style="margin: 5px !important;" type="danger" size="small" @click="updateParticipant('fail')">
+            <span>不予通过</span>
+            </el-button>
+          </el-descriptions-item>
+      
+
+        <el-descriptions-item v-if="form.examineState=='未通过'" labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              审核操作
+            </template>
+            <el-button class="el-button el-button--small is-plain el-button--default" 
+            style="margin: 5px !important;" type="success" size="small" @click="updateParticipant('pass')">
+            <span>审核通过</span>
+            </el-button>
+        </el-descriptions-item>
+
+        <el-descriptions-item v-if="form.examineState=='未审核'" labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              审核操作
+            </template>
+            <el-button class="el-button el-button--small is-plain el-button--default" 
+            style="margin: 5px !important;" type="danger" size="small" @click="updateParticipant('fail')">
+            <span>不予通过</span>
+           </el-button>
+
+          <el-button class="el-button el-button--small is-plain el-button--default" 
+            style="margin: 5px !important;float: right;" type="success" size="small" @click="updateParticipant('pass')">
+            <span>审核通过</span>
+          </el-button>
+        </el-descriptions-item>
+        
+        <el-descriptions-item labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              审核回复
+            </template>
+            {{form.examineReply}}
+          </el-descriptions-item>
+
+          <el-descriptions-item labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              成绩
+            </template>
+            <el-input v-model="form.contestResult" style="width: 15%" placeholder="请输入该生成绩"></el-input>
+            <el-button style="float: right;" v-if="form.examineState!='已完赛'" type="success" @click="submit()">确认登记</el-button>
+            <el-button style="float: right;" v-if="form.examineState=='已完赛'" type="success" @click="submit()">确认修改</el-button>
+          </el-descriptions-item>
+      </el-descriptions>
+  </el-card> 
+  
+
    <el-row :gutter="20">
      <el-col :span="24">
-      <el-input v-model="form.contestResult" style="width: 15%" placeholder="请输入该生成绩"></el-input>
-      <el-button v-if="form.examineState!='已完赛'" type="success" @click="submit()">确认登记</el-button>
-      <el-button v-if="form.examineState=='已完赛'" type="success" @click="submit()">确认修改</el-button>
+     
+     
     </el-col>
     
    </el-row>

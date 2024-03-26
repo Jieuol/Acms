@@ -111,76 +111,128 @@
     <!-- 遮罩2 -->
  <el-dialog title="详细信息" :visible.sync="centerDialogVisible" width="1000px">
  <div class=" container" style="margin-top:25px;margin-left:30px;">
-  <el-row :gutter="10">
-     <el-col :span="4"><div class="title">申请人: {{ form.realname }}</div></el-col>
-   </el-row>
-   <el-row :gutter="10">
-     <el-col :span="4"><div class="title">竞赛名称: {{ form.contestName }}</div></el-col>
-   </el-row>
-     
-   <el-row :gutter="10">
-     <el-col :span="4"><div class="text">竞赛类别: {{ form.contestType }}</div></el-col>
-   </el-row>
-   
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">竞赛日期: {{ form.contestDate }}</div></el-col>
-   </el-row>
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">截止日期: {{ form.deadlineTime }}</div></el-col>
-   </el-row>
+  <el-card>
+        <el-descriptions class="margin-top" :column="2" border>
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-user"></i>
+              竞赛申请人
+            </template>
+            {{ form.realname }}
+          </el-descriptions-item>
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">竞赛介绍: {{ form.contestIntroduction }}</div></el-col>
-   </el-row>
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i></i>
+            
+            </template>
+         
+          </el-descriptions-item>
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-office-building"></i>
+              竞赛名称
+            </template>
+            {{ form.contestName }}
+          </el-descriptions-item>
+          
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-star-on"></i>
+              竞赛类别
+            </template>
+            {{ form.contestType }}
+          </el-descriptions-item>
+          
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-s-flag"></i>
+              竞赛人数
+            </template>
+            {{ form.participantsNumber }}
+          </el-descriptions-item>
+          <el-descriptions-item labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+            竞赛介绍
+            </template>
+            {{ form.contestIntroduction }}
+          </el-descriptions-item>
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">参与人数: {{ form.participantsNumber }}</div></el-col>
-   </el-row>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-date"></i>
+              竞赛日期
+            </template>
+            {{ form.contestDate }}
+          </el-descriptions-item>
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">竞赛规则: {{ form.contestRules }}</div></el-col>
-   </el-row>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-date"></i>
+              截至日期
+            </template>
+            {{ form.deadlineTime }}
+          </el-descriptions-item>
+          <el-descriptions-item labelStyle="width: 100px"contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-opportunity"></i>
+              审核状态
+            </template>
+            {{ form.examineState }}
+          </el-descriptions-item>
+          
+          <el-descriptions-item v-if="form.examineState=='已通过'" labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              审核操作
+            </template>
+            <el-button class="el-button el-button--small is-plain el-button--default" 
+            style="margin: 5px !important;" type="danger" size="small" @click="updateDeclaration('fail')">
+            <span>不予通过</span>
+            </el-button>
+          </el-descriptions-item>
+      
 
-   <el-row :gutter="20">
-     <el-col :span="24"><div class="introduce">审核状态: {{ form.examineState }}</div></el-col>
-   </el-row>
+        <el-descriptions-item v-if="form.examineState=='未通过'" labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              审核操作
+            </template>
+            <el-button class="el-button el-button--small is-plain el-button--default" 
+            style="margin: 5px !important;" type="success" size="small" @click="updateDeclaration('pass')">
+            <span>审核通过</span>
+            </el-button>
+        </el-descriptions-item>
 
-   <el-row :gutter="10" v-if="form.examineState=='已通过'">
-    <el-col :span="10">
-       <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
-       <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="danger" size="small" @click="updateDeclaration('fail')">
-        <span>不予通过</span>
-       </el-button>
-    </el-col>
-   </el-row>
+        <el-descriptions-item v-if="form.examineState=='未审核'" labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              审核操作
+            </template>
+            <el-button class="el-button el-button--small is-plain el-button--default" 
+            style="margin: 5px !important;" type="danger" size="small" @click="updateDeclaration('fail')">
+            <span>不予通过</span>
+           </el-button>
 
-   <el-row :gutter="10" v-if="form.examineState=='未通过'">
-    <el-col :span="10">
-       <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
+          <el-button class="el-button el-button--small is-plain el-button--default" 
+            style="margin: 5px !important;float: right;" type="success" size="small" @click="updateDeclaration('pass')">
+            <span>审核通过</span>
+          </el-button>
+        </el-descriptions-item>
+        
+        <el-descriptions-item labelStyle="width: 150px" contentStyle="width: 250px">
+            <template slot="label">
+              <i class="el-icon-s-order"></i>
+              审核回复
+            </template>
+            <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
+          </el-descriptions-item>
+      </el-descriptions>
+  </el-card>     
 
-       <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="success" size="small" @click="updateDeclaration('pass')">
-        <span>审核通过</span>
-       </el-button>
-    </el-col>
-   </el-row>
-
-   <el-row :gutter="10" v-if="form.examineState=='未审核'">
-    <el-col :span="10">
-       <el-input placeholder="请输入审核回复" type="textarea":rows="2" style="width: 80%" v-model="form.examineReply" autocomplete="off"></el-input>
-       <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="danger" size="small" @click="updateDeclaration('fail')">
-        <span>不予通过</span>
-       </el-button>
-
-       <el-button class="el-button el-button--small is-plain el-button--default" 
-         style="margin: 5px !important;" type="success" size="small" @click="updateDeclaration('pass')">
-        <span>审核通过</span>
-       </el-button>
-      </el-col>
-   </el-row>
+  
  </div>
  <div slot="footer" class="dialog-footer">
    <el-button @click="centerDialogVisible = false">返 回</el-button>
