@@ -45,7 +45,7 @@
        :fields = "json_fields" name = "filename.xls">
     		<el-button  style="float: right;" round type="success" icon="download" > 导出 </el-button>
     </download-excel>
-    <el-button type="warning" @click="handleApprovalOption()">批量审核通过</el-button> 
+    <el-button type="success" @click="handleApprovalOption()">批量审核通过</el-button> 
     <el-button type="warning" @click="handleDisApprovalOption()">批量审核不通过</el-button>    
     <el-button type="danger" @click="handleDelete()">批量删除</el-button> 
     <el-table  ref="multipleTable"

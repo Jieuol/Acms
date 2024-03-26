@@ -81,7 +81,7 @@
        @size-change="handleSizeChange"
        @current-change="handleCurrentChange"
        :current-page="currentPage" 
-       :page-sizes="[3,4,5]"
+       :page-sizes="[10,15,20]"
        :page-size = "query.pageSize" 
        layout="total, sizes, prev, pager, next, jumper"
        :total="totalRecords"
@@ -206,7 +206,7 @@
          totalRecords: 0,
           //总条数，总共有多少条数据,
           pageInfo:{
-           pageSize: 3,
+           pageSize: 10,
            pageIndex: 0,
           },
          // 弹框
@@ -220,7 +220,7 @@
 
        // 查询
        query: {
-         pageSize: 3,
+         pageSize: 10,
          pageIndex: 0,
          noticeName:"",
          updateTime:"",

@@ -40,7 +40,7 @@
         </el-col>
             </el-row>
         </el-form>
-        <el-button type="warning" @click="handleApprovalOption()">批量审核通过</el-button> 
+        <el-button type="success" @click="handleApprovalOption()">批量审核通过</el-button> 
         <el-button type="warning" @click="handleDisApprovalOption()">批量审核不通过</el-button>    
    <el-table  
    v-loading="loading"
