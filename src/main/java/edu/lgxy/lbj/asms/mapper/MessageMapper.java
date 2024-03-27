@@ -11,4 +11,6 @@ public interface MessageMapper {
     int updateMessage(long messageId);
 
     int insertMessage(Message message);
+
+    int deleteMessageById(long messageId);
 }

@@ -30,4 +30,8 @@ public class MessageService {
     public int insertMessage(Message message){
         return messageMapper.insertMessage(message);
     }
+
+    public int deleteMessage(long messageId) {
+        return messageMapper.deleteMessageById(messageId);
+    }
 }

@@ -139,9 +139,6 @@ public class UserController {
             return new JsonResult<>("验证码错误,请重新填写","202");
         }
         Map<String, Object> map = new HashMap<>();
-        int keys=1;
-        String item = receive.getUsername();
-        String values = receive.getPassword();
 
 
 //        redisTemplate.opsForValue().set("name","lbj!!!!!!!");
@@ -197,6 +194,7 @@ public class UserController {
 //        TokenUtil.verify(token);
         map.put("token",redisUtil.get(Cookie));
         msg="登录成功!";
+        log.info(username+"登录成功！");
         return new JsonResult<>(map,msg);
     }
 

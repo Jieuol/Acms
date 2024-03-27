@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @RestController
+@Slf4j
 public class MessageController {
     @Autowired
     private HttpServletRequest request;
@@ -70,5 +71,40 @@ public class MessageController {
         return new JsonResult<>(map,"更新成功","0");
     }
 
+    @RequestMapping("/deleteMessageById")
+    public JsonResult<Map> deleteMessageById(@RequestParam long messageId){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        Map<String,Object> map = new HashMap<>();
+        int result = messageService.deleteMessage(messageId);
+        if(result<=0){
+            return new JsonResult<>(map,"删除失败","202");
+        }
+        return new JsonResult<>(map,"删除成功","0");
+    }
+    @RequestMapping("/dropMessage")
+    public JsonResult<Map> dropMessage(@RequestBody List<Message> messages){
+        String username = request.getHeader("username");
+        String token = request.getHeader("token");
+        JsonResult<Map> jsonResult= checkToken.checkTokenByUserName(username,token);
+        if(jsonResult!=null){
+            return jsonResult;
+        }
+        for(Message data :messages){
+            try{
+                messageService.deleteMessage(data.getMessageId());
+            }catch (Exception e){
+                log.info("异常:"+e);
+                return new JsonResult<>("操作失败","202");
+            }
+        }
+        return new JsonResult<>("操作成功","0");
+
+
+    }
 
 }

@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateMessage">
         update message
         <trim prefix="SET" suffixOverrides=",">
-            <if test="state != '0' ">state ='1',</if>
+            <if test="state !=null and state!='' ">state ='1',</if>
         </trim>
         where message_id=#{messageId}
     </update>
@@ -25,7 +25,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         values
         (#{userId},#{messageName},#{messageInformation})
     </insert>
-
+    <delete id="deleteMessageById">
+        delete  from message where message_id=#{messageId}
+    </delete>
 
 <!--    <select id="selectBaseCount" resultType="Integer">-->
 <!--        ${count}-->
