@@ -154,6 +154,15 @@ const routes = [
 				},
 			},
 			{
+			    path: '/myAward',
+			    name: 'myAward', 
+			    component: () => import("@/views/student/myAward.vue"),
+				meta: {
+					index: 0,
+					title: '我的获奖信息'
+				},
+			},
+			{
 			    path: '/userManagement',
 			    name: 'userManagement', 
 			    component: () => import("@/views/admin/userManagement.vue"),

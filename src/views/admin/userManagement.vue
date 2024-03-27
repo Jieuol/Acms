@@ -37,7 +37,7 @@
   	<!-- 导出按钮 -->
 	  <download-excel class = "export-excel-wrapper":data = "userInfo"
 		 :fields = "json_fields" name = "用户信息.xls">
-			  <el-button style="float: right;" round type="success" icon="download" > 导出 </el-button>
+			  <el-button style="float: right;" round type="success" icon="el-icon-download" > 导出 </el-button>
 	  </download-excel>
 	  <el-button type="warning" @click="handleOption()">批量操作</el-button>
 	 <el-table  ref="multipleTable"

@@ -43,7 +43,7 @@
     
     <download-excel class = "export-excel-wrapper":data = "contestInfo"
        :fields = "json_fields" name = "filename.xls">
-    		<el-button  style="float: right;" round type="success" icon="download" > 导出 </el-button>
+    		<el-button  style="float: right;" icon="el-icon-download" round type="success" > 导出 </el-button>
     </download-excel>
     <el-button type="success" @click="handleApprovalOption()">批量审核通过</el-button> 
     <el-button type="warning" @click="handleDisApprovalOption()">批量审核不通过</el-button>    
